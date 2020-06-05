@@ -1,8 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import logo from './logo.svg'
+import './App.css'
+import * as Api from '../src/api/api'
+
 
 function App() {
+
+  // @ts-ignore
+  window.api = Api
+
   return (
     <div className="App">
       <header className="App-header">

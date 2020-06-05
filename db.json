@@ -28,7 +28,7 @@
     { "id": 0, "projectName": "Дом" },
     { "id": 1, "projectName": "Работа" },
     { "id": 2, "projectName": "Учеба" },
-    { "id": 3, "projectName": "Отпуск" },
+    { "id": 3, "projectName": "Отпуск" }
   ],
   "tasks": [
     { "id": 0, "project": 0, "author": 0, "date": "January 05, 2018 08:50:10", "title": "Заехать в магазин", "isDone": true },

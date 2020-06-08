@@ -41,7 +41,6 @@
     {"id": 14   , "projectId": 1    , "userId": 8},
     {"id": 15   , "projectId": 2    , "userId": 9}
   ],
-
   "projects": [
     { "id": 0   , "projectName": "Дом" },
     { "id": 1   , "projectName": "Работа" },

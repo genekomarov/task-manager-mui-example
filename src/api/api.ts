@@ -1,33 +1,6 @@
 import axios from 'axios'
 import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, TaskType, UsersType} from "./apiTypes"
 import arrayToStringArguments from "../utils/arrayToStringArguments"
-import clientSideDB from "./clientSideDB"
-
-let initialData = {
-    users: {
-        items: [] as UsersType, //new or changed items
-        deleted: [] as Array<number> //ids of deleted items
-    },
-    authData: {
-        items: [] as AuthDataType, //new or changed items
-        deleted: [] as Array<number> //ids of deleted items
-    },
-    projectsToUsers: {
-        items: [] as Array<ProjectToUserIdsMatch>, //new or changed items
-        deleted: [] as Array<number> //ids of deleted items
-    },
-    projects: {
-        items: [] as ProjectsType, //new or changed items
-        deleted: [] as Array<number> //ids of deleted items
-    },
-    tasks: {
-        items: [] as TasksType, //new or changed items
-        deleted: [] as Array<number> //ids of deleted items
-    }
-}
-
-clientSideDB.setInitialData(initialData)
-
 
 
 const instance = axios.create({
@@ -37,7 +10,7 @@ const instance = axios.create({
 })
 
 export const authAPI = {
-    authMe: (email: string, password: string) =>
+    auth: (email: string, password: string) =>
         instance.get<AuthDataType>(`/authData?email=${email}&password=${password}`)
             .then(response => response.data)
 }

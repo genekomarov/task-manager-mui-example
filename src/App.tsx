@@ -15,6 +15,15 @@ import AppBarContent from "./components/AppBarContent/AppBarContent"
 import Filter from "./components/FilterData/Filter"
 import FilterWrapper from "./components/FilterData/FilterWrapper"
 import TasksList from "./components/TasksList/TasksList"
+import React from 'react'
+import logo from './logo.svg'
+import './App.css'
+import * as Api from '../src/api/api'
+import {getCounter} from "./utils/universalCounter"
+import {connect} from "react-redux";
+import store, {AppStateType} from "./redux/store"
+import {actions as actionsApiReducer} from "./redux/clientSideApiReducer"
+import {login, logout} from './redux/authReducer'
 
 const drawerWidth = 240;
 
@@ -60,6 +69,16 @@ interface Props {
      */
     window?: () => Window;
 }
+  // @ts-ignore
+  window.api = Api
+  // @ts-ignore
+  window.counter = getCounter
+  // @ts-ignore
+  window.store = store
+  // @ts-ignore
+  window.login = login
+  // @ts-ignore
+  window.logout = logout
 
 export default function App(props: Props) {
     const { window } = props;
@@ -141,3 +160,5 @@ export default function App(props: Props) {
         </div>
     );
 }
+
+export default App;

@@ -1,7 +1,7 @@
 import axios from 'axios'
+import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, TaskType, UsersType} from "./apiTypes"
+import arrayToStringArguments from "../utils/arrayToStringArguments"
 
-const arrayToStringArguments = (argName: string, argArray: Array<number | string>) =>
-    argArray.map((arg) => `${argName}=${arg}&`).toString().replace(/,/g,'')
 
 const instance = axios.create({
     withCredentials: true,
@@ -9,66 +9,58 @@ const instance = axios.create({
     headers: {}
 })
 
-type AuthDataType = Array<{
-    id: number
-    email: string
-    password: string
-}>
 export const authAPI = {
-    authMe: (email: string, password: string) =>
+    auth: (email: string, password: string) =>
         instance.get<AuthDataType>(`/authData?email=${email}&password=${password}`)
             .then(response => response.data)
 }
 
-type ProjectToUserIdsMatch = {
-    id: number
-    projectId: number
-    userId: number
-}
-type UsersType = Array<{
-    id: number
-    nickname: string
-    projects: Array<number>
-}>
 export const usersAPI = {
     getUsersByIds: (setOfUserIds: Array<number>) =>
-        /*instance.get<UsersType>(`/users?${setOfUserIds.map((id) => `id=${id}&`).toString().replace(/,/g,'')}`)*/
         instance.get<UsersType>(`/users?${arrayToStringArguments("id", setOfUserIds)}`)
             .then(response => response.data),
 
     getUserIdsByProjectIds: (setOfProjectIds: Array<number>) =>
         instance.get<ProjectToUserIdsMatch>(
             `/projects-to-users?${arrayToStringArguments("projectId", setOfProjectIds)}`
-        ).then(response => response.data)
+        ).then(response => response.data),
+
+    addNewUser: () => console.error("method 'addNewUser' is not implemented"),
+    changeUser: () => console.error("method 'changeUser' is not implemented"),
+    deleteUser: () => console.error("method 'deleteUser' is not implemented")
 }
 
-type ProjectsType = Array<{
-    id: number
-    projectName: string
-}>
 export const projectsAPI = {
     getProjectsByIds: (setOfProjectIds: Array<number>) =>
-        instance.get<ProjectsType>(`/users?${arrayToStringArguments("id", setOfProjectIds)}`)
+        instance.get<ProjectsType>(`/projects?${arrayToStringArguments("id", setOfProjectIds)}`)
             .then(response => response.data),
 
     getProjectIdsByUserIds: (setOfUserIds: Array<number>) =>
         instance.get<ProjectToUserIdsMatch>(
             `/projects-to-users?${arrayToStringArguments("userId", setOfUserIds)}`
-        ).then(response => response.data)
+        ).then(response => response.data),
+
+    addNewProject: () => console.error("method 'addNewProject' is not implemented"),
+    changeProject: () => console.error("method 'changeProject' is not implemented"),
+    deleteProject: () => console.error("method 'deleteProject' is not implemented")
 }
 
-type TasksType = Array<{
-    id: number
-    project: number
-    author: number
-    date: string
-    title: string
-    isDone: boolean
-}>
 export const tasksAPI = {
-    getTasksByProjectOrUserIds: (setOfProjectIds: Array<number>, setOfUserIds: Array<number>) =>
-        instance.get<TasksType>(`/tasks?
-            ${arrayToStringArguments("project", setOfProjectIds)}
-            ${arrayToStringArguments("user", setOfUserIds)}`
+    getTasksByProjectOrUserIds: (setOfProjectIds: Array<number> | null, setOfUserIds: Array<number> | null) =>
+        instance.get<TasksType>(
+            `/tasks?${arrayToStringArguments("project", setOfProjectIds)}${arrayToStringArguments("user", setOfUserIds)}`
         ).then(response => response.data),
+
+    addNewTask: (task: TaskType) =>
+        instance.post<TaskType>(`/tasks`, task)
+            .then(response => response.data),
+
+    changeTask: (taskId: number, title: string, isDone: boolean) =>
+        instance.patch<TaskType>(`/tasks/${taskId}`, {title, isDone})
+            .then(response => response.data),
+
+    deleteTask: (taskId: number) =>
+        instance.delete<TaskType>(`/tasks/${taskId}`)
+            .then(response => response.data),
 }
+

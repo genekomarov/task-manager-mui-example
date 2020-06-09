@@ -1,7 +1,8 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, usersAPI} from "../api/api"
-import {UsersType} from "../api/apiTypes"
+import {UsersType} from "../types/types"
+import {AuthorizationFailedException} from "../exaptions/exceptions"
 
 let initialState = {
     id: null as number | null,
@@ -42,25 +43,20 @@ export const actions = {
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 export const login = (email: string, password: string): ThunkType => async (dispatch) => {
-    let authData = await authAPI.auth(email, password)
-    let extraData: UsersType
-    if (authData.length) {
-        extraData = await usersAPI.getUsersByIds([authData[0].id])
-        if (extraData.length) {
-            dispatch(actions.setUserData(authData[0].id, authData[0].email, extraData[0].nickname, true))
-        } return
-    } return
+    try {
+        let authData = await authAPI.auth(email, password)
+        if (authData.length === 0) throw new AuthorizationFailedException()
+        let extraData = await usersAPI.getUsersByIds([authData[0].id])
+        if (authData.length === 0) throw new AuthorizationFailedException()
+        dispatch(actions.setUserData(authData[0].id, authData[0].email, extraData[0].nickname, true))
+    }
+    catch (e) {
+        alert(e.message)
+    }
 }
 
 export const logout = (): ThunkType => async (dispatch) => {
     dispatch(actions.setUserData(null, null, null, false))
 }
-
-
-/*export const requestUsers = (currentPage: number, pageSize: number): ThunkType => async (dispatch) => {
-    let data = await usersAPI.getUsers(currentPage, pageSize);
-    dispatch(actions.setUsers(data.items));
-};*/
-
 
 export default clientSideApiReducer

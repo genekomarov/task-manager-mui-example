@@ -2,10 +2,12 @@ import {combineReducers, createStore, applyMiddleware, compose} from "redux";
 import thunkMiddleware from "redux-thunk";
 import clientSideApiReducer from "./clientSideApiReducer"
 import authReducer from "./authReducer"
+import projectsReducer from "./projectsReducer"
 
 let rootReducer = combineReducers({
     api: clientSideApiReducer,
-    auth: authReducer
+    auth: authReducer,
+    projects: projectsReducer
 });
 
 type RootReducerType = typeof rootReducer

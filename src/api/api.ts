@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, TaskType, UsersType} from "./apiTypes"
+import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, TaskType, UsersType} from "../types/types"
 import arrayToStringArguments from "../utils/arrayToStringArguments"
 
 
@@ -10,9 +10,10 @@ const instance = axios.create({
 })
 
 export const authAPI = {
-    auth: (email: string, password: string) =>
-        instance.get<AuthDataType>(`/authData?email=${email}&password=${password}`)
+    auth: (email: string, password: string) => {
+        return instance.get<AuthDataType>(`/authData?email=${email}&password=${password}`)
             .then(response => response.data)
+    }
 }
 
 export const usersAPI = {
@@ -31,14 +32,19 @@ export const usersAPI = {
 }
 
 export const projectsAPI = {
-    getProjectsByIds: (setOfProjectIds: Array<number>) =>
-        instance.get<ProjectsType>(`/projects?${arrayToStringArguments("id", setOfProjectIds)}`)
-            .then(response => response.data),
+    getProjectsByIds: (setOfProjectIds: Array<number>) => {
+        if (setOfProjectIds.length === 0) return []
+        return instance.get<ProjectsType>(`/projects?${arrayToStringArguments("id", setOfProjectIds)}`)
+            .then(response => response.data)
+    },
 
-    getProjectIdsByUserIds: (setOfUserIds: Array<number>) =>
-        instance.get<ProjectToUserIdsMatch>(
+    getProjectIdsByUserIds: (setOfUserIds: Array<number>) => {
+        debugger
+        return instance.get<Array<ProjectToUserIdsMatch>>(
             `/projects-to-users?${arrayToStringArguments("userId", setOfUserIds)}`
-        ).then(response => response.data),
+        ).then(response => response.data)
+    },
+
 
     addNewProject: () => console.error("method 'addNewProject' is not implemented"),
     changeProject: () => console.error("method 'changeProject' is not implemented"),

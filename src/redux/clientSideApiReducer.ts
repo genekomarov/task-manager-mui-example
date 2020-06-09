@@ -1,5 +1,5 @@
 import {ThunkAction} from "redux-thunk"
-import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, UsersType} from "../api/apiTypes"
+import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, UsersType} from "../types/types"
 import {ActionsTypes, AppStateType} from "./store"
 
 let initialState = {

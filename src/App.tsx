@@ -2,12 +2,15 @@ import React from 'react'
 import logo from './logo.svg'
 import './App.css'
 import * as Api from '../src/api/api'
+import {getCounter} from "./utils/universalCounter"
 
 
 function App() {
 
   // @ts-ignore
   window.api = Api
+  // @ts-ignore
+  window.counter = getCounter
 
   return (
     <div className="App">

@@ -2,7 +2,7 @@
   "name": "2020-06-03_template_material-ui_task-manager",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://genekomarov.github.io/_template_material-ui_task-manager/",
+  "homepage": "https://genekomarov.github.io/task-manager_mui/",
   "dependencies": {
     "@material-ui/core": "^4.10.1",
     "@material-ui/icons": "^4.9.1",

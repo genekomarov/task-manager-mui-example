@@ -1,10 +1,11 @@
-import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import MenuItemMui from '@material-ui/core/MenuItem'
+import FormControlMui from '@material-ui/core/FormControl'
+import SelectMui from '@material-ui/core/Select'
+import InputAdornmentMui from '@material-ui/core/InputAdornment'
+import FilterListIconMui from '@material-ui/icons/FilterList'
+import {Divider} from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function CombinedFilter() {
+
     const classes = useStyles();
     const [age, setAge] = React.useState('');
 
@@ -28,27 +30,30 @@ export default function CombinedFilter() {
 
     return (
         <div>
-            <FormControl className={classes.formControl}>
-                <Select
+            <FormControlMui className={classes.formControl}>
+                <SelectMui
                     value={age}
                     onChange={handleChange}
                     displayEmpty
                     className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'Without label' }}
                     startAdornment={
-                        <InputAdornment position="start">
-                            <FilterListIcon />
-                        </InputAdornment>
+                        <InputAdornmentMui position='start'>
+                            <FilterListIconMui />
+                        </InputAdornmentMui>
                     }
                 >
-                    <MenuItem value="">
-                        <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-            </FormControl>
+                    <MenuItemMui value=''>
+                        <em>Сортировка</em>
+                    </MenuItemMui>
+                    <Divider />
+                    <MenuItemMui value='NEW_FIRST'>От новых к старым</MenuItemMui>
+                    <MenuItemMui value='OLD_FIRST'>От старых к новым</MenuItemMui>
+                    <Divider />
+                    <MenuItemMui value='OPEN_FIRST'>Сначала незавершенные</MenuItemMui>
+                    <MenuItemMui value='CLOSE_FIRST'>Сначала завершенные</MenuItemMui>
+                </SelectMui>
+            </FormControlMui>
         </div>
     );
 }

@@ -1,10 +1,9 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import ListSubheaderMui from '@material-ui/core/ListSubheader';
-import ListMui from '@material-ui/core/List';
-import Projects from "./Projects/Projects"
-import Filter from "./_Filter/Filter"
+import React from 'react'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import ListSubheaderMui from '@material-ui/core/ListSubheader'
+import ListMui from '@material-ui/core/List'
 import DividerMui from "@material-ui/core/Divider/Divider"
+import Projects from "./Projects/Projects"
 import Team from "./Team/Team"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -19,14 +18,13 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             alignItems: 'center',
             padding: theme.spacing(2, 1),
-            // necessary for content to be below app bar
-            /*...theme.mixins.toolbar,*/
             justifyContent: 'flex-end',
         },
     }),
 );
 
 export default function Menu() {
+
     const classes = useStyles();
 
     return (
@@ -41,15 +39,10 @@ export default function Menu() {
             className={classes.root}
         >
             <DividerMui />
-
             <Projects/>
-
             <div className={classes.verticalSpacing} />
-
             <Team/>
-
             <DividerMui />
-
         </ListMui>
     );
 }

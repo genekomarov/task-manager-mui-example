@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/_template_material-ui_task-manager/static/css/main.5f361e03.chunk.css",
+    "main.js": "/_template_material-ui_task-manager/static/js/main.f81e6c2f.chunk.js",
+    "main.js.map": "/_template_material-ui_task-manager/static/js/main.f81e6c2f.chunk.js.map",
+    "runtime-main.js": "/_template_material-ui_task-manager/static/js/runtime-main.6764868e.js",
+    "runtime-main.js.map": "/_template_material-ui_task-manager/static/js/runtime-main.6764868e.js.map",
+    "static/js/2.91a4e70a.chunk.js": "/_template_material-ui_task-manager/static/js/2.91a4e70a.chunk.js",
+    "static/js/2.91a4e70a.chunk.js.map": "/_template_material-ui_task-manager/static/js/2.91a4e70a.chunk.js.map",
+    "index.html": "/_template_material-ui_task-manager/index.html",
+    "precache-manifest.990b0739fb9a35856a6fb631ce106f59.js": "/_template_material-ui_task-manager/precache-manifest.990b0739fb9a35856a6fb631ce106f59.js",
+    "service-worker.js": "/_template_material-ui_task-manager/service-worker.js",
+    "static/css/main.5f361e03.chunk.css.map": "/_template_material-ui_task-manager/static/css/main.5f361e03.chunk.css.map",
+    "static/js/2.91a4e70a.chunk.js.LICENSE.txt": "/_template_material-ui_task-manager/static/js/2.91a4e70a.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6764868e.js",
+    "static/js/2.91a4e70a.chunk.js",
+    "static/css/main.5f361e03.chunk.css",
+    "static/js/main.f81e6c2f.chunk.js"
+  ]
+}

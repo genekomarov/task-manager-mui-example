@@ -1,21 +1,25 @@
-export type AuthDataType = Array<{
+export type AuthDataType = {
     id: number
     email: string
     password: string
-}>
+}
+
 export type ProjectToUserIdsMatch = {
     id: number
     projectId: number
     userId: number
 }
-export type UsersType = Array<{
+
+export type UserType = {
     id: number
     nickname: string
-}>
-export type ProjectsType = Array<{
+}
+
+export type ProjectType = {
     id: number
     projectName: string
-}>
+}
+
 export type TaskType = {
     id: number
     project: number
@@ -24,4 +28,8 @@ export type TaskType = {
     title: string
     isDone?: boolean
 }
-export type TasksType = Array<TaskType>
+
+export type TaskFilterType = {
+    status: boolean | null
+    content: string
+}

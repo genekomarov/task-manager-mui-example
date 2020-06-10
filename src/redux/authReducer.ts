@@ -1,8 +1,7 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, usersAPI} from "../api/api"
-import {UsersType} from "../types/types"
-import {AuthorizationFailedException} from "../exaptions/exceptions"
+import {AuthorizationFailedException} from "../exceptions/exceptions"
 
 let initialState = {
     id: null as number | null,
@@ -12,9 +11,6 @@ let initialState = {
 };
 
 type InitialStateType = typeof initialState
-/*type DataType = typeof initialState.clientSideData
-type TableNamesTypes = keyof DataType
-type ItemType = {id: number, [key: string]: any}*/
 
 const clientSideApiReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
@@ -39,7 +35,6 @@ export const actions = {
         isAuth: boolean
     ) => ({type: 'SET_USER_DATA', id, email, nickname, isAuth} as const),
 }
-
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 export const login = (email: string, password: string): ThunkType => async (dispatch) => {

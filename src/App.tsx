@@ -19,6 +19,8 @@ import {getCounter} from "./utils/universalCounter"
 import store from "./redux/store"
 import {login, logout} from './redux/authReducer'
 import {getProjects} from "./redux/projectsReducer"
+import {getUsers} from "./redux/usersReducer"
+import {getTasks} from "./redux/tasksReducer"
 
 const drawerWidth = 240;
 
@@ -64,18 +66,26 @@ interface Props {
      */
     window?: () => Window;
 }
-    // @ts-ignore
-    window.api = Api
-    // @ts-ignore
-    window.counter = getCounter
-    // @ts-ignore
-    window.store = store
-    // @ts-ignore
-    window.login = login
-    // @ts-ignore
-    window.logout = logout
-    // @ts-ignore
-    window.getProjects = getProjects
+
+// @ts-ignore
+window.api = Api
+// @ts-ignore
+window.counter = getCounter
+// @ts-ignore
+window.dispatch = store.dispatch
+// @ts-ignore
+window.thunk = {}
+// @ts-ignore
+window.thunk.login = login
+// @ts-ignore
+window.thunk.logout = logout
+// @ts-ignore
+window.thunk.getProjects = getProjects
+// @ts-ignore
+window.thunk.getUsers = getUsers
+// @ts-ignore
+window.thunk.getTasks = getTasks
+
 
 export default function App(props: Props) {
     const { window } = props;

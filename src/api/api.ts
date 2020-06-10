@@ -1,5 +1,10 @@
 import axios from 'axios'
-import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, TaskType, UsersType} from "../types/types"
+import {
+    AuthDataType,
+    ProjectToUserIdsMatch,
+    ProjectType,
+    TaskType, UserType
+} from "../types/types"
 import arrayToStringArguments from "../utils/arrayToStringArguments"
 
 
@@ -11,20 +16,27 @@ const instance = axios.create({
 
 export const authAPI = {
     auth: (email: string, password: string) => {
-        return instance.get<AuthDataType>(`/authData?email=${email}&password=${password}`)
+        return instance.get<Array<AuthDataType>>(`/authData?email=${email}&password=${password}`)
             .then(response => response.data)
     }
 }
 
+
+
 export const usersAPI = {
     getUsersByIds: (setOfUserIds: Array<number>) =>
-        instance.get<UsersType>(`/users?${arrayToStringArguments("id", setOfUserIds)}`)
-            .then(response => response.data),
+        setOfUserIds.length
+            ? instance.get<Array<UserType>>(`/users?${arrayToStringArguments("id", setOfUserIds)}`)
+                .then(response => response.data)
+            : [],
 
     getUserIdsByProjectIds: (setOfProjectIds: Array<number>) =>
-        instance.get<ProjectToUserIdsMatch>(
-            `/projects-to-users?${arrayToStringArguments("projectId", setOfProjectIds)}`
-        ).then(response => response.data),
+        setOfProjectIds.length
+            ? instance.get<Array<ProjectToUserIdsMatch>>(
+                `/projects-to-users?${arrayToStringArguments("projectId", setOfProjectIds)}`)
+                .then(response => response.data)
+            : [],
+
 
     addNewUser: () => console.error("method 'addNewUser' is not implemented"),
     changeUser: () => console.error("method 'changeUser' is not implemented"),
@@ -32,18 +44,18 @@ export const usersAPI = {
 }
 
 export const projectsAPI = {
-    getProjectsByIds: (setOfProjectIds: Array<number>) => {
-        if (setOfProjectIds.length === 0) return []
-        return instance.get<ProjectsType>(`/projects?${arrayToStringArguments("id", setOfProjectIds)}`)
-            .then(response => response.data)
-    },
+    getProjectsByIds: (setOfProjectIds: Array<number>) =>
+        setOfProjectIds.length
+            ? instance.get<Array<ProjectType>>(`/projects?${arrayToStringArguments("id", setOfProjectIds)}`)
+                .then(response => response.data)
+            : [],
 
-    getProjectIdsByUserIds: (setOfUserIds: Array<number>) => {
-        debugger
-        return instance.get<Array<ProjectToUserIdsMatch>>(
-            `/projects-to-users?${arrayToStringArguments("userId", setOfUserIds)}`
-        ).then(response => response.data)
-    },
+    getProjectIdsByUserIds: (setOfUserIds: Array<number>) =>
+        setOfUserIds.length
+            ? instance.get<Array<ProjectToUserIdsMatch>>(
+                `/projects-to-users?${arrayToStringArguments("userId", setOfUserIds)}`)
+                .then(response => response.data)
+            : [],
 
 
     addNewProject: () => console.error("method 'addNewProject' is not implemented"),
@@ -53,9 +65,11 @@ export const projectsAPI = {
 
 export const tasksAPI = {
     getTasksByProjectOrUserIds: (setOfProjectIds: Array<number> | null, setOfUserIds: Array<number> | null) =>
-        instance.get<TasksType>(
-            `/tasks?${arrayToStringArguments("project", setOfProjectIds)}${arrayToStringArguments("user", setOfUserIds)}`
-        ).then(response => response.data),
+        setOfProjectIds || setOfUserIds
+            ? instance.get<Array<TaskType>>(
+                `/tasks?${arrayToStringArguments("project", setOfProjectIds)}${arrayToStringArguments("author", setOfUserIds)}`)
+                .then(response => response.data)
+            : [],
 
     addNewTask: (task: TaskType) =>
         instance.post<TaskType>(`/tasks`, task)

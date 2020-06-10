@@ -1,15 +1,15 @@
 import {ThunkAction} from "redux-thunk"
-import {AuthDataType, ProjectsType, ProjectToUserIdsMatch, TasksType, UsersType} from "../types/types"
+import {AuthDataType, ProjectToUserIdsMatch, ProjectType, TaskType, UserType} from "../types/types"
 import {ActionsTypes, AppStateType} from "./store"
 
 let initialState = {
     clientSideData: {
         users: {
-            items: [] as UsersType, //new or changed items
+            items: [] as Array<UserType>, //new or changed items
             deleted: [] as Array<number> //ids of deleted items
         },
         authData: {
-            items: [] as AuthDataType, //new or changed items
+            items: [] as Array<UserType>, //new or changed items
             deleted: [] as Array<number> //ids of deleted items
         },
         projectsToUsers: {
@@ -17,11 +17,11 @@ let initialState = {
             deleted: [] as Array<number> //ids of deleted items
         },
         projects: {
-            items: [] as ProjectsType, //new or changed items
+            items: [] as Array<ProjectType>, //new or changed items
             deleted: [] as Array<number> //ids of deleted items
         },
         tasks: {
-            items: [] as TasksType, //new or changed items
+            items: [] as Array<TaskType>, //new or changed items
             deleted: [] as Array<number> //ids of deleted items
         }
     }

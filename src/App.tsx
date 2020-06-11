@@ -1,14 +1,14 @@
-import './App.css';
-import React from 'react';
-import AppBarMui from '@material-ui/core/AppBar';
-import CssBaselineMui from '@material-ui/core/CssBaseline';
-import DividerMui from '@material-ui/core/Divider';
-import DrawerMui from '@material-ui/core/Drawer';
-import HiddenMui from '@material-ui/core/Hidden';
-import IconButtonMui from '@material-ui/core/IconButton';
-import MenuIconMui from '@material-ui/icons/Menu';
-import ToolbarMui from '@material-ui/core/Toolbar';
-import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
+import './App.css'
+import React from 'react'
+import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
+import AppBarMui from '@material-ui/core/AppBar'
+import CssBaselineMui from '@material-ui/core/CssBaseline'
+import DividerMui from '@material-ui/core/Divider'
+import DrawerMui from '@material-ui/core/Drawer'
+import HiddenMui from '@material-ui/core/Hidden'
+import IconButtonMui from '@material-ui/core/IconButton'
+import ToolbarMui from '@material-ui/core/Toolbar'
+import MenuIconMui from '@material-ui/icons/Menu'
 import Menu from "./components/Menu/Menu"
 import AppBarContent from "./components/AppBarContent/AppBarContent"
 import FilterWrapper from "./components/FilterData/FilterWrapper"
@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 display: 'none',
             },
         },
-        // necessary for content to be below app bar
         toolbar: theme.mixins.toolbar,
         drawerPaper: {
             width: drawerWidth,
@@ -59,13 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window?: () => Window;
-}
+export default function App() {
 
 // @ts-ignore
 window.api = Api
@@ -86,9 +79,6 @@ window.thunk.getUsers = getUsers
 // @ts-ignore
 window.thunk.getTasks = getTasks
 
-
-export default function App(props: Props) {
-    const { window } = props;
     const classes = useStyles();
     const theme = useTheme();
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -105,8 +95,6 @@ export default function App(props: Props) {
         </div>
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
-
     return (
         <div className={classes.root}>
             <CssBaselineMui />
@@ -121,16 +109,12 @@ export default function App(props: Props) {
                     >
                         <MenuIconMui />
                     </IconButtonMui>
-
                     <AppBarContent/>
-
                 </ToolbarMui>
             </AppBarMui>
-            <nav className={classes.drawer} aria-label="mailbox folders">
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+            <nav className={classes.drawer} aria-label="menu folders">
                 <HiddenMui smUp implementation="css">
                     <DrawerMui
-                        container={container}
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
@@ -139,7 +123,7 @@ export default function App(props: Props) {
                             paper: classes.drawerPaper,
                         }}
                         ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
+                            keepMounted: true,
                         }}
                     >
                         {drawer}
@@ -159,10 +143,8 @@ export default function App(props: Props) {
             </nav>
             <main className={classes.content}>
                 <div className={classes.toolbar} />
-
                 <FilterWrapper/>
                 <TasksList/>
-
             </main>
         </div>
     );

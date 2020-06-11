@@ -1,11 +1,10 @@
-import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import SortIcon from '@material-ui/icons/Sort';
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import MenuItemMui from '@material-ui/core/MenuItem'
+import FormControlMui from '@material-ui/core/FormControl'
+import SelectMui from '@material-ui/core/Select'
+import InputAdornmentMui from '@material-ui/core/InputAdornment'
+import SortIconMui from '@material-ui/icons/Sort'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,27 +28,26 @@ export default function ByStatusSort() {
 
     return (
         <div>
-            <FormControl className={classes.formControl}>
-                <Select
+            <FormControlMui className={classes.formControl}>
+                <SelectMui
                     value={age}
                     onChange={handleChange}
                     displayEmpty
                     className={classes.selectEmpty}
                     inputProps={{ 'aria-label': 'Without label' }}
                     startAdornment={
-                        <InputAdornment position="start">
-                            <SortIcon />
-                        </InputAdornment>
+                        <InputAdornmentMui position="start">
+                            <SortIconMui />
+                        </InputAdornmentMui>
                     }
                 >
-                    <MenuItem value="">
-                        <em>None</em>
-                    </MenuItem>
-                    <MenuItem value={10}>Ten</MenuItem>
-                    <MenuItem value={20}>Twenty</MenuItem>
-                    <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-            </FormControl>
+                    <MenuItemMui value="">
+                        <em>По статусу</em>
+                    </MenuItemMui>
+                    <MenuItemMui value='OPEN'>Незавершенные</MenuItemMui>
+                    <MenuItemMui value='CLOSE'>Завершенные</MenuItemMui>
+                </SelectMui>
+            </FormControlMui>
         </div>
     );
 }

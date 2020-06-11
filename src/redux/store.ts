@@ -2,10 +2,16 @@ import {combineReducers, createStore, applyMiddleware, compose} from "redux";
 import thunkMiddleware from "redux-thunk";
 import clientSideApiReducer from "./clientSideApiReducer"
 import authReducer from "./authReducer"
+import projectsReducer from "./projectsReducer"
+import usersReducer from "./usersReducer"
+import tasksReducer from "./tasksReducer"
 
 let rootReducer = combineReducers({
     api: clientSideApiReducer,
-    auth: authReducer
+    auth: authReducer,
+    projects: projectsReducer,
+    users: usersReducer,
+    tasks: tasksReducer
 });
 
 type RootReducerType = typeof rootReducer

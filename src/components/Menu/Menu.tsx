@@ -21,11 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'flex-end',
         },
     }),
-);
+)
 
-export default function Menu() {
+const Menu: React.FC<any> = () => {    
+    
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     return (
         <ListMui
@@ -44,5 +45,7 @@ export default function Menu() {
             <Team/>
             <DividerMui />
         </ListMui>
-    );
+    )
 }
+
+export default Menu

@@ -12,9 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
-export default function Tags() {
+const ByUsersFilter: React.FC<any> = () => {
+
     const classes = useStyles();
 
     return (
@@ -37,7 +38,7 @@ export default function Tags() {
                 )}
             />
         </div>
-    );
+    )
 }
 
 const users = [
@@ -81,4 +82,6 @@ const users = [
         "id": 9,
         "nickname": "teacher"
     }
-];
+]
+
+export default ByUsersFilter

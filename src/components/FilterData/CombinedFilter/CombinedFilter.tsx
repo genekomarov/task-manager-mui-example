@@ -17,16 +17,16 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: theme.spacing(2),
         },
     }),
-);
+)
 
-export default function CombinedFilter() {
+const CombinedFilter: React.FC<any> = () => {
 
-    const classes = useStyles();
-    const [age, setAge] = React.useState('');
+    const classes = useStyles()
+    const [age, setAge] = React.useState('')
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setAge(event.target.value as string);
-    };
+        setAge(event.target.value as string)
+    }
 
     return (
         <div>
@@ -55,5 +55,7 @@ export default function CombinedFilter() {
                 </SelectMui>
             </FormControlMui>
         </div>
-    );
+    )
 }
+
+export default CombinedFilter

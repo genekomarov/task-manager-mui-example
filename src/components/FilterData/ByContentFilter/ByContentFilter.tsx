@@ -10,9 +10,10 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
-export default function ByContentFilter() {
+const ByContentFilter: React.FC<any> = () => {
+
     const classes = useStyles();
 
     return (
@@ -20,5 +21,7 @@ export default function ByContentFilter() {
         >
             <TextFieldMui id="standard-basic" label="Искать по содержимому: " fullWidth/>
         </form>
-    );
+    )
 }
+
+export default ByContentFilter

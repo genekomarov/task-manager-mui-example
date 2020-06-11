@@ -31,35 +31,36 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
-export default function AppBarContent() {
+const AppBarContent: React.FC<any> = () => {
 
-    const classes = useStyles();
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
 
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+    const classes = useStyles()
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
+
+    const isMenuOpen = Boolean(anchorEl)
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
+        setAnchorEl(event.currentTarget)
+    }
 
     const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
+        setMobileMoreAnchorEl(null)
+    }
 
     const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
+        setAnchorEl(null)
+        handleMobileMenuClose()
+    }
 
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
+        setMobileMoreAnchorEl(event.currentTarget)
+    }
 
-    const menuId = 'primary-search-account-menu';
+    const menuId = 'primary-search-account-menu'
     const renderMenu = (
         <MenuMui
             anchorEl={anchorEl}
@@ -73,7 +74,7 @@ export default function AppBarContent() {
             <MenuItemMui onClick={handleMenuClose}>Выйти</MenuItemMui>
             {/*<MenuItemMui onClick={handleMenuClose}>My account</MenuItemMui>*/}
         </MenuMui>
-    );
+    )
 
     const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
@@ -98,7 +99,7 @@ export default function AppBarContent() {
                 <p>Profile</p>
             </MenuItemMui>
         </MenuMui>
-    );
+    )
 
     return (
         <>
@@ -132,5 +133,7 @@ export default function AppBarContent() {
             {renderMobileMenu}
             {renderMenu}
         </>
-    );
+    )
 }
+
+export default AppBarContent

@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function Filter() {
+const Filter: React.FC<any> = () => {
+
     const classes = useStyles();
 
     type OwnProps = {
@@ -50,3 +51,5 @@ export default function Filter() {
         </div>
     );
 }
+
+export default Filter

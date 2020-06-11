@@ -16,16 +16,16 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingLeft: theme.spacing(4),
         },
     }),
-);
+)
 
-export default function Team() {
+const Team: React.FC<any> = () => {
 
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(true);
+    const classes = useStyles()
+    const [open, setOpen] = React.useState(true)
 
     const handleClick = () => {
-        setOpen(!open);
-    };
+        setOpen(!open)
+    }
 
     return (
         <>
@@ -53,5 +53,7 @@ export default function Team() {
                 })}
             </CollapseMui>
         </>
-    );
+    )
 }
+
+export default Team

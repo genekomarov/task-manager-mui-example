@@ -7,7 +7,7 @@ import {login, logout} from './redux/authReducer'
 import {getProjects} from "./redux/projectsReducer"
 import {getUsers} from "./redux/usersReducer"
 import {getTasks} from "./redux/tasksReducer"
-import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
+import {makeStyles, useTheme, Theme, createStyles} from '@material-ui/core/styles'
 import AppBarMui from '@material-ui/core/AppBar'
 import CssBaselineMui from '@material-ui/core/CssBaseline'
 import DividerMui from '@material-ui/core/Divider'
@@ -57,30 +57,30 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function App() {
+const App: React.FC<any> = () => {
 
 // @ts-ignore
-window.api = Api
+    window.api = Api
 // @ts-ignore
-window.counter = getCounter
+    window.counter = getCounter
 // @ts-ignore
-window.dispatch = store.dispatch
+    window.dispatch = store.dispatch
 // @ts-ignore
-window.thunk = {}
+    window.thunk = {}
 // @ts-ignore
-window.thunk.login = login
+    window.thunk.login = login
 // @ts-ignore
-window.thunk.logout = logout
+    window.thunk.logout = logout
 // @ts-ignore
-window.thunk.getProjects = getProjects
+    window.thunk.getProjects = getProjects
 // @ts-ignore
-window.thunk.getUsers = getUsers
+    window.thunk.getUsers = getUsers
 // @ts-ignore
-window.thunk.getTasks = getTasks
+    window.thunk.getTasks = getTasks
 
     const classes = useStyles();
     const theme = useTheme();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const [mobileOpen, setMobileOpen] = React.useState(false)
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -88,15 +88,15 @@ window.thunk.getTasks = getTasks
 
     const drawer = (
         <div>
-            <div className={classes.toolbar} />
-            <DividerMui />
-            <Menu />
+            <div className={classes.toolbar}/>
+            <DividerMui/>
+            <Menu/>
         </div>
     );
 
     return (
         <div className={classes.root}>
-            <CssBaselineMui />
+            <CssBaselineMui/>
             <AppBarMui position="fixed" className={classes.appBar}>
                 <ToolbarMui>
                     <IconButtonMui
@@ -106,7 +106,7 @@ window.thunk.getTasks = getTasks
                         onClick={handleDrawerToggle}
                         className={classes.menuButton}
                     >
-                        <MenuIconMui />
+                        <MenuIconMui/>
                     </IconButtonMui>
                     <AppBarContent/>
                 </ToolbarMui>
@@ -141,10 +141,12 @@ window.thunk.getTasks = getTasks
                 </HiddenMui>
             </nav>
             <main className={classes.content}>
-                <div className={classes.toolbar} />
+                <div className={classes.toolbar}/>
                 <FilterWrapper/>
                 <TasksList/>
             </main>
         </div>
-    );
+    )
 }
+
+export default App

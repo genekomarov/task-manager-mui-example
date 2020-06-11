@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export default function TasksList() {
+const TasksList: React.FC<any> = () => {
 
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0]);
@@ -196,3 +196,5 @@ const users = [
         "nickname": "teacher"
     }
 ]
+
+export default TasksList

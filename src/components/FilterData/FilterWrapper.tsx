@@ -1,5 +1,5 @@
 import React from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
 import ListItemMui from '@material-ui/core/ListItem'
 import ListItemIconMui from '@material-ui/core/ListItemIcon'
@@ -16,26 +16,26 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingLeft: theme.spacing(4),
         },*/
     }),
-);
+)
 
-export default function FilterWrapper() {
+const FilterWrapper: React.FC<any> = () => {
 
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(true)
 
     const handleClick = () => {
-        setOpen(!open);
-    };
+        setOpen(!open)
+    }
 
     return (
         <>
-            <ListItemMui button onClick={handleClick} >
-                <ListItemIconMui >
-                    <SearchIconMui />
+            <ListItemMui button onClick={handleClick}>
+                <ListItemIconMui>
+                    <SearchIconMui/>
                 </ListItemIconMui>
                 <ListItemTextMui
                     primary="Поиск задач"
                     primaryTypographyProps={{variant: "body1"}}/>
-                {open ? <ExpandLessMui /> : <ExpandMoreMui />}
+                {open ? <ExpandLessMui/> : <ExpandMoreMui/>}
             </ListItemMui>
             <CollapseMui in={open} timeout="auto" unmountOnExit>
                 <ListMui component="div" disablePadding>
@@ -43,5 +43,7 @@ export default function FilterWrapper() {
                 </ListMui>
             </CollapseMui>
         </>
-    );
+    )
 }
+
+export default FilterWrapper

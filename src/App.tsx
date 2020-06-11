@@ -1,5 +1,12 @@
 import './App.css'
 import React from 'react'
+import * as Api from '../src/api/api'
+import store from "./redux/store"
+import {getCounter} from "./utils/universalCounter"
+import {login, logout} from './redux/authReducer'
+import {getProjects} from "./redux/projectsReducer"
+import {getUsers} from "./redux/usersReducer"
+import {getTasks} from "./redux/tasksReducer"
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
 import AppBarMui from '@material-ui/core/AppBar'
 import CssBaselineMui from '@material-ui/core/CssBaseline'
@@ -13,14 +20,6 @@ import Menu from "./components/Menu/Menu"
 import AppBarContent from "./components/AppBarContent/AppBarContent"
 import FilterWrapper from "./components/FilterData/FilterWrapper"
 import TasksList from "./components/TasksList/TasksList"
-import './App.css'
-import * as Api from '../src/api/api'
-import {getCounter} from "./utils/universalCounter"
-import store from "./redux/store"
-import {login, logout} from './redux/authReducer'
-import {getProjects} from "./redux/projectsReducer"
-import {getUsers} from "./redux/usersReducer"
-import {getTasks} from "./redux/tasksReducer"
 
 const drawerWidth = 240;
 

@@ -9,6 +9,10 @@ import CheckboxMui from '@material-ui/core/Checkbox'
 import IconButtonMui from '@material-ui/core/IconButton'
 import ContainerMui from "@material-ui/core/Container"
 import DeleteOutlineIconMui from '@material-ui/icons/DeleteOutline'
+import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress"
+import CollapseMui from "@material-ui/core/Collapse/Collapse"
+import {AppStateType} from "../../redux/store"
+import {connect} from "react-redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,11 +20,17 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
             maxWidth: 600,
             backgroundColor: theme.palette.background.paper,
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        progress: {
+            alignSelf: 'center',
+            margin: theme.spacing(2),
         },
     }),
-);
+)
 
-const TasksList: React.FC<any> = () => {
+const TasksList: React.FC<MapStatePropsType> = (props) => {
 
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0]);
@@ -41,7 +51,9 @@ const TasksList: React.FC<any> = () => {
     return (
         <ContainerMui maxWidth={"sm"}>
             <ListMui className={classes.root}>
-                {tasks.map((item) => {
+                {props.isFetching
+                    ? <CircularProgress className={classes.progress} size={50} />
+                    : tasks.map((item) => {
                     const labelId = `checkbox-list-label-${item.id}`;
                     return (
                         <ListItemMui key={item.id} role={undefined} button onClick={handleToggle(item.id)}>
@@ -197,4 +209,15 @@ const users = [
     }
 ]
 
-export default TasksList
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        isFetching: state.tasks.isFetching
+    }
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TasksList)

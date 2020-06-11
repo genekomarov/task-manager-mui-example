@@ -9,16 +9,27 @@ import ExpandLessMui from '@material-ui/icons/ExpandLess';
 import ExpandMoreMui from '@material-ui/icons/ExpandMore';
 import AccountTreeIconMui from '@material-ui/icons/AccountTree';
 import FolderIconMui from '@material-ui/icons/Folder';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import {AppStateType} from "../../../redux/store"
+import {connect} from "react-redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        root: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        progress: {
+            alignSelf: 'center',
+            margin: theme.spacing(2),
+        },
         nested: {
             paddingLeft: theme.spacing(4),
         },
     }),
 )
 
-const Projects: React.FC<any> = () => {
+const Projects: React.FC<MapStatePropsType> = (props) => {
     
     const classes = useStyles()
     const [open, setOpen] = React.useState(true)
@@ -28,7 +39,7 @@ const Projects: React.FC<any> = () => {
     }
 
     return (
-        <>
+        <div className={classes.root}>
             <ListItemMui button onClick={handleClick}>
                 <ListItemIconMui>
                     <AccountTreeIconMui/>
@@ -38,22 +49,36 @@ const Projects: React.FC<any> = () => {
                     primaryTypographyProps={{variant: "body1"}}/>
                 {open ? <ExpandLessMui/> : <ExpandMoreMui/>}
             </ListItemMui>
-            <CollapseMui in={open} timeout="auto" unmountOnExit>
-                {['Работа', 'Учеба', 'Дом'].map((item) => {
-                    return (
-                        <ListMui component="div" disablePadding key={item}>
-                            <ListItemMui button className={classes.nested}>
-                                <ListItemIconMui>
-                                    <FolderIconMui/>
-                                </ListItemIconMui>
-                                <ListItemTextMui primary={item}/>
-                            </ListItemMui>
-                        </ListMui>
-                    )
-                })}
-            </CollapseMui>
-        </>
+            {props.isFetching
+                ? <CircularProgress className={classes.progress}/>
+                : <CollapseMui in={open} timeout="auto" unmountOnExit>
+                    {['Работа', 'Учеба', 'Дом'].map((item) => {
+                        return (
+                            <ListMui component="div" disablePadding key={item}>
+                                <ListItemMui button className={classes.nested}>
+                                    <ListItemIconMui>
+                                        <FolderIconMui/>
+                                    </ListItemIconMui>
+                                    <ListItemTextMui primary={item}/>
+                                </ListItemMui>
+                            </ListMui>
+                        )
+                    })}
+                </CollapseMui>
+            }
+        </div>
     );
 }
 
-export default Projects
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        isFetching: state.projects.isFetching
+    }
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Projects)

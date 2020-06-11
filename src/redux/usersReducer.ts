@@ -4,7 +4,8 @@ import {authAPI, projectsAPI, usersAPI} from "../api/api"
 import {ProjectToUserIdsMatch, ProjectType, UserType} from "../types/types"
 
 let initialState = {
-    users: [] as Array<UserType>
+    users: [] as Array<UserType>,
+    isFetching: true
 };
 
 type InitialStateType = typeof initialState
@@ -12,18 +13,25 @@ type InitialStateType = typeof initialState
 
 const usersReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
-        case "SET_USERS":
+        case "users/SET_USERS":
             return {
                 ...state,
                 users: action.users
             }
-        default: return state
+        case "users/SET_FETCHING":
+            return {
+                ...state,
+                isFetching: action.isFetching
+            }
+        default:
+            return state
     }
-};
+}
 
 type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
-    setUsers: (users: Array<UserType>) => ({type: 'SET_USERS', users} as const),
+    setUsers: (users: Array<UserType>) => ({type: 'users/SET_USERS', users} as const),
+    setFetching: (isFetching: boolean) => ({type: 'users/SET_FETCHING', isFetching} as const)
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>

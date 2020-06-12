@@ -12,7 +12,10 @@ import AccountCircleIconMui from '@material-ui/icons/AccountCircle';
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress"
 import {AppStateType} from "../../../redux/store"
 import {connect} from "react-redux"
-import {getUsers, setFetching} from "../../../redux/usersReducer"
+import {getUsers, setFetching, setSelectedUserId} from "../../../redux/usersReducer"
+import FolderOpenIcon from "@material-ui/core/SvgIcon/SvgIcon"
+import PersonIcon from '@material-ui/icons/Person';
+import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,7 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
-
+    /**Активируем каскад вертушек
+     * при начале инициализации*/
     useEffect(() => {
         props.projectsIsFetching && props.setFetching(true)
     }, [props.projectsIsFetching])
@@ -45,6 +49,10 @@ const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const handleClick = () => {
         setOpen(!open)
+    }
+
+    const handleItemClick = (selectedUserId: number) => {
+        props.setSelectedUserId(selectedUserId)
     }
 
     return (
@@ -61,14 +69,18 @@ const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
             {props.isFetching && props.isAuth
                 ? <CircularProgress className={classes.progress}/>
                 : <CollapseMui in={open} timeout="auto" unmountOnExit>
-                    {props.isAuth && ['User 1', 'User 2', 'User 3'].map((item) => {
+                    {props.isAuth && props.users.map((item) => {
                         return (
-                            <ListMui component="div" disablePadding key={item}>
-                                <ListItemMui button className={classes.nested}>
+                            <ListMui component="div" disablePadding key={item.id}>
+                                <ListItemMui button className={classes.nested} onClick={() => handleItemClick(item.id)}>
                                     <ListItemIconMui>
-                                        <AccountCircleIconMui/>
+                                        {
+                                            item.id === props.selectedUserId
+                                                ? <PermIdentityIcon/>
+                                                : <PersonIcon/>
+                                        }
                                     </ListItemIconMui>
-                                    <ListItemTextMui primary={item}/>
+                                    <ListItemTextMui primary={item.nickname}/>
                                 </ListItemMui>
                             </ListMui>
                         )
@@ -84,7 +96,9 @@ const mapStateToProps = (state: AppStateType) => {
         isFetching: state.users.isFetching,
         isAuth: state.auth.isAuth,
         projectsIsFetching: state.projects.isFetching,
-        selectedProjectId: state.projects.selectedProjectId
+        selectedProjectId: state.projects.selectedProjectId,
+        users: state.users.users,
+        selectedUserId: state.users.selectedUserId
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
@@ -92,10 +106,12 @@ type MapStatePropsType = ReturnType<typeof mapStateToProps>
 type MapDispatchProps = {
     setFetching: (isFetching: boolean) => void,
     getUsers: (projectIds: Array<number>) => void,
+    setSelectedUserId: (selectedUserId: number) => void
 }
 const mapDispatchToProps = {
     setFetching,
-    getUsers
+    getUsers,
+    setSelectedUserId
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users)

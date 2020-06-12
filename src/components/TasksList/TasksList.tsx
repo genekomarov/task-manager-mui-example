@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
 import ListItemMui from '@material-ui/core/ListItem'
 import ListItemIconMui from '@material-ui/core/ListItemIcon'
@@ -13,7 +13,8 @@ import CircularProgress from "@material-ui/core/CircularProgress/CircularProgres
 import CollapseMui from "@material-ui/core/Collapse/Collapse"
 import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
-import {setFetching} from "../../redux/tasksReducer"
+import {getTasks, setFetching} from "../../redux/tasksReducer"
+import {TaskFilterType, TaskType, UserType} from "../../types/types"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,6 +38,13 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
         props.usersIsFetching && props.setFetching(true)
     }, [props.usersIsFetching])
 
+    useEffect(() => {
+        props.selectedUserId !== null && props.selectedProjectId !== null
+            ? props.getTasks([props.selectedProjectId], [props.selectedUserId])
+            : props.selectedProjectId !== null &&
+            props.getTasks([props.selectedProjectId], [], {status: null, content: ''})
+    }, [props.selectedUserId, props.selectedProjectId])
+
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0]);
 
@@ -53,12 +61,17 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
         setChecked(newChecked);
     };
 
+    const userNickNameByUserId = (users: Array<UserType>, item: TaskType) => {
+        let userNicknams = props.users.filter((u) => u.id === item.author)
+        return userNicknams.length > 0 && userNicknams[0].nickname
+    }
+
     return (
         <ContainerMui maxWidth={"sm"}>
             <ListMui className={classes.root}>
                 {props.isFetching && props.isAuth
-                    ? <CircularProgress className={classes.progress} size={50} />
-                    : props.isAuth && tasks.map((item) => {
+                    ? <CircularProgress className={classes.progress} size={50}/>
+                    : props.isAuth && props.tasks.map((item) => {
                     const labelId = `checkbox-list-label-${item.id}`;
                     return (
                         <ListItemMui key={item.id} role={undefined} button onClick={handleToggle(item.id)}>
@@ -68,18 +81,22 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                                     checked={item.isDone}
                                     tabIndex={-1}
                                     disableRipple
-                                    inputProps={{ 'aria-labelledby': labelId }}
+                                    inputProps={{'aria-labelledby': labelId}}
                                 />
                             </ListItemIconMui>
                             <ListItemTextMui id={labelId}
                                              primary={item.title}
-                                             secondary={users[item.author].nickname}
+                                             secondary={
+                                                 userNickNameByUserId(props.users, item)
+                                             }
                             />
-                            <ListItemSecondaryActionMui>
-                                <IconButtonMui edge="end" aria-label="comments">
-                                    <DeleteOutlineIconMui />
-                                </IconButtonMui>
-                            </ListItemSecondaryActionMui>
+                            {item.author === props.myId && (
+                                <ListItemSecondaryActionMui>
+                                    <IconButtonMui edge="end" aria-label="comments">
+                                        <DeleteOutlineIconMui/>
+                                    </IconButtonMui>
+                                </ListItemSecondaryActionMui>
+                            )}
                         </ListItemMui>
                     );
                 })}
@@ -88,146 +105,27 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
     );
 }
 
-const tasks = [
-    {
-        "id": 0,
-        "project": 0,
-        "author": 3,
-        "date": "January 05, 2018 08:50:10",
-        "title": "Заехать в магазин",
-        "isDone": true
-    },
-    {
-        "id": 1,
-        "project": 0,
-        "author": 0,
-        "date": "January 10, 2018 09:00:20",
-        "title": "Отвезти детей в школу",
-        "isDone": true
-    },
-    {
-        "id": 2,
-        "project": 1,
-        "author": 0,
-        "date": "February 15, 2018 10:10:30",
-        "title": "Сдать работу к концу недели",
-        "isDone": false
-    },
-    {
-        "id": 3,
-        "project": 1,
-        "author": 0,
-        "date": "February 20, 2019 11:20:40",
-        "title": "Предупредить коллег о предстоящем отпуске",
-        "isDone": true
-    },
-    {
-        "id": 4,
-        "project": 1,
-        "author": 0,
-        "date": "March 25, 2019 12:30:50",
-        "title": "Купить тортик",
-        "isDone": false
-    },
-    {
-        "id": 5,
-        "project": 2,
-        "author": 4,
-        "date": "March 30, 2019 13:40:00",
-        "title": "Сделать уроки",
-        "isDone": false
-    },
-    {
-        "id": 6,
-        "project": 2,
-        "author": 5,
-        "date": "April 1, 2020 14:50:10",
-        "title": "Подготовиться к экзамену",
-        "isDone": true
-    },
-    {
-        "id": 7,
-        "project": 3,
-        "author": 3,
-        "date": "April 6, 2020 15:00:20",
-        "title": "Купить солнцезащитный крем",
-        "isDone": false
-    },
-    {
-        "id": 8,
-        "project": 3,
-        "author": 0,
-        "date": "May 11, 2020 16:10:30",
-        "title": "Собрать чемоданы",
-        "isDone": true
-    },
-    {
-        "id": 9,
-        "project": 3,
-        "author": 0,
-        "date": "May 16, 2020 17:20:40",
-        "title": "Завезти собаку к родителям",
-        "isDone": false
-    }
-]
-
-const users = [
-    {
-        "id": 0,
-        "nickname": "test-user"
-    },
-    {
-        "id": 1,
-        "nickname": "mom"
-    },
-    {
-        "id": 2,
-        "nickname": "dad"
-    },
-    {
-        "id": 3,
-        "nickname": "wife"
-    },
-    {
-        "id": 4,
-        "nickname": "son"
-    },
-    {
-        "id": 5,
-        "nickname": "daughter"
-    },
-    {
-        "id": 6,
-        "nickname": "colleague-1"
-    },
-    {
-        "id": 7,
-        "nickname": "colleague-2"
-    },
-    {
-        "id": 8,
-        "nickname": "boss"
-    },
-    {
-        "id": 9,
-        "nickname": "teacher"
-    }
-]
-
 const mapStateToProps = (state: AppStateType) => {
     return {
         isFetching: state.tasks.isFetching,
         isAuth: state.auth.isAuth,
-        usersIsFetching: state.users.isFetching
+        usersIsFetching: state.users.isFetching,
+        selectedUserId: state.users.selectedUserId,
+        selectedProjectId: state.projects.selectedProjectId,
+        tasks: state.tasks.tasks,
+        users: state.users.users,
+        myId: state.auth.id
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
-    setFetching: (isFetching: boolean) => void
+    setFetching: (isFetching: boolean) => void,
+    getTasks: (projectIds: Array<number> | null, userIds: Array<number> | null, filter?: TaskFilterType) => void
 }
 const mapDispatchToProps = {
-    setFetching
+    setFetching,
+    getTasks
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TasksList)

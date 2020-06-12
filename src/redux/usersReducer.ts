@@ -5,7 +5,8 @@ import {ProjectToUserIdsMatch, ProjectType, UserType} from "../types/types"
 
 let initialState = {
     users: [] as Array<UserType>,
-    isFetching: false
+    isFetching: false,
+    selectedUserId: null as number | null
 };
 
 type InitialStateType = typeof initialState
@@ -23,6 +24,11 @@ const usersReducer = (state = initialState, action: ActionsType): InitialStateTy
                 ...state,
                 isFetching: action.isFetching
             }
+        case "users/SET_SELECTED_USER_ID":
+            return {
+                ...state,
+                selectedUserId: action.selectedUserId
+            }
         default:
             return state
     }
@@ -31,18 +37,19 @@ const usersReducer = (state = initialState, action: ActionsType): InitialStateTy
 type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
     setUsers: (users: Array<UserType>) => ({type: 'users/SET_USERS', users} as const),
-    setFetching: (isFetching: boolean) => ({type: 'users/SET_FETCHING', isFetching} as const)
+    setFetching: (isFetching: boolean) => ({type: 'users/SET_FETCHING', isFetching} as const),
+    setSelectedUserId: (selectedUserId: number | null) => ({type: 'users/SET_SELECTED_USER_ID', selectedUserId} as const)
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatch) => {
     try {
+        dispatch(actions.setFetching(true))
         let userIds: Array<ProjectToUserIdsMatch> = await usersAPI.getUserIdsByProjectIds(projectIds)
         let users: Array<UserType> = await usersAPI.getUsersByIds(userIds.map((u) => u.userId))
         dispatch(actions.setUsers(users))
         dispatch(actions.setFetching(false))
-    }
-    catch (e) {
+    } catch (e) {
         alert(e.message)
     }
 
@@ -50,6 +57,10 @@ export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatc
 
 export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
     dispatch(actions.setFetching(isFetching))
+}
+
+export const setSelectedUserId = (selectedUserId: number | null): ThunkType => async (dispatch) => {
+    dispatch(actions.setSelectedUserId(selectedUserId))
 }
 
 export default usersReducer

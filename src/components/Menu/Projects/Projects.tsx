@@ -12,8 +12,10 @@ import FolderIconMui from '@material-ui/icons/Folder';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {AppStateType} from "../../../redux/store"
 import {connect} from "react-redux"
-import {getProjects, setFetching} from "../../../redux/projectsReducer"
+import {getProjects, setFetching, setProjects, setSelectedProjectId} from "../../../redux/projectsReducer"
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
+import {ProjectType} from "../../../types/types"
+import {setSelectedUserId} from "../../../redux/usersReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,12 +35,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
+    /**Активируем каскад вертушек
+     * при начале инициализации*/
     useEffect(() => {
         props.initializationInProgress && props.setFetching(true)
     }, [props.initializationInProgress, props.isAuth])
 
+    /**Получаем пользователей
+     * при изменении авторизованного ID*/
     useEffect(() => {
-        props.myId!==null && props.getProjects([props.myId])
+        props.myId!==null
+            ? props.getProjects([props.myId])
+            : props.setProjects([])
     },[props.myId])
 
     const classes = useStyles()
@@ -46,6 +54,11 @@ const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const handleClick = () => {
         setOpen(!open)
+    }
+
+    const handleItemClick = (selectedProjectId: number) => {
+        props.setSelectedProjectId(selectedProjectId)
+        props.setSelectedUserId(null)
     }
 
     return (
@@ -65,7 +78,7 @@ const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                     {props.isAuth  && props.projects.map((item) => {
                         return (
                             <ListMui component="div" disablePadding key={item.id}>
-                                <ListItemMui button className={classes.nested}>
+                                <ListItemMui button className={classes.nested} onClick={() => handleItemClick(item.id)}>
                                     <ListItemIconMui>
                                         {
                                             item.id === props.selectedProjectId
@@ -91,18 +104,26 @@ const mapStateToProps = (state: AppStateType) => {
         projects: state.projects.projects,
         myId: state.auth.id,
         selectedProjectId: state.projects.selectedProjectId,
-        initializationInProgress: state.app.initializationInProgress
+        initializationInProgress: state.app.initializationInProgress,
+        isInitialized: state.app.isInitialized
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
-    getProjects: (userIds: Array<number>) => void,
+    getProjects: (userIds: Array<number>) => void
     setFetching: (isFetching: boolean) => void
+    setProjects: (projects: Array<ProjectType>) => void
+    setSelectedProjectId: (selectedProjectId: number) => void
+    setSelectedUserId: (selectedUserId: number | null) => void
 }
 const mapDispatchToProps = {
     getProjects,
-    setFetching
+    setFetching,
+    setProjects,
+    setSelectedProjectId,
+    setSelectedUserId,
+
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects)

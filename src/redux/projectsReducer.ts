@@ -25,7 +25,7 @@ const projectsReducer = (state = initialState, action: ActionsType): InitialStat
                 ...state,
                 isFetching: action.isFetching
             }
-        case "projects/SET_SELECTED_PROJECT_IS":
+        case "projects/SET_SELECTED_PROJECT_ID":
             return {
                 ...state,
                 selectedProjectId: action.selectedProjectId
@@ -40,10 +40,10 @@ export const actions = {
     setProjects: (projects: Array<ProjectType>) => ({
         type: 'projects/SET_PROJECTS',
         projects,
-        selectedProjectId: projects[0].id
+        selectedProjectId: projects.length>0 ? projects[0].id : null
     } as const),
     setFetching: (isFetching: boolean) => ({type: 'projects/SET_FETCHING', isFetching} as const),
-    setSelectedProjectId: (selectedProjectId: number) => ({type: 'projects/SET_SELECTED_PROJECT_IS', selectedProjectId} as const),
+    setSelectedProjectId: (selectedProjectId: number) => ({type: 'projects/SET_SELECTED_PROJECT_ID', selectedProjectId} as const),
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
@@ -57,11 +57,18 @@ export const getProjects = (userIds: Array<number>): ThunkType => async (dispatc
     catch (e) {
         alert(e.message)
     }
+}
 
+export const setProjects = (projects: Array<ProjectType>): ThunkType => async (dispatch) => {
+    dispatch(actions.setProjects(projects))
 }
 
 export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
     dispatch(actions.setFetching(isFetching))
+}
+
+export const setSelectedProjectId = (selectedProjectId: number): ThunkType => async (dispatch) => {
+    dispatch(actions.setSelectedProjectId(selectedProjectId))
 }
 
 export default projectsReducer

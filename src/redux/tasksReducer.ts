@@ -54,6 +54,7 @@ export const getTasks = (
             }
         }
         dispatch(actions.setTasks(tasks))
+        dispatch(actions.setFetching(false))
     }
     catch (e) {
         alert(e.message)

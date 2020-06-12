@@ -42,9 +42,7 @@ export const appInitializing = (): ThunkType => async (dispatch) => {
     try {
         dispatch(actions.setInitializationInProgress(true))
         await dispatch(fakeLogin())
-        setTimeout(() => {
-            dispatch(actions.setInitialized(true))
-        }, 2000)
+        dispatch(actions.setInitialized(true))
     } catch (e) {
         alert(e.message)
     }

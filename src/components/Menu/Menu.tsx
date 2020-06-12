@@ -4,7 +4,7 @@ import ListSubheaderMui from '@material-ui/core/ListSubheader'
 import ListMui from '@material-ui/core/List'
 import DividerMui from "@material-ui/core/Divider/Divider"
 import Projects from "./Projects/Projects"
-import Team from "./Team/Team"
+import Team from "./Users/Users"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

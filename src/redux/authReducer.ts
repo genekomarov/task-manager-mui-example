@@ -14,7 +14,7 @@ type InitialStateType = typeof initialState
 
 const clientSideApiReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
-        case "SET_USER_DATA":
+        case "auth/SET_USER_DATA":
             return {
                 ...state,
                 id: action.id,
@@ -33,7 +33,7 @@ export const actions = {
         email: string | null,
         nickname: string | null,
         isAuth: boolean
-    ) => ({type: 'SET_USER_DATA', id, email, nickname, isAuth} as const),
+    ) => ({type: 'auth/SET_USER_DATA', id, email, nickname, isAuth} as const),
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
@@ -48,6 +48,22 @@ export const login = (email: string, password: string): ThunkType => async (disp
     catch (e) {
         alert(e.message)
     }
+}
+
+export const fakeLogin = (): ThunkType => async (dispatch) => {
+    return new Promise((resolve, reject) => {
+        try {
+            setTimeout(() => {
+                dispatch(actions.setUserData(0, 'testuser@email.com', 'testuser', true))
+                resolve()
+            } ,2000)
+        }
+        catch (e) {
+            alert(e.message)
+            reject()
+        }
+    })
+
 }
 
 export const logout = (): ThunkType => async (dispatch) => {

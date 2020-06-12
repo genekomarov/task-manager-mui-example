@@ -5,7 +5,7 @@ import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskType, UserType} 
 
 let initialState = {
     tasks: [] as Array<TaskType>,
-    isFetching: true
+    isFetching: false
 };
 
 type InitialStateType = typeof initialState
@@ -58,7 +58,10 @@ export const getTasks = (
     catch (e) {
         alert(e.message)
     }
+}
 
+export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
+    dispatch(actions.setFetching(isFetching))
 }
 
 export default tasksReducer

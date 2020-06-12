@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
 import ListItemMui from '@material-ui/core/ListItem'
@@ -13,6 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress/CircularProgres
 import CollapseMui from "@material-ui/core/Collapse/Collapse"
 import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
+import {setFetching} from "../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,7 +31,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const TasksList: React.FC<MapStatePropsType> = (props) => {
+const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
+
+    useEffect(() => {
+        props.usersIsFetching && props.setFetching(true)
+    }, [props.usersIsFetching])
 
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0]);
@@ -51,9 +56,9 @@ const TasksList: React.FC<MapStatePropsType> = (props) => {
     return (
         <ContainerMui maxWidth={"sm"}>
             <ListMui className={classes.root}>
-                {props.isFetching
+                {props.isFetching && props.isAuth
                     ? <CircularProgress className={classes.progress} size={50} />
-                    : tasks.map((item) => {
+                    : props.isAuth && tasks.map((item) => {
                     const labelId = `checkbox-list-label-${item.id}`;
                     return (
                         <ListItemMui key={item.id} role={undefined} button onClick={handleToggle(item.id)}>
@@ -211,13 +216,18 @@ const users = [
 
 const mapStateToProps = (state: AppStateType) => {
     return {
-        isFetching: state.tasks.isFetching
+        isFetching: state.tasks.isFetching,
+        isAuth: state.auth.isAuth,
+        usersIsFetching: state.users.isFetching
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
+type MapDispatchProps = {
+    setFetching: (isFetching: boolean) => void
+}
 const mapDispatchToProps = {
-
+    setFetching
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TasksList)

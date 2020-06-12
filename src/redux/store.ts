@@ -5,13 +5,15 @@ import authReducer from "./authReducer"
 import projectsReducer from "./projectsReducer"
 import usersReducer from "./usersReducer"
 import tasksReducer from "./tasksReducer"
+import appReducer from "./appReducer"
 
 let rootReducer = combineReducers({
     api: clientSideApiReducer,
     auth: authReducer,
     projects: projectsReducer,
     users: usersReducer,
-    tasks: tasksReducer
+    tasks: tasksReducer,
+    app: appReducer
 });
 
 type RootReducerType = typeof rootReducer

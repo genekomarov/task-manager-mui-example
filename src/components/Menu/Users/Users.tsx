@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import ListMui from '@material-ui/core/List';
 import ListItemMui from '@material-ui/core/ListItem';
@@ -12,6 +12,7 @@ import AccountCircleIconMui from '@material-ui/icons/AccountCircle';
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress"
 import {AppStateType} from "../../../redux/store"
 import {connect} from "react-redux"
+import {getUsers, setFetching} from "../../../redux/usersReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,7 +30,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const Team: React.FC<MapStatePropsType> = (props) => {
+const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
+
+    useEffect(() => {
+        props.projectsIsFetching && props.setFetching(true)
+    }, [props.projectsIsFetching])
+
+    useEffect(() => {
+        props.selectedProjectId!==null && props.getUsers([props.selectedProjectId])
+    },[props.selectedProjectId])
 
     const classes = useStyles()
     const [open, setOpen] = React.useState(true)
@@ -49,10 +58,10 @@ const Team: React.FC<MapStatePropsType> = (props) => {
                     primaryTypographyProps={{variant: "body1"}}/>
                 {open ? <ExpandLessMui /> : <ExpandMoreMui />}
             </ListItemMui>
-            {props.isFetching
+            {props.isFetching && props.isAuth
                 ? <CircularProgress className={classes.progress}/>
                 : <CollapseMui in={open} timeout="auto" unmountOnExit>
-                    {['User 1', 'User 2', 'User 3'].map((item) => {
+                    {props.isAuth && ['User 1', 'User 2', 'User 3'].map((item) => {
                         return (
                             <ListMui component="div" disablePadding key={item}>
                                 <ListItemMui button className={classes.nested}>
@@ -72,13 +81,21 @@ const Team: React.FC<MapStatePropsType> = (props) => {
 
 const mapStateToProps = (state: AppStateType) => {
     return {
-        isFetching: state.users.isFetching
+        isFetching: state.users.isFetching,
+        isAuth: state.auth.isAuth,
+        projectsIsFetching: state.projects.isFetching,
+        selectedProjectId: state.projects.selectedProjectId
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
+type MapDispatchProps = {
+    setFetching: (isFetching: boolean) => void,
+    getUsers: (projectIds: Array<number>) => void,
+}
 const mapDispatchToProps = {
-
+    setFetching,
+    getUsers
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Team)
+export default connect(mapStateToProps, mapDispatchToProps)(Users)

@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const FilterWrapper: React.FC<any> = () => {
 
-    const [open, setOpen] = React.useState(true)
+    const [open, setOpen] = React.useState(false)
 
     const handleClick = () => {
         setOpen(!open)

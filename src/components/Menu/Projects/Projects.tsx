@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import ListMui from '@material-ui/core/List';
 import ListItemMui from '@material-ui/core/ListItem';
@@ -12,6 +12,8 @@ import FolderIconMui from '@material-ui/icons/Folder';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {AppStateType} from "../../../redux/store"
 import {connect} from "react-redux"
+import {getProjects, setFetching} from "../../../redux/projectsReducer"
+import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,8 +31,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const Projects: React.FC<MapStatePropsType> = (props) => {
-    
+const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
+
+    useEffect(() => {
+        props.initializationInProgress && props.setFetching(true)
+    }, [props.initializationInProgress, props.isAuth])
+
+    useEffect(() => {
+        props.myId!==null && props.getProjects([props.myId])
+    },[props.myId])
+
     const classes = useStyles()
     const [open, setOpen] = React.useState(true)
 
@@ -49,17 +59,21 @@ const Projects: React.FC<MapStatePropsType> = (props) => {
                     primaryTypographyProps={{variant: "body1"}}/>
                 {open ? <ExpandLessMui/> : <ExpandMoreMui/>}
             </ListItemMui>
-            {props.isFetching
+            {props.isFetching && props.isAuth
                 ? <CircularProgress className={classes.progress}/>
                 : <CollapseMui in={open} timeout="auto" unmountOnExit>
-                    {['Работа', 'Учеба', 'Дом'].map((item) => {
+                    {props.isAuth  && props.projects.map((item) => {
                         return (
-                            <ListMui component="div" disablePadding key={item}>
+                            <ListMui component="div" disablePadding key={item.id}>
                                 <ListItemMui button className={classes.nested}>
                                     <ListItemIconMui>
-                                        <FolderIconMui/>
+                                        {
+                                            item.id === props.selectedProjectId
+                                                ? <FolderOpenIcon/>
+                                                : <FolderIconMui/>
+                                        }
                                     </ListItemIconMui>
-                                    <ListItemTextMui primary={item}/>
+                                    <ListItemTextMui primary={item.projectName}/>
                                 </ListItemMui>
                             </ListMui>
                         )
@@ -72,13 +86,23 @@ const Projects: React.FC<MapStatePropsType> = (props) => {
 
 const mapStateToProps = (state: AppStateType) => {
     return {
-        isFetching: state.projects.isFetching
+        isFetching: state.projects.isFetching,
+        isAuth: state.auth.isAuth,
+        projects: state.projects.projects,
+        myId: state.auth.id,
+        selectedProjectId: state.projects.selectedProjectId,
+        initializationInProgress: state.app.initializationInProgress
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
+type MapDispatchProps = {
+    getProjects: (userIds: Array<number>) => void,
+    setFetching: (isFetching: boolean) => void
+}
 const mapDispatchToProps = {
-
+    getProjects,
+    setFetching
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects)

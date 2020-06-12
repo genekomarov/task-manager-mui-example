@@ -5,7 +5,7 @@ import {ProjectToUserIdsMatch, ProjectType, UserType} from "../types/types"
 
 let initialState = {
     users: [] as Array<UserType>,
-    isFetching: true
+    isFetching: false
 };
 
 type InitialStateType = typeof initialState
@@ -40,11 +40,16 @@ export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatc
         let userIds: Array<ProjectToUserIdsMatch> = await usersAPI.getUserIdsByProjectIds(projectIds)
         let users: Array<UserType> = await usersAPI.getUsersByIds(userIds.map((u) => u.userId))
         dispatch(actions.setUsers(users))
+        dispatch(actions.setFetching(false))
     }
     catch (e) {
         alert(e.message)
     }
 
+}
+
+export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
+    dispatch(actions.setFetching(isFetching))
 }
 
 export default usersReducer

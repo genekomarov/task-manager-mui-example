@@ -1,7 +1,7 @@
 import './App.css'
-import React from 'react'
+import React, {useCallback, useEffect} from 'react'
 import * as Api from '../src/api/api'
-import store from "./redux/store"
+import store, {AppStateType} from "./redux/store"
 import {getCounter} from "./utils/universalCounter"
 import {login, logout} from './redux/authReducer'
 import {getProjects} from "./redux/projectsReducer"
@@ -20,6 +20,10 @@ import Menu from "./components/Menu/Menu"
 import AppBarContent from "./components/AppBarContent/AppBarContent"
 import FilterWrapper from "./components/FilterData/FilterWrapper"
 import TasksList from "./components/TasksList/TasksList"
+import {connect} from "react-redux"
+import {CircularProgress} from "@material-ui/core"
+import Backdrop from "@material-ui/core/Backdrop"
+import {appInitializing} from "./redux/appReducer"
 
 const drawerWidth = 240;
 
@@ -54,10 +58,18 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
             padding: theme.spacing(3),
         },
+        backdrop: {
+            zIndex: theme.zIndex.drawer + 1,
+            color: '#fff',
+        },
     }),
 );
 
-const App: React.FC<any> = () => {
+const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
+
+    useEffect( () => {
+        props.appInitializing()
+    },[])
 
 // @ts-ignore
     window.api = Api
@@ -96,6 +108,9 @@ const App: React.FC<any> = () => {
 
     return (
         <div className={classes.root}>
+            <Backdrop className={classes.backdrop} open={!props.isInitialized}>
+                <CircularProgress color="inherit" />
+            </Backdrop>
             <CssBaselineMui/>
             <AppBarMui position="fixed" className={classes.appBar}>
                 <ToolbarMui>
@@ -149,4 +164,18 @@ const App: React.FC<any> = () => {
     )
 }
 
-export default App
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        isInitialized: state.app.isInitialized
+    }
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+
+type MapDispatchProps = {
+    appInitializing: () => void
+}
+const mapDispatchToProps = {
+    appInitializing
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

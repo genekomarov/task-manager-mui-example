@@ -163,18 +163,21 @@ const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                     </DrawerMui>
                 </HiddenMui>
             </nav>
-            <main className={classes.content}>
-                <div className={classes.toolbar}/>
-                <FilterWrapper/>
-                <TasksList/>
-            </main>
+            {
+                props.isAuth && <main className={classes.content}>
+                    <div className={classes.toolbar}/>
+                    <FilterWrapper/>
+                    <TasksList/>
+                </main>
+            }
         </div>
     )
 }
 
 const mapStateToProps = (state: AppStateType) => {
     return {
-        isInitialized: state.app.isInitialized
+        isInitialized: state.app.isInitialized,
+        isAuth: state.auth.isAuth
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>

@@ -11,6 +11,8 @@ import {appInitializing} from "../../redux/appReducer"
 import {connect} from "react-redux"
 import {Helmet} from "react-helmet"
 import Typography from "@material-ui/core/Typography"
+import {logout} from "../../redux/authReducer"
+import {Button} from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const AppBarContent: React.FC<MapStatePropsType> = (props) => {
+const AppBarContent: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
 
     const classes = useStyles()
@@ -65,9 +67,16 @@ const AppBarContent: React.FC<MapStatePropsType> = (props) => {
         handleMobileMenuClose()
     }
 
+    const handleExit = () => {
+        handleMenuClose()
+        props.logout()
+    }
+
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMobileMoreAnchorEl(event.currentTarget)
     }
+
+    const countOfShownTasks = props.isAuth ? props.countOfShownTasks : 0
 
     const menuId = 'primary-search-account-menu'
     const renderMenu = (
@@ -80,7 +89,7 @@ const AppBarContent: React.FC<MapStatePropsType> = (props) => {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItemMui onClick={handleMenuClose}>Выйти</MenuItemMui>
+            <MenuItemMui onClick={handleExit}>Выйти</MenuItemMui>
         </MenuMui>
     )
 
@@ -95,40 +104,50 @@ const AppBarContent: React.FC<MapStatePropsType> = (props) => {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItemMui onClick={handleProfileMenuOpen}>
-                <IconButtonMui
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircleIconMui/>
-                </IconButtonMui>
-                <p>{props.myNickname}</p>
-            </MenuItemMui>
+            {
+                !props.isAuth ? <MenuItemMui onClick={() => {}}>Войти</MenuItemMui>
+                    : <MenuItemMui onClick={handleProfileMenuOpen}>
+                        <IconButtonMui
+                            aria-label="account of current user"
+                            aria-controls="primary-search-account-menu"
+                            aria-haspopup="true"
+                            color="inherit"
+                        >
+                            <AccountCircleIconMui/>
+                        </IconButtonMui>
+                        <p>{props.myNickname}</p>
+                    </MenuItemMui>
+            }
         </MenuMui>
     )
 
     return (
         <>
             <TypographyMui className={classes.title} variant="h6" noWrap>
-                {`Менеджер задач (${props.countOfShownTasks})`}
-                <Helmet title={`(${props.countOfShownTasks}) Менеджер задач`}/>
+                {`Менеджер задач (${countOfShownTasks})`}
+                <Helmet title={`(${countOfShownTasks}) Менеджер задач`}/>
             </TypographyMui>
             <div className={classes.grow}/>
-            <div className={classes.sectionDesktop}>
-                <TypographyMui className={classes.typography__authorizedUserNickname} variant='body1'>{props.myNickname}</TypographyMui>
-                <IconButtonMui
-                    edge="end"
-                    aria-label="account of current user"
-                    aria-controls={menuId}
-                    aria-haspopup="true"
-                    onClick={handleProfileMenuOpen}
-                    color="inherit"
-                >
-                    <AccountCircleIconMui/>
-                </IconButtonMui>
-            </div>
+            {
+                !props.isAuth ? <div className={classes.sectionDesktop}>
+                        <Button color="inherit">Войти</Button>
+                    </div>
+                    : <div className={classes.sectionDesktop}>
+
+                        <TypographyMui className={classes.typography__authorizedUserNickname}
+                                       variant='body1'>{props.myNickname}</TypographyMui>
+                        <IconButtonMui
+                            edge="end"
+                            aria-label="account of current user"
+                            aria-controls={menuId}
+                            aria-haspopup="true"
+                            onClick={handleProfileMenuOpen}
+                            color="inherit"
+                        >
+                            <AccountCircleIconMui/>
+                        </IconButtonMui>
+                    </div>
+            }
             <div className={classes.sectionMobile}>
                 <IconButtonMui
                     aria-label="show more"
@@ -149,16 +168,17 @@ const AppBarContent: React.FC<MapStatePropsType> = (props) => {
 const mapStateToProps = (state: AppStateType) => {
     return {
         countOfShownTasks: state.tasks.countOfShownTasks,
-        myNickname: state.auth.nickname
+        myNickname: state.auth.nickname,
+        isAuth: state.auth.isAuth
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
-
+    logout: () => void
 }
 const mapDispatchToProps = {
-
+    logout
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppBarContent)

@@ -3,6 +3,7 @@ import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, usersAPI} from "../api/api"
 import {AuthorizationFailedException} from "../exceptions/exceptions"
 import {fakeLogin, login} from "./authReducer"
+import Cookies from 'js-cookie'
 
 let initialState = {
     isInitialized: false
@@ -31,7 +32,15 @@ type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 export const appInitializing = (): ThunkType => async (dispatch) => {
     try {
         /*await dispatch(fakeLogin())*/
-        await dispatch(login('testuser@email.com', 'testuser_pass'))
+        let email = Cookies.get('email')
+        let password = Cookies.get('password')
+        if (email && password)
+            await dispatch(login(email, password))
+        else {
+            alert('Ранее вы небыли авторизованы. Авторизация...')
+            await dispatch(login('testuser@email.com', 'testuser_pass'))
+        }
+
         dispatch(actions.setInitialized(true))
     } catch (e) {
         alert(e.message)

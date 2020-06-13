@@ -2,6 +2,7 @@ import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, usersAPI} from "../api/api"
 import {AuthorizationFailedException} from "../exceptions/exceptions"
+import Cookies from 'js-cookie'
 
 let initialState = {
     id: null as number | null,
@@ -44,6 +45,8 @@ export const login = (email: string, password: string): ThunkType => async (disp
         let extraData = await usersAPI.getUsersByIds([authData[0].id])
         if (authData.length === 0) throw new AuthorizationFailedException()
         dispatch(actions.setUserData(authData[0].id, authData[0].email, extraData[0].nickname, true))
+        Cookies.set('email',  email)
+        Cookies.set('password', password)
     }
     catch (e) {
         alert(e.message)
@@ -63,10 +66,11 @@ export const fakeLogin = (): ThunkType => async (dispatch) => {
             reject()
         }
     })
-
 }
 
 export const logout = (): ThunkType => async (dispatch) => {
+    Cookies.remove('email')
+    Cookies.remove('password')
     dispatch(actions.setUserData(null, null, null, false))
 }
 

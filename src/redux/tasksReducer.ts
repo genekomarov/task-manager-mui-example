@@ -5,7 +5,14 @@ import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskType, UserType} 
 
 let initialState = {
     tasks: [] as Array<TaskType>,
-    isFetching: false
+    isFetching: false,
+    filter: {
+        userIds: [] as Array<number>,
+        status: null as boolean | null,
+        content: "",
+    } as TaskFilterType,
+    sort: {},
+    countOfShownTasks: 0
 };
 
 type InitialStateType = typeof initialState
@@ -23,46 +30,57 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                 ...state,
                 isFetching: action.isFetching
             }
-        default: return state
+        case "tasks/SET_FILTER":
+            return {
+                ...state,
+                filter: action.filter
+            }
+        case "tasks/SET_COUNT_OF_SHOWN_TASKS":
+            return {
+                ...state,
+                countOfShownTasks: action.countOfShownTasks
+            }
+        default:
+            return state
     }
 };
 
 type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
     setTasks: (tasks: Array<TaskType>) => ({type: 'tasks/SET_TASKS', tasks} as const),
-    setFetching: (isFetching: boolean) => ({type: 'tasks/SET_FETCHING', isFetching} as const)
+    setFetching: (isFetching: boolean) => ({type: 'tasks/SET_FETCHING', isFetching} as const),
+    setFilter: (filter: TaskFilterType) => ({type: 'tasks/SET_FILTER', filter} as const),
+    setCountOfShownTasks: (countOfShownTasks: number) => ({
+        type: 'tasks/SET_COUNT_OF_SHOWN_TASKS',
+        countOfShownTasks
+    } as const)
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 export const getTasks = (
     projectIds: Array<number> | null,
-    userIds: Array<number> | null,
-    filter?: TaskFilterType
+    userIds: Array<number> | null
 ): ThunkType => async (dispatch) => {
     try {
         let tasks = await tasksAPI.getTasksByProjectOrUserIds(projectIds, userIds)
-        if (filter) {
-            if (filter.status !== null) {
-                tasks = tasks.filter( t =>
-                    t.isDone === filter.status
-                )
-            }
-            if (filter.content !=='') {
-                tasks = tasks.filter( t =>
-                    !!t.title.match(new RegExp(filter.content, 'g'))
-                )
-            }
-        }
         dispatch(actions.setTasks(tasks))
+        dispatch(actions.setFilter({userIds: [], status: null, content: ""}))
         dispatch(actions.setFetching(false))
-    }
-    catch (e) {
+    } catch (e) {
         alert(e.message)
     }
 }
 
 export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
     dispatch(actions.setFetching(isFetching))
+}
+
+export const setFilter = (filter: TaskFilterType): ThunkType => async (dispatch) => {
+    dispatch(actions.setFilter(filter))
+}
+
+export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => async (dispatch) => {
+    dispatch(actions.setCountOfShownTasks(countOfShownTasks))
 }
 
 export default tasksReducer

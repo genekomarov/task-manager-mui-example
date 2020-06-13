@@ -30,6 +30,7 @@ export type TaskType = {
 }
 
 export type TaskFilterType = {
+    userIds: Array<number>
     status: boolean | null
     content: string
 }

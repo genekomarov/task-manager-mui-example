@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useMemo} from 'react'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
 import ListItemMui from '@material-ui/core/ListItem'
@@ -13,7 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress/CircularProgres
 import CollapseMui from "@material-ui/core/Collapse/Collapse"
 import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
-import {getTasks, setFetching} from "../../redux/tasksReducer"
+import {getTasks, setCountOfShownTasks, setFetching} from "../../redux/tasksReducer"
 import {TaskFilterType, TaskType, UserType} from "../../types/types"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,31 +34,49 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
+    /*********************************************
+     * Отладочный блок
+     * *******************************************/
+    console.log(`Component "TasksList" was drawed`)
+
+    useEffect(()=>{console.log(`isFetching =        ${props.isFetching}`)},[props.isFetching])
+    useEffect(()=>{console.log(`isAuth] =           ${props.isAuth}`)},[props.isAuth])
+    useEffect(()=>{console.log(`usersIsFetching =   ${props.usersIsFetching}`)},[props.usersIsFetching])
+    useEffect(()=>{console.log(`selectedUserId =    ${props.selectedUserId}`)},[props.selectedUserId])
+    useEffect(()=>{console.log(`selectedProjectId = ${props.selectedProjectId}`)},[props.selectedProjectId])
+    useEffect(()=>{console.log(`tasks =             ${props.tasks}`)},[props.tasks])
+    useEffect(()=>{console.log(`users =             ${props.users}`)},[props.users])
+    useEffect(()=>{console.log(`myId =              ${props.myId}`)},[props.myId])
+    useEffect(()=>{console.log(`filter =            ${props.filter}`)},[props.filter])
+
+    /*********************************************
+     * Конец отладочного блока
+     * *******************************************/
+
+
     useEffect(() => {
         props.usersIsFetching && props.setFetching(true)
     }, [props.usersIsFetching])
 
     useEffect(() => {
-        props.selectedUserId !== null && props.selectedProjectId !== null
-            ? props.getTasks([props.selectedProjectId], [props.selectedUserId])
-            : props.selectedProjectId !== null &&
-            props.getTasks([props.selectedProjectId], [], {status: null, content: ''})
-    }, [props.selectedUserId, props.selectedProjectId])
+
+        props.selectedProjectId !== null && props.getTasks([props.selectedProjectId], null)
+    }, [props.selectedProjectId])
 
     const classes = useStyles();
     const [checked, setChecked] = React.useState([0]);
 
     const handleToggle = (value: number) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
+        const currentIndex = checked.indexOf(value)
+        const newChecked = [...checked]
 
         if (currentIndex === -1) {
-            newChecked.push(value);
+            newChecked.push(value)
         } else {
-            newChecked.splice(currentIndex, 1);
+            newChecked.splice(currentIndex, 1)
         }
 
-        setChecked(newChecked);
+        setChecked(newChecked)
     };
 
     const userNickNameByUserId = (users: Array<UserType>, item: TaskType) => {
@@ -66,12 +84,25 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
         return userNicknams.length > 0 && userNicknams[0].nickname
     }
 
+    const filteredTasks = useMemo(() => {
+        return props.tasks.filter((t) => {
+                let statusFilter = props.filter.status !== null ? t.isDone === props.filter.status : true
+                let usersFilter = props.filter.userIds.length > 0 ? props.filter.userIds.filter(id => id === t.author).length > 0 : true
+                let contentFilter = t.title.match(new RegExp(props.filter.content, 'g'))
+                return statusFilter && usersFilter && contentFilter
+            })
+    }, [props.filter, props.tasks])
+
+    const countOfShownTasks = useMemo(()=>{
+        props.setCountOfShownTasks(filteredTasks.length)
+    },[filteredTasks])
+
     return (
         <ContainerMui maxWidth={"sm"}>
             <ListMui className={classes.root}>
                 {props.isFetching && props.isAuth
                     ? <CircularProgress className={classes.progress} size={50}/>
-                    : props.isAuth && props.tasks.map((item) => {
+                    : props.isAuth && filteredTasks.map((item) => {
                     const labelId = `checkbox-list-label-${item.id}`;
                     return (
                         <ListItemMui key={item.id} role={undefined} button onClick={handleToggle(item.id)}>
@@ -114,18 +145,21 @@ const mapStateToProps = (state: AppStateType) => {
         selectedProjectId: state.projects.selectedProjectId,
         tasks: state.tasks.tasks,
         users: state.users.users,
-        myId: state.auth.id
+        myId: state.auth.id,
+        filter: state.tasks.filter
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
     setFetching: (isFetching: boolean) => void,
-    getTasks: (projectIds: Array<number> | null, userIds: Array<number> | null, filter?: TaskFilterType) => void
+    getTasks: (projectIds: Array<number> | null, userIds: Array<number> | null) => void
+    setCountOfShownTasks: (countOfShownTasks: number) => void
 }
 const mapDispatchToProps = {
     setFetching,
-    getTasks
+    getTasks,
+    setCountOfShownTasks
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TasksList)

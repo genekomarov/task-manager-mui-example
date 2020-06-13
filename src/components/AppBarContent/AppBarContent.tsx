@@ -6,6 +6,11 @@ import MenuItemMui from '@material-ui/core/MenuItem'
 import MenuMui from '@material-ui/core/Menu'
 import AccountCircleIconMui from '@material-ui/icons/AccountCircle'
 import MoreIconMui from '@material-ui/icons/MoreVert'
+import {AppStateType} from "../../redux/store"
+import {appInitializing} from "../../redux/appReducer"
+import {connect} from "react-redux"
+import {Helmet} from "react-helmet"
+import Typography from "@material-ui/core/Typography"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,10 +35,14 @@ const useStyles = makeStyles((theme: Theme) =>
                 display: 'none',
             },
         },
+        typography__authorizedUserNickname: {
+            marginRight: theme.spacing(2),
+            alignSelf: 'center',
+        },
     }),
 )
 
-const AppBarContent: React.FC<any> = () => {
+const AppBarContent: React.FC<MapStatePropsType> = (props) => {
 
 
     const classes = useStyles()
@@ -72,7 +81,6 @@ const AppBarContent: React.FC<any> = () => {
             onClose={handleMenuClose}
         >
             <MenuItemMui onClick={handleMenuClose}>Выйти</MenuItemMui>
-            {/*<MenuItemMui onClick={handleMenuClose}>My account</MenuItemMui>*/}
         </MenuMui>
     )
 
@@ -96,7 +104,7 @@ const AppBarContent: React.FC<any> = () => {
                 >
                     <AccountCircleIconMui/>
                 </IconButtonMui>
-                <p>Profile</p>
+                <p>{props.myNickname}</p>
             </MenuItemMui>
         </MenuMui>
     )
@@ -104,10 +112,12 @@ const AppBarContent: React.FC<any> = () => {
     return (
         <>
             <TypographyMui className={classes.title} variant="h6" noWrap>
-                Менеджер задач
+                {`Менеджер задач (${props.countOfShownTasks})`}
+                <Helmet title={`(${props.countOfShownTasks}) Менеджер задач`}/>
             </TypographyMui>
             <div className={classes.grow}/>
             <div className={classes.sectionDesktop}>
+                <TypographyMui className={classes.typography__authorizedUserNickname} variant='body1'>{props.myNickname}</TypographyMui>
                 <IconButtonMui
                     edge="end"
                     aria-label="account of current user"
@@ -136,4 +146,19 @@ const AppBarContent: React.FC<any> = () => {
     )
 }
 
-export default AppBarContent
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        countOfShownTasks: state.tasks.countOfShownTasks,
+        myNickname: state.auth.nickname
+    }
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+
+type MapDispatchProps = {
+
+}
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppBarContent)

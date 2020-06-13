@@ -14,8 +14,9 @@ import {AppStateType} from "../../../redux/store"
 import {connect} from "react-redux"
 import {getProjects, setFetching, setProjects, setSelectedProjectId} from "../../../redux/projectsReducer"
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import {ProjectType} from "../../../types/types"
+import {ProjectType, TaskFilterType} from "../../../types/types"
 import {setSelectedUserId} from "../../../redux/usersReducer"
+import {actions, setFilter} from "../../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,9 +38,9 @@ const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     /**Активируем каскад вертушек
      * при начале инициализации*/
-    useEffect(() => {
+    /*useEffect(() => {
         props.initializationInProgress && props.setFetching(true)
-    }, [props.initializationInProgress, props.isAuth])
+    }, [props.initializationInProgress, props.isAuth])*/
 
     /**Получаем пользователей
      * при изменении авторизованного ID*/
@@ -58,6 +59,7 @@ const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const handleItemClick = (selectedProjectId: number) => {
         props.setSelectedProjectId(selectedProjectId)
+        props.setFilter({userIds: [], status: null, content: ""})
         props.setSelectedUserId(null)
     }
 
@@ -104,7 +106,7 @@ const mapStateToProps = (state: AppStateType) => {
         projects: state.projects.projects,
         myId: state.auth.id,
         selectedProjectId: state.projects.selectedProjectId,
-        initializationInProgress: state.app.initializationInProgress,
+        /*initializationInProgress: state.app.initializationInProgress,*/
         isInitialized: state.app.isInitialized
     }
 }
@@ -116,6 +118,7 @@ type MapDispatchProps = {
     setProjects: (projects: Array<ProjectType>) => void
     setSelectedProjectId: (selectedProjectId: number) => void
     setSelectedUserId: (selectedUserId: number | null) => void
+    setFilter: (filter: TaskFilterType) => void
 }
 const mapDispatchToProps = {
     getProjects,
@@ -123,7 +126,7 @@ const mapDispatchToProps = {
     setProjects,
     setSelectedProjectId,
     setSelectedUserId,
-
+    setFilter
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects)

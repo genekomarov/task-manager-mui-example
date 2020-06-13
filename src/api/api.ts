@@ -10,7 +10,7 @@ import arrayToStringArguments from "../utils/arrayToStringArguments"
 
 const instance = axios.create({
     withCredentials: true,
-    baseURL: 'http://my-json-server.typicode.com/genekomarov/task-manager_mui',
+    baseURL: 'https://my-json-server.typicode.com/genekomarov/task-manager_mui',
     headers: {}
 })
 

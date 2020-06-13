@@ -67,6 +67,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
+    /*********************************************
+     * Отладочный блок
+     * *******************************************/
+    console.log(`Component "App" was drawed`)
+    /*********************************************
+     * Конец отладочного блока
+     * *******************************************/
+
     useEffect( () => {
         props.appInitializing()
     },[])

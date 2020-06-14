@@ -8,7 +8,8 @@ let initialState = {
     id: null as number | null,
     email: null as string | null,
     nickname: null as string | null,
-    isAuth: false
+    isAuth: false,
+    loginFormShown: false
 };
 
 type InitialStateType = typeof initialState
@@ -23,9 +24,15 @@ const clientSideApiReducer = (state = initialState, action: ActionsType): Initia
                 nickname: action.nickname,
                 isAuth: action.isAuth
             }
-        default: return state
+        case "auth/SHOW_LOGIN_FORM":
+            return {
+                ...state,
+                loginFormShown: action.loginFormShown
+            }
+        default:
+            return state
     }
-};
+}
 
 type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
@@ -35,6 +42,7 @@ export const actions = {
         nickname: string | null,
         isAuth: boolean
     ) => ({type: 'auth/SET_USER_DATA', id, email, nickname, isAuth} as const),
+    showLoginForm: (loginFormShown: boolean) => ({type: 'auth/SHOW_LOGIN_FORM', loginFormShown} as const)
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
@@ -72,6 +80,10 @@ export const logout = (): ThunkType => async (dispatch) => {
     Cookies.remove('email')
     Cookies.remove('password')
     dispatch(actions.setUserData(null, null, null, false))
+}
+
+export const showLoginForm = (loginFormShown: boolean): ThunkType => async (dispatch) => {
+    dispatch(actions.showLoginForm(loginFormShown))
 }
 
 export default clientSideApiReducer

@@ -2,7 +2,7 @@ import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, usersAPI} from "../api/api"
 import {AuthorizationFailedException} from "../exceptions/exceptions"
-import {fakeLogin, login} from "./authReducer"
+import {fakeLogin, login, showLoginForm} from "./authReducer"
 import Cookies from 'js-cookie'
 
 let initialState = {
@@ -37,8 +37,9 @@ export const appInitializing = (): ThunkType => async (dispatch) => {
         if (email && password)
             await dispatch(login(email, password))
         else {
-            alert('Ранее вы небыли авторизованы. Авторизация...')
-            await dispatch(login('testuser@email.com', 'testuser_pass'))
+            /*alert('Ранее вы небыли авторизованы. Авторизация...')
+            await dispatch(login('testuser@email.com', 'testuser_pass'))*/
+            dispatch(showLoginForm(true))
         }
 
         dispatch(actions.setInitialized(true))

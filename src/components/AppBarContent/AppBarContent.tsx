@@ -11,7 +11,7 @@ import {appInitializing} from "../../redux/appReducer"
 import {connect} from "react-redux"
 import {Helmet} from "react-helmet"
 import Typography from "@material-ui/core/Typography"
-import {logout} from "../../redux/authReducer"
+import {logout, showLoginForm} from "../../redux/authReducer"
 import {Button} from "@material-ui/core"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -76,6 +76,10 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
         setMobileMoreAnchorEl(event.currentTarget)
     }
 
+    const handleLogin = () => {
+        props.showLoginForm(true)
+    }
+
     const countOfShownTasks = props.isAuth ? props.countOfShownTasks : 0
 
     const menuId = 'primary-search-account-menu'
@@ -130,7 +134,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
             <div className={classes.grow}/>
             {
                 !props.isAuth ? <div className={classes.sectionDesktop}>
-                        <Button color="inherit">Войти</Button>
+                        <Button color="inherit" onClick={handleLogin}>Войти</Button>
                     </div>
                     : <div className={classes.sectionDesktop}>
 
@@ -175,10 +179,12 @@ const mapStateToProps = (state: AppStateType) => {
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
-    logout: () => void
+    logout: () => void,
+    showLoginForm: (loginFormShown: boolean) => void
 }
 const mapDispatchToProps = {
-    logout
+    logout,
+    showLoginForm
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppBarContent)

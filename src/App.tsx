@@ -24,6 +24,7 @@ import {connect} from "react-redux"
 import {CircularProgress} from "@material-ui/core"
 import Backdrop from "@material-ui/core/Backdrop"
 import {appInitializing} from "./redux/appReducer"
+import LoginForm from "./components/LoginForm/LoginForm"
 
 const drawerWidth = 240;
 
@@ -119,6 +120,9 @@ const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
             <Backdrop className={classes.backdrop} open={!props.isInitialized}>
                 <CircularProgress color="inherit" />
             </Backdrop>
+            {
+                props.loginFormShown && <LoginForm/>
+            }
             <CssBaselineMui/>
             <AppBarMui position="fixed" className={classes.appBar}>
                 <ToolbarMui>
@@ -177,7 +181,8 @@ const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 const mapStateToProps = (state: AppStateType) => {
     return {
         isInitialized: state.app.isInitialized,
-        isAuth: state.auth.isAuth
+        isAuth: state.auth.isAuth,
+        loginFormShown: state.auth.loginFormShown
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>

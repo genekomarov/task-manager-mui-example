@@ -5,6 +5,10 @@ import FormControlMui from '@material-ui/core/FormControl'
 import SelectMui from '@material-ui/core/Select'
 import InputAdornmentMui from '@material-ui/core/InputAdornment'
 import SortIconMui from '@material-ui/icons/Sort'
+import {AppStateType} from "../../../redux/store"
+import {getTasks, setCountOfShownTasks, setFetching, setFilter} from "../../../redux/tasksReducer"
+import {connect} from "react-redux"
+import {TaskFilterType} from "../../../types/types"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,20 +22,29 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const ByStatusSort: React.FC<any> = () => {
+const ByStatusSort: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const classes = useStyles()
-    const [age, setAge] = React.useState('')
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setAge(event.target.value as string)
+        let value = event.target.value
+        props.setFilter({
+            userIds: undefined,
+            status: value === 'OPEN' ? false
+                : value === 'CLOSE' ? true
+                    : null,
+            content: undefined})
     }
 
     return (
         <div>
             <FormControlMui className={classes.formControl}>
                 <SelectMui
-                    value={age}
+                    value={
+                        props.filter.status === true ? 'CLOSE'
+                            :  props.filter.status === false ? 'OPEN'
+                                : ''
+                    }
                     onChange={handleChange}
                     displayEmpty
                     className={classes.selectEmpty}
@@ -53,4 +66,18 @@ const ByStatusSort: React.FC<any> = () => {
     )
 }
 
-export default ByStatusSort
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        filter: state.tasks.filter
+    }
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+
+type MapDispatchProps = {
+    setFilter: (filter: TaskFilterType) => void
+}
+const mapDispatchToProps = {
+    setFilter
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ByStatusSort)

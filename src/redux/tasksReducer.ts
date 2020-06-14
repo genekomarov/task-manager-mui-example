@@ -7,9 +7,9 @@ let initialState = {
     tasks: [] as Array<TaskType>,
     isFetching: false,
     filter: {
-        userIds: [] as Array<number>,
+        userIds: null as Array<number> | null,
         status: null as boolean | null,
-        content: "",
+        content: null as string | null,
     } as TaskFilterType,
     sort: {},
     countOfShownTasks: 0
@@ -33,7 +33,24 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
         case "tasks/SET_FILTER":
             return {
                 ...state,
-                filter: action.filter
+                filter: {
+                    ...state.filter,
+                    userIds: action.filter.userIds === undefined
+                        ? state.filter.userIds
+                        : action.filter.userIds === null
+                            ? null
+                            : state.filter.userIds
+                                ? [...state.filter.userIds, ...action.filter.userIds]
+                                : [...action.filter.userIds],
+                    status: action.filter.status === undefined
+                        ? state.filter.status
+                        : action.filter.status,
+                    content: action.filter.content === undefined
+                        ? state.filter.content
+                        : action.filter.content
+                }
+
+                /*filter: action.filter*/
             }
         case "tasks/SET_COUNT_OF_SHOWN_TASKS":
             return {
@@ -75,7 +92,12 @@ export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) 
     dispatch(actions.setFetching(isFetching))
 }
 
-export const setFilter = (filter: TaskFilterType): ThunkType => async (dispatch) => {
+export const setFilter = (filter: TaskFilterType, rewrite = false): ThunkType => async (dispatch) => {
+    if (rewrite) dispatch(actions.setFilter({
+        userIds: filter.userIds !== undefined ? null : undefined,
+        status: filter.status !== undefined ? null : undefined,
+        content: filter.content !== undefined ? null : undefined,
+    }))
     dispatch(actions.setFilter(filter))
 }
 

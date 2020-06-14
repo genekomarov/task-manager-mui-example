@@ -87,8 +87,8 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
     const filteredTasks = useMemo(() => {
         return props.tasks.filter((t) => {
                 let statusFilter = props.filter.status !== null ? t.isDone === props.filter.status : true
-                let usersFilter = props.filter.userIds.length > 0 ? props.filter.userIds.filter(id => id === t.author).length > 0 : true
-                let contentFilter = t.title.match(new RegExp(props.filter.content, 'g'))
+                let usersFilter = props.filter.userIds && props.filter.userIds.length > 0 ? props.filter.userIds.filter(id => id === t.author).length > 0 : true
+                let contentFilter = props.filter.content ? t.title.match(new RegExp(props.filter.content, 'gi')) : true
                 return statusFilter && usersFilter && contentFilter
             })
     }, [props.filter, props.tasks])

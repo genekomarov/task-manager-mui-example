@@ -55,7 +55,7 @@ const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const handleItemClick = (selectedUserId: number) => {
         props.setSelectedUserId(selectedUserId)
-        props.setFilter({userIds: [selectedUserId], status: null, content: ''})
+        props.setFilter({userIds: [selectedUserId], status: undefined, content: undefined}, true)
     }
 
     return (
@@ -113,7 +113,7 @@ type MapDispatchProps = {
     setFetching: (isFetching: boolean) => void,
     getUsers: (projectIds: Array<number>) => void,
     setSelectedUserId: (selectedUserId: number) => void,
-    setFilter: (filter: TaskFilterType) => void
+    setFilter: (filter: TaskFilterType, rewrite?: boolean) => void
 }
 const mapDispatchToProps = {
     setFetching,

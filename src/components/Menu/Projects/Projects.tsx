@@ -59,7 +59,7 @@ const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const handleItemClick = (selectedProjectId: number) => {
         props.setSelectedProjectId(selectedProjectId)
-        props.setFilter({userIds: [], status: null, content: ""})
+        props.setFilter({userIds: null, status: null, content: null})
         props.setSelectedUserId(null)
     }
 

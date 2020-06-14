@@ -1,7 +1,11 @@
-import React from 'react'
+import React, {ChangeEvent} from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import AutocompleteMui from '@material-ui/lab/Autocomplete'
 import TextFieldMui from '@material-ui/core/TextField'
+import {AppStateType} from "../../../redux/store"
+import {TaskFilterType, UserType} from "../../../types/types"
+import {setFilter} from "../../../redux/tasksReducer"
+import {connect} from "react-redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -14,19 +18,35 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const ByUsersFilter: React.FC<any> = () => {
+const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const classes = useStyles();
+
+    let filteredUsers = (() =>
+        {
+            if (props.filter.userIds) {
+                return props.filter.userIds.map( userId => {
+                    return props.users.filter( user => user.id === userId)[0]
+                })
+            } else return []
+        }
+    )()
+
+    const handleUsersChanged = (event: ChangeEvent<{}>, users: UserType[]) => {
+        let usersIds = users.map( user => user.id)
+        props.setFilter({userIds: usersIds, status: undefined, content: undefined}, true)
+    }
 
     return (
         <div className={classes.root}>
             <AutocompleteMui
+                onChange={handleUsersChanged}
                 disableClearable
                 multiple
                 id="tags-outlined"
-                options={users}
+                options={props.users}
                 getOptionLabel={(option) => option.nickname}
-                defaultValue={[users[0]]}
+                value={filteredUsers}
                 filterSelectedOptions
                 renderInput={(params) => (
                     <TextFieldMui
@@ -41,47 +61,19 @@ const ByUsersFilter: React.FC<any> = () => {
     )
 }
 
-const users = [
-    {
-        "id": 0,
-        "nickname": "test-user"
-    },
-    {
-        "id": 1,
-        "nickname": "mom"
-    },
-    {
-        "id": 2,
-        "nickname": "dad"
-    },
-    {
-        "id": 3,
-        "nickname": "wife"
-    },
-    {
-        "id": 4,
-        "nickname": "son"
-    },
-    {
-        "id": 5,
-        "nickname": "daughter"
-    },
-    {
-        "id": 6,
-        "nickname": "colleague-1"
-    },
-    {
-        "id": 7,
-        "nickname": "colleague-2"
-    },
-    {
-        "id": 8,
-        "nickname": "boss"
-    },
-    {
-        "id": 9,
-        "nickname": "teacher"
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        users: state.users.users,
+        filter: state.tasks.filter
     }
-]
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
-export default ByUsersFilter
+type MapDispatchProps = {
+    setFilter: (filter: TaskFilterType, rewrite?: boolean) => void
+}
+const mapDispatchToProps = {
+    setFilter
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ByUsersFilter)

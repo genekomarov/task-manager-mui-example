@@ -48,15 +48,15 @@
     { "id": 3   , "projectName": "Отпуск" }
   ],
   "tasks": [
-    { "id": 0 , "project": 0  , "author": 3 , "date": "January 05, 2018 08:50:10"   , "title": "Заехать в магазин"                          , "isDone": true },
-    { "id": 1 , "project": 0  , "author": 0 , "date": "January 10, 2018 09:00:20"   , "title": "Отвезти детей в школу"                      , "isDone": true },
-    { "id": 2 , "project": 1  , "author": 0 , "date": "February 15, 2018 10:10:30"  , "title": "Сдать работу к концу недели"                , "isDone": false },
-    { "id": 3 , "project": 1  , "author": 0 , "date": "February 20, 2019 11:20:40"  , "title": "Предупредить коллег о предстоящем отпуске"  , "isDone": true },
-    { "id": 4 , "project": 1  , "author": 0 , "date": "March 25, 2019 12:30:50"     , "title": "Купить тортик"                              , "isDone": false },
-    { "id": 5 , "project": 2  , "author": 4 , "date": "March 30, 2019 13:40:00"     , "title": "Сделать уроки"                              , "isDone": false },
-    { "id": 6 , "project": 2  , "author": 5 , "date": "April 1, 2020 14:50:10"      , "title": "Подготовиться к экзамену"                   , "isDone": true },
-    { "id": 7 , "project": 3  , "author": 3 , "date": "April 6, 2020 15:00:20"      , "title": "Купить солнцезащитный крем"                 , "isDone": false },
-    { "id": 8 , "project": 3  , "author": 0 , "date": "May 11, 2020 16:10:30"       , "title": "Собрать чемоданы"                           , "isDone": true },
-    { "id": 9 , "project": 3  , "author": 0 , "date": "May 16, 2020 17:20:40"       , "title": "Завезти собаку к родителям"                 , "isDone": false }
+    { "id": 0 , "project": 0  , "author": 3 , "date": 1515124210000, "title": "Заехать в магазин"                          , "isDone": true },
+    { "id": 1 , "project": 0  , "author": 0 , "date": 1515556820000, "title": "Отвезти детей в школу"                      , "isDone": true },
+    { "id": 2 , "project": 1  , "author": 0 , "date": 1518671430000, "title": "Сдать работу к концу недели"                , "isDone": false },
+    { "id": 3 , "project": 1  , "author": 0 , "date": 1550643640000, "title": "Предупредить коллег о предстоящем отпуске"  , "isDone": true },
+    { "id": 4 , "project": 1  , "author": 0 , "date": 1553499050000, "title": "Купить тортик"                              , "isDone": false },
+    { "id": 5 , "project": 2  , "author": 4 , "date": 1553935200000, "title": "Сделать уроки"                              , "isDone": false },
+    { "id": 6 , "project": 2  , "author": 5 , "date": 1585734610000, "title": "Подготовиться к экзамену"                   , "isDone": true },
+    { "id": 7 , "project": 3  , "author": 3 , "date": 1586167220000, "title": "Купить солнцезащитный крем"                 , "isDone": false },
+    { "id": 8 , "project": 3  , "author": 0 , "date": 1589195430000, "title": "Собрать чемоданы"                           , "isDone": true },
+    { "id": 9 , "project": 3  , "author": 0 , "date": 1589631640000, "title": "Завезти собаку к родителям"                 , "isDone": false }
   ]
 }

@@ -82,18 +82,25 @@ const clientSideApiReducer = (state = initialState, action: ActionsType): Initia
 
 type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
-    addIdToDeleted: (tableName: TableNamesTypes, itemId:number) => ({type: 'ADD_ID_TO_DELETED', tableName, itemId} as const),
+    addIdToDeleted: (tableName: TableNamesTypes, itemId: number) => ({type: 'ADD_ID_TO_DELETED', tableName, itemId} as const),
     addNewItem: (tableName: TableNamesTypes, item: ItemType) => ({type: 'ADD_NEW_ITEM', tableName, item} as const),
-    deleteItem: (tableName: TableNamesTypes, itemId:number) => ({type: 'DELETE_ITEM', tableName, itemId} as const)
+    deleteItem: (tableName: TableNamesTypes, itemId: number) => ({type: 'DELETE_ITEM', tableName, itemId} as const)
 }
 
 
-/*type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
-export const requestUsers = (currentPage: number, pageSize: number): ThunkType => async (dispatch) => {
-    let data = await usersAPI.getUsers(currentPage, pageSize);
-    dispatch(actions.setUsers(data.items));
-};*/
+export const addIdToDeleted = (tableName: TableNamesTypes, itemId: number): ThunkType => async (dispatch) => {
+    dispatch(actions.addIdToDeleted(tableName, itemId));
+};
+
+export const addNewItem = (tableName: TableNamesTypes, item: ItemType): ThunkType => async (dispatch) => {
+    dispatch(actions.addNewItem(tableName, item));
+};
+
+export const deleteItem = (tableName: TableNamesTypes, itemId: number): ThunkType => async (dispatch) => {
+    dispatch(actions.deleteItem(tableName, itemId));
+};
 
 
 

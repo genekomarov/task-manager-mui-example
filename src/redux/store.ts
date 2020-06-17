@@ -13,7 +13,8 @@ let rootReducer = combineReducers({
     projects: projectsReducer,
     users: usersReducer,
     tasks: tasksReducer,
-    app: appReducer
+    app: appReducer,
+    clientSideDb: clientSideApiReducer
 });
 
 type RootReducerType = typeof rootReducer

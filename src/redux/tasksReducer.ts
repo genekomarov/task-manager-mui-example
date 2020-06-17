@@ -2,6 +2,7 @@ import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, tasksAPI, usersAPI} from "../api/api"
 import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskSortType, TaskType, UserType} from "../types/types"
+import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
 
 let initialState = {
     tasks: [] as Array<TaskType>,
@@ -17,9 +18,7 @@ let initialState = {
     } as TaskSortType,
     countOfShownTasks: 0
 };
-
 type InitialStateType = typeof initialState
-
 
 const tasksReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
@@ -53,25 +52,45 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                         : action.filter.content
                 }
             }
-            case "tasks/SET_SORT":
-                return {
-                    ...state,
-                    sort: {
-                        ...state.sort,
-                        firstCompleted: action.sort.firstCompleted === undefined
-                            ? state.sort.firstCompleted
-                            : action.sort.firstCompleted,
-                        firstNew: action.sort.firstNew === undefined
-                            ? state.sort.firstNew
-                            : action.sort.firstNew
-                    }
+        case "tasks/SET_SORT":
+            return {
+                ...state,
+                sort: {
+                    ...state.sort,
+                    firstCompleted: action.sort.firstCompleted === undefined
+                        ? state.sort.firstCompleted
+                        : action.sort.firstCompleted,
+                    firstNew: action.sort.firstNew === undefined
+                        ? state.sort.firstNew
+                        : action.sort.firstNew
                 }
+            }
 
         case "tasks/SET_COUNT_OF_SHOWN_TASKS":
             return {
                 ...state,
                 countOfShownTasks: action.countOfShownTasks
             }
+        case "tasks/DELETE_TASK":
+            return {
+                ...state,
+                tasks: [...state.tasks.filter(t => t.id !== action.taskId)]
+            }
+        case "tasks/CHANGE_TASK": {
+            let changeTaskId = state.tasks.findIndex(t => t.id === action.taskId)
+            return {
+                ...state,
+                tasks: [
+                    ...state.tasks.filter(t => t.id !== action.taskId),
+                    {
+                        ...state.tasks[changeTaskId],
+                        isDone: action.status,
+                        title: action.title
+                    }
+                ],
+            }
+
+        }
         default:
             return state
     }
@@ -86,7 +105,21 @@ export const actions = {
     setCountOfShownTasks: (countOfShownTasks: number) => ({
         type: 'tasks/SET_COUNT_OF_SHOWN_TASKS',
         countOfShownTasks
-    } as const)
+    } as const),
+    changeTask: (taskId: number, status: boolean, title: string) => ({
+        type: 'tasks/CHANGE_TASK',
+        taskId,
+        status,
+        title
+    } as const),
+    deleteTask: (taskId: number) => ({type: 'tasks/DELETE_TASK', taskId} as const),
+    newTask: (project: number, author: number, data: number, title: string) => ({
+        type: 'tasks/NEW_TASK',
+        project,
+        author,
+        data,
+        title
+    } as const),
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
@@ -123,6 +156,30 @@ export const setSort = (sort: TaskSortType): ThunkType => async (dispatch) => {
 
 export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => async (dispatch) => {
     dispatch(actions.setCountOfShownTasks(countOfShownTasks))
+}
+
+export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
+    try {
+        let response = await tasksAPI.deleteTask(taskId)
+        dispatch(actions.deleteTask(taskId))
+        await dispatch(addIdToDeleted('tasks', taskId))
+        await dispatch(deleteItem('tasks', taskId))
+    } catch (e) {
+        alert(e.message)
+    }
+}
+
+export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
+    try {
+        let response = await tasksAPI.changeTask(task.id, task.title, task.isDone)
+        dispatch(actions.changeTask(task.id, task.isDone, task.title))
+        await dispatch(addIdToDeleted('tasks', task.id))
+        await dispatch(deleteItem('tasks', task.id))
+        await dispatch(addNewItem('tasks', task))
+    } catch (e) {
+        alert(e.message)
+    }
+
 }
 
 export default tasksReducer

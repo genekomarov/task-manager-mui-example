@@ -115,7 +115,7 @@ type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
     getProjects: (userIds: Array<number>) => void
-    setFetching: (isFetching: boolean) => void
+    /*setFetching: (isFetching: boolean) => void*/
     setProjects: (projects: Array<ProjectType>) => void
     setSelectedProjectId: (selectedProjectId: number) => void
     setSelectedUserId: (selectedUserId: number | null) => void
@@ -124,7 +124,7 @@ type MapDispatchProps = {
 }
 const mapDispatchToProps = {
     getProjects,
-    setFetching,
+    /*setFetching,*/
     setProjects,
     setSelectedProjectId,
     setSelectedUserId,

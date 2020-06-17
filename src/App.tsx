@@ -68,36 +68,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
-    /*********************************************
-     * Отладочный блок
-     * *******************************************/
-    console.log(`Component "App" was drawed`)
-    /*********************************************
-     * Конец отладочного блока
-     * *******************************************/
-
     useEffect( () => {
         props.appInitializing()
     },[])
-
-// @ts-ignore
-    window.api = Api
-// @ts-ignore
-    window.counter = getCounter
-// @ts-ignore
-    window.dispatch = store.dispatch
-// @ts-ignore
-    window.thunk = {}
-// @ts-ignore
-    window.thunk.login = login
-// @ts-ignore
-    window.thunk.logout = logout
-// @ts-ignore
-    window.thunk.getProjects = getProjects
-// @ts-ignore
-    window.thunk.getUsers = getUsers
-// @ts-ignore
-    window.thunk.getTasks = getTasks
 
     const classes = useStyles();
     const theme = useTheme();

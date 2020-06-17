@@ -109,7 +109,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
             onClose={handleMobileMenuClose}
         >
             {
-                !props.isAuth ? <MenuItemMui onClick={() => {}}>Войти</MenuItemMui>
+                !props.isAuth ? <MenuItemMui onClick={handleLogin}>Войти</MenuItemMui>
                     : <MenuItemMui onClick={handleProfileMenuOpen}>
                         <IconButtonMui
                             aria-label="account of current user"

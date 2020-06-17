@@ -1,7 +1,7 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, tasksAPI, usersAPI} from "../api/api"
-import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskType, UserType} from "../types/types"
+import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskSortType, TaskType, UserType} from "../types/types"
 
 let initialState = {
     tasks: [] as Array<TaskType>,
@@ -11,7 +11,10 @@ let initialState = {
         status: null as boolean | null,
         content: null as string | null,
     } as TaskFilterType,
-    sort: {},
+    sort: {
+        firstCompleted: null as boolean | null,
+        firstNew: null as boolean | null
+    } as TaskSortType,
     countOfShownTasks: 0
 };
 
@@ -49,9 +52,21 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                         ? state.filter.content
                         : action.filter.content
                 }
-
-                /*filter: action.filter*/
             }
+            case "tasks/SET_SORT":
+                return {
+                    ...state,
+                    sort: {
+                        ...state.sort,
+                        firstCompleted: action.sort.firstCompleted === undefined
+                            ? state.sort.firstCompleted
+                            : action.sort.firstCompleted,
+                        firstNew: action.sort.firstNew === undefined
+                            ? state.sort.firstNew
+                            : action.sort.firstNew
+                    }
+                }
+
         case "tasks/SET_COUNT_OF_SHOWN_TASKS":
             return {
                 ...state,
@@ -67,6 +82,7 @@ export const actions = {
     setTasks: (tasks: Array<TaskType>) => ({type: 'tasks/SET_TASKS', tasks} as const),
     setFetching: (isFetching: boolean) => ({type: 'tasks/SET_FETCHING', isFetching} as const),
     setFilter: (filter: TaskFilterType) => ({type: 'tasks/SET_FILTER', filter} as const),
+    setSort: (sort: TaskSortType) => ({type: 'tasks/SET_SORT', sort} as const),
     setCountOfShownTasks: (countOfShownTasks: number) => ({
         type: 'tasks/SET_COUNT_OF_SHOWN_TASKS',
         countOfShownTasks
@@ -99,6 +115,10 @@ export const setFilter = (filter: TaskFilterType, rewrite = false): ThunkType =>
         content: filter.content !== undefined ? null : undefined,
     }))
     dispatch(actions.setFilter(filter))
+}
+
+export const setSort = (sort: TaskSortType): ThunkType => async (dispatch) => {
+    dispatch(actions.setSort(sort))
 }
 
 export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => async (dispatch) => {

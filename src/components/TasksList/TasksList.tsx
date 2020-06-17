@@ -15,6 +15,7 @@ import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
 import {getTasks, setCountOfShownTasks, setFetching} from "../../redux/tasksReducer"
 import {TaskFilterType, TaskType, UserType} from "../../types/types"
+import {filterByDate, filterByStatus} from "../../utils/tasksFilters"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,6 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
         progress: {
             alignSelf: 'center',
             margin: theme.spacing(2),
+        },
+        itemSecondaryText: {
+            display: 'flex',
+            justifyContent: 'space-between',
         },
     }),
 )
@@ -84,14 +89,21 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
         return userNicknams.length > 0 && userNicknams[0].nickname
     }
 
-    const filteredTasks = useMemo(() => {
-        return props.tasks.filter((t) => {
-                let statusFilter = props.filter.status !== null ? t.isDone === props.filter.status : true
-                let usersFilter = props.filter.userIds && props.filter.userIds.length > 0 ? props.filter.userIds.filter(id => id === t.author).length > 0 : true
-                let contentFilter = props.filter.content ? t.title.match(new RegExp(props.filter.content, 'gi')) : true
-                return statusFilter && usersFilter && contentFilter
-            })
-    }, [props.filter, props.tasks])
+    let filteredTasks = props.tasks.filter((t) => {
+        let statusFilter = props.filter.status !== null ? t.isDone === props.filter.status : true
+        let usersFilter = props.filter.userIds && props.filter.userIds.length > 0 ? props.filter.userIds.filter(id => id === t.author).length > 0 : true
+        let contentFilter = props.filter.content ? t.title.match(new RegExp(props.filter.content, 'gi')) : true
+        return statusFilter && usersFilter && contentFilter
+    })
+
+    filteredTasks = filteredTasks.sort((a: TaskType, b: TaskType): number => {
+        let sortResultByStatus = filterByStatus(a, b, props.sort.firstCompleted)
+        let sortResultByDate = filterByDate(a, b, props.sort.firstNew)
+
+        if (sortResultByStatus !== 0) return sortResultByStatus
+        else return sortResultByDate
+
+    })
 
     const countOfShownTasks = useMemo(()=>{
         props.setCountOfShownTasks(filteredTasks.length)
@@ -104,6 +116,18 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                     ? <CircularProgress className={classes.progress} size={50}/>
                     : props.isAuth && filteredTasks.map((item) => {
                     const labelId = `checkbox-list-label-${item.id}`;
+                    const date = new Date(item.date)
+                    const dateStr = `${
+                        date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+                    }.${
+                        date.getMonth() < 9 ? `0${date.getMonth()+1}` : date.getMonth()+1 
+                    }.${
+                        date.getFullYear()
+                    } ${
+                        date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+                    }:${
+                        date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+                    }`
                     return (
                         <ListItemMui key={item.id} role={undefined} button onClick={handleToggle(item.id)}>
                             <ListItemIconMui>
@@ -117,9 +141,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                             </ListItemIconMui>
                             <ListItemTextMui id={labelId}
                                              primary={item.title}
-                                             secondary={
-                                                 userNickNameByUserId(props.users, item)
-                                             }
+                                             secondary={`${dateStr} - ${userNickNameByUserId(props.users, item)}`}
                             />
                             {item.author === props.myId && (
                                 <ListItemSecondaryActionMui>
@@ -146,7 +168,8 @@ const mapStateToProps = (state: AppStateType) => {
         tasks: state.tasks.tasks,
         users: state.users.users,
         myId: state.auth.id,
-        filter: state.tasks.filter
+        filter: state.tasks.filter,
+        sort: state.tasks.sort
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>

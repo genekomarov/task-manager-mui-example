@@ -14,9 +14,9 @@ import {AppStateType} from "../../../redux/store"
 import {connect} from "react-redux"
 import {getProjects, setFetching, setProjects, setSelectedProjectId} from "../../../redux/projectsReducer"
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import {ProjectType, TaskFilterType} from "../../../types/types"
+import {ProjectType, TaskFilterType, TaskSortType} from "../../../types/types"
 import {setSelectedUserId} from "../../../redux/usersReducer"
-import {actions, setFilter} from "../../../redux/tasksReducer"
+import {actions, setFilter, setSort} from "../../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -60,6 +60,7 @@ const Projects: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
     const handleItemClick = (selectedProjectId: number) => {
         props.setSelectedProjectId(selectedProjectId)
         props.setFilter({userIds: null, status: null, content: null})
+        props.setSort({firstCompleted: null, firstNew: null})
         props.setSelectedUserId(null)
     }
 
@@ -119,6 +120,7 @@ type MapDispatchProps = {
     setSelectedProjectId: (selectedProjectId: number) => void
     setSelectedUserId: (selectedUserId: number | null) => void
     setFilter: (filter: TaskFilterType) => void
+    setSort: (sort: TaskSortType) => void
 }
 const mapDispatchToProps = {
     getProjects,
@@ -126,7 +128,8 @@ const mapDispatchToProps = {
     setProjects,
     setSelectedProjectId,
     setSelectedUserId,
-    setFilter
+    setFilter,
+    setSort
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Projects)

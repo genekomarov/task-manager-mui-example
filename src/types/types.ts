@@ -26,11 +26,16 @@ export type TaskType = {
     author: number
     date: string
     title: string
-    isDone?: boolean
+    isDone: boolean
 }
 
 export type TaskFilterType = {
     userIds: Array<number> | null | undefined
     status: boolean | null | undefined
     content: string | null | undefined
+}
+
+export type TaskSortType = {
+    firstCompleted: boolean | null | undefined,
+    firstNew: boolean | null | undefined
 }

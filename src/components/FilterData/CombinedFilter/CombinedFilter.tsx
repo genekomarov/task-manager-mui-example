@@ -6,6 +6,10 @@ import SelectMui from '@material-ui/core/Select'
 import InputAdornmentMui from '@material-ui/core/InputAdornment'
 import FilterListIconMui from '@material-ui/icons/FilterList'
 import {Divider} from "@material-ui/core"
+import {AppStateType} from "../../../redux/store"
+import {TaskFilterType, TaskSortType} from "../../../types/types"
+import {setFilter, setSort} from "../../../redux/tasksReducer"
+import {connect} from "react-redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,20 +23,46 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const CombinedFilter: React.FC<any> = () => {
+const CombinedFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     const classes = useStyles()
-    const [age, setAge] = React.useState('')
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setAge(event.target.value as string)
+        switch (event.target.value) {
+            case 'CLOSE_FIRST':
+                props.setSort({firstCompleted: true, firstNew: false})
+                break
+            case 'OPEN_FIRST':
+                props.setSort({firstCompleted: false, firstNew: false})
+                break
+            case 'NEW_FIRST':
+                props.setSort({firstCompleted: null, firstNew: true})
+                break
+            case 'OLD_FIRST':
+                props.setSort({firstCompleted: null, firstNew: false})
+                break
+            default:
+                props.setSort({firstCompleted: null, firstNew: null})
+        }
+
+
     }
 
     return (
         <div>
             <FormControlMui className={classes.formControl}>
                 <SelectMui
-                    value={age}
+                    value={
+                        props.sort.firstCompleted !== null
+                            ? props.sort.firstCompleted === true
+                                ? 'CLOSE_FIRST'
+                                : 'OPEN_FIRST'
+                            : props.sort.firstNew !== null
+                                ? props.sort.firstNew === true
+                                    ? 'NEW_FIRST'
+                                    : 'OLD_FIRST'
+                                : ''
+                    }
                     onChange={handleChange}
                     displayEmpty
                     className={classes.selectEmpty}
@@ -58,4 +88,18 @@ const CombinedFilter: React.FC<any> = () => {
     )
 }
 
-export default CombinedFilter
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        sort: state.tasks.sort
+    }
+}
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+
+type MapDispatchProps = {
+    setSort: (filter: TaskSortType) => void
+}
+const mapDispatchToProps = {
+    setSort
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CombinedFilter)

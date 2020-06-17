@@ -9,6 +9,10 @@ import CombinedFilter from "./CombinedFilter/CombinedFilter"
 import ByStatusSort from "./ByStatusSort/ByStatusSort"
 import ByUsersFilter from "./ByUsersFilter/ByUsersFilter"
 import ByContentFilter from "./ByContentFilter/ByContentFilter"
+import {AppStateType} from "../../redux/store"
+import {appInitializing} from "../../redux/appReducer"
+import {connect} from "react-redux"
+import FilterRow from "./FilterRow/FilterRow"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,34 +26,19 @@ const Filter: React.FC<any> = () => {
 
     const classes = useStyles();
 
-    type OwnProps = {
-        children: React.ReactElement | React.ReactElement[]
-    }
-    const FilterRow: React.FC<OwnProps> = (props) => {
-        return (
-            <ListItemMui >
-                {props.children}
-                <ListItemSecondaryActionMui>
-                    <IconButtonMui edge="end" aria-label="delete">
-                        <BackspaceIconMui/>
-                    </IconButtonMui>
-                </ListItemSecondaryActionMui>
-            </ListItemMui>
-        )
-    }
-
     return (
         <div className={classes.root}>
             <ListMui disablePadding>
-                <FilterRow>
+                <FilterRow rowNumber={1}>
                         <CombinedFilter/>
                         <ByStatusSort/>
                 </FilterRow>
-                <FilterRow><ByUsersFilter/></FilterRow>
-                <FilterRow><ByContentFilter/></FilterRow>
+                <FilterRow rowNumber={2}><ByUsersFilter/></FilterRow>
+                <FilterRow rowNumber={3}><ByContentFilter/></FilterRow>
             </ListMui>
         </div>
     );
 }
+
 
 export default Filter

@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/task-manager_mui/static/css/main.5f361e03.chunk.css",
-    "main.js": "/task-manager_mui/static/js/main.d212bbef.chunk.js",
-    "main.js.map": "/task-manager_mui/static/js/main.d212bbef.chunk.js.map",
+    "main.js": "/task-manager_mui/static/js/main.6f3af38c.chunk.js",
+    "main.js.map": "/task-manager_mui/static/js/main.6f3af38c.chunk.js.map",
     "runtime-main.js": "/task-manager_mui/static/js/runtime-main.5dd2319e.js",
     "runtime-main.js.map": "/task-manager_mui/static/js/runtime-main.5dd2319e.js.map",
-    "static/js/2.8a7e8db1.chunk.js": "/task-manager_mui/static/js/2.8a7e8db1.chunk.js",
-    "static/js/2.8a7e8db1.chunk.js.map": "/task-manager_mui/static/js/2.8a7e8db1.chunk.js.map",
+    "static/js/2.f811c942.chunk.js": "/task-manager_mui/static/js/2.f811c942.chunk.js",
+    "static/js/2.f811c942.chunk.js.map": "/task-manager_mui/static/js/2.f811c942.chunk.js.map",
     "index.html": "/task-manager_mui/index.html",
-    "precache-manifest.4467e444bfe582b9163295b8b4f97584.js": "/task-manager_mui/precache-manifest.4467e444bfe582b9163295b8b4f97584.js",
+    "precache-manifest.64b17fb7851c4e853bc46731cbbbd543.js": "/task-manager_mui/precache-manifest.64b17fb7851c4e853bc46731cbbbd543.js",
     "service-worker.js": "/task-manager_mui/service-worker.js",
     "static/css/main.5f361e03.chunk.css.map": "/task-manager_mui/static/css/main.5f361e03.chunk.css.map",
-    "static/js/2.8a7e8db1.chunk.js.LICENSE.txt": "/task-manager_mui/static/js/2.8a7e8db1.chunk.js.LICENSE.txt"
+    "static/js/2.f811c942.chunk.js.LICENSE.txt": "/task-manager_mui/static/js/2.f811c942.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.5dd2319e.js",
-    "static/js/2.8a7e8db1.chunk.js",
+    "static/js/2.f811c942.chunk.js",
     "static/css/main.5f361e03.chunk.css",
-    "static/js/main.d212bbef.chunk.js"
+    "static/js/main.6f3af38c.chunk.js"
   ]
 }

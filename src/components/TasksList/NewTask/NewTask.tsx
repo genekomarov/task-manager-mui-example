@@ -15,6 +15,7 @@ import InputLabel from "@material-ui/core/InputLabel"
 import OutlinedInput from "@material-ui/core/OutlinedInput"
 import {newTask} from "../../../redux/tasksReducer"
 import {TaskType} from "../../../types/types"
+import {keyDownOnTextarea} from "../../../utils/breakLineForTextarea"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,71 +43,64 @@ const NewTask: React.FC<MapStatePropsType & MapDispatchProps & OwnType> = (props
     }
 
     return (
-        <ListItemMui role={undefined}>
-            <ListItemTextMui primary={
-                <div className={classes.textFieldWrapper_marginRight_20px}>
-                    <Formik
-                        initialValues={{
-                            title: ''
-                        }}
-                        onSubmit={(values, {setSubmitting}) => {
-                            setTimeout(() => {
-                                props.selectedProjectId !== null && props.myId !== null && handleNewTask(
-                                    props.idCounter,
-                                    props.selectedProjectId,
-                                    props.myId,
-                                    Date.now(),
-                                    values.title,
-                                    false
-                                )
-                                setSubmitting(false)
-                            }, 0)
-                        }}
-                    >
-                        {({
-                              values,
-                              handleChange,
-                              handleSubmit,
-                          }) => {
-                            return (
-                                <Form onSubmit={handleSubmit}>
+
+        <Formik
+            initialValues={{
+                title: ''
+            }}
+            onSubmit={(values, {setSubmitting}) => {
+                setTimeout(() => {
+                    props.selectedProjectId !== null && props.myId !== null && handleNewTask(
+                        props.idCounter,
+                        props.selectedProjectId,
+                        props.myId,
+                        Date.now(),
+                        values.title,
+                        false
+                    )
+                    values.title=''
+                    setSubmitting(false)
+                }, 0)
+            }}
+        >
+            {({values, handleChange, handleSubmit}) => {
+                return (
+                    <Form onSubmit={handleSubmit}>
+                        <ListItemMui role={undefined}>
+                            <ListItemTextMui primary={
+                                <div className={classes.textFieldWrapper_marginRight_20px}>
                                     <FormControl variant="outlined" fullWidth>
                                         <OutlinedInput
                                             name="title"
                                             type="title"
                                             id="title"
                                             multiline
+                                            placeholder='Новая задача...'
                                             value={values.title}
                                             onChange={handleChange}
-                                            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                                if (e.key === 'Enter' && !e.ctrlKey) {
-                                                    handleSubmit()
-                                                    e.preventDefault()
-                                                } else if (e.key === 'Enter' && e.ctrlKey) {
-                                                    e.currentTarget.value += '\n'
-                                                    handleChange(e)
-                                                }
-                                            }}
+                                            onKeyDown={keyDownOnTextarea(handleSubmit, handleChange, navigator.userAgent)}
                                         />
                                     </FormControl>
-                                </Form>
-                            )
-                        }}
-                    </Formik>
-                </div>
-            }
-            />
-            <ListItemSecondaryActionMui>
-                <IconButtonMui
-                    onClick={() => {
-                    }}
-                    edge="end" aria-label="comments">
-                    <AddCircleIcon fontSize='large'/>
-                </IconButtonMui>
-            </ListItemSecondaryActionMui>
-
-        </ListItemMui>
-    );
+                                </div>
+                            }
+                            />
+                            <ListItemSecondaryActionMui>
+                                <IconButtonMui
+                                    onClick={() => {
+                                        handleSubmit()
+                                    }}
+                                    edge="end"
+                                    aria-label="comments"
+                                >
+                                    <AddCircleIcon fontSize='large'/>
+                                </IconButtonMui>
+                            </ListItemSecondaryActionMui>
+                        </ListItemMui>
+                    </Form>
+                )
+            }}
+        </Formik>
+    )
 }
 
 const mapStateToProps = (state: AppStateType) => {

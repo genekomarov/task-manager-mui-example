@@ -73,9 +73,13 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                 {
                     props.isFetching && props.isAuth
                         ? <CircularProgress className={classes.progress} size={50}/>
-                        : props.isAuth && filteredTasks.map(item => <Task key={item.id} task={item}/>)
+                        : props.isAuth && (
+                            <div>
+                                {filteredTasks.map(item => <Task key={item.id} task={item}/>)}
+                                <NewTask/>
+                            </div>
+                    )
                 }
-                <NewTask/>
             </ListMui>
         </ContainerMui>
     );

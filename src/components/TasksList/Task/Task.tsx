@@ -13,6 +13,7 @@ import {changeTask, deleteTask} from "../../../redux/tasksReducer"
 import {Form, Formik} from "formik"
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles"
 import InputBase from "@material-ui/core/InputBase"
+import {keyDownOnTextarea} from "../../../utils/breakLineForTextarea"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -76,7 +77,7 @@ const Task: React.FC<MapStatePropsType & MapDispatchProps & OwnType> = (props) =
                 onChange={handleChangeStatus}
             >
                 <CheckboxMui
-                    className={task.author === props.myId ? classes.checkbox_cursor_default : ''}
+                    className={task.author !== props.myId ? classes.checkbox_cursor_default : ''}
                     edge="start"
                     checked={task.isDone}
                     tabIndex={-1}
@@ -116,15 +117,7 @@ const Task: React.FC<MapStatePropsType & MapDispatchProps & OwnType> = (props) =
                                                              value={values.title}
                                                              onChange={handleChange}
                                                              onBlur={()=>{handleSubmit()}}
-                                                             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                                                                 if (e.key === 'Enter' && !e.ctrlKey) {
-                                                                     handleSubmit()
-                                                                     e.preventDefault()
-                                                                 } else if (e.key === 'Enter' && e.ctrlKey) {
-                                                                     e.currentTarget.value += '\n'
-                                                                     handleChange(e)
-                                                                 }
-                                                             }}
+                                                             onKeyDown={keyDownOnTextarea(handleSubmit, handleChange, navigator.userAgent)}
                                                          />
                                                      </Form>
                                                  )

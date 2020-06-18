@@ -1,12 +1,6 @@
 import './App.css'
-import React, {useCallback, useEffect} from 'react'
-import * as Api from '../src/api/api'
-import store, {AppStateType} from "./redux/store"
-import {getCounter} from "./utils/universalCounter"
-import {login, logout} from './redux/authReducer'
-import {getProjects} from "./redux/projectsReducer"
-import {getUsers} from "./redux/usersReducer"
-import {getTasks} from "./redux/tasksReducer"
+import React, {useEffect} from 'react'
+import {AppStateType} from "./redux/store"
 import {makeStyles, useTheme, Theme, createStyles} from '@material-ui/core/styles'
 import AppBarMui from '@material-ui/core/AppBar'
 import CssBaselineMui from '@material-ui/core/CssBaseline'

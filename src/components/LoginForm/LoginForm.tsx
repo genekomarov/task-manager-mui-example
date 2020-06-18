@@ -3,9 +3,8 @@ import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
 import {login, setLoginErrorMessage, showLoginForm} from "../../redux/authReducer"
 import Dialog from '@material-ui/core/Dialog';
-import {Formik, Form, Field} from 'formik';
-import {Button, LinearProgress} from '@material-ui/core';
-import {TextField} from 'formik-material-ui';
+import {Formik, Form} from 'formik';
+import {Button} from '@material-ui/core';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
@@ -13,6 +12,9 @@ import {Typography} from "@material-ui/core"
 import DialogActions from '@material-ui/core/DialogActions';
 import {isEmail} from "../../validators/validators"
 import FormHelperText from "@material-ui/core/FormHelperText"
+import FormControl from "@material-ui/core/FormControl"
+import InputLabel from "@material-ui/core/InputLabel"
+import Input from "@material-ui/core/Input"
 
 type Values = {
     email: string;
@@ -34,6 +36,7 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                         password: '',
                     }}
                     validate={values => {
+                        debugger
                         const errors: Partial<Values> = {}
 
                         if (!values.email) errors.email = 'Обязательно для заполнения'
@@ -51,8 +54,9 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                         }, 0);
                     }}
                 >
-                    {({submitForm, isSubmitting}) => (
-                        <Form>
+                    {({values, errors, touched, handleChange, handleBlur, handleSubmit,
+                          isSubmitting,}) => (
+                        <Form onSubmit={handleSubmit}>
                             <DialogTitle id="form-dialog-title">Авторизация</DialogTitle>
                             <DialogContent>
                                 <DialogContentText>
@@ -60,27 +64,31 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                                         test user data. email: 'testuser@email.com' password: 'testuser_pass'
                                     </Typography>
                                 </DialogContentText>
-                                <Field
-                                    component={TextField}
-                                    name="email"
-                                    autoFocus
-                                    margin="dense"
-                                    id="email"
-                                    label="Email Address"
-                                    type="email"
-                                    fullWidth
-                                />
+                                <FormControl fullWidth error={!!errors.email && touched.email}>
+                                    <InputLabel htmlFor="email">Email</InputLabel>
+                                    <Input
+                                        name="email"
+                                        type="email"
+                                        id="email"
+                                        value={values.email}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {<FormHelperText id="email-error">{errors.email && touched.email && errors.email}</FormHelperText>}
+                                </FormControl>
                                 <br/>
-                                <Field
-                                    component={TextField}
-                                    name="password"
-                                    margin="dense"
-                                    id="password"
-                                    label="Password"
-                                    type="password"
-                                    fullWidth
-                                />
-                                <br/>
+                                <FormControl fullWidth error={!!errors.password && touched.password}>
+                                    <InputLabel htmlFor="password">Password</InputLabel>
+                                    <Input
+                                        name="password"
+                                        type="password"
+                                        id="password"
+                                        value={values.password}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                    />
+                                    {<FormHelperText id="password-error">{errors.email && touched.email && errors.email}</FormHelperText>}
+                                </FormControl>
                             </DialogContent>
                             {
                                 props.loginErrorMessage && <DialogContent>
@@ -91,7 +99,7 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                             }
                             <DialogActions>
                                 <Button
-                                    onClick={submitForm}
+                                    onClick={()=>handleSubmit()}
                                     color="primary"
                                     disabled={isSubmitting}
                                 >

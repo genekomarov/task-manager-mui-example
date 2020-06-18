@@ -3,6 +3,7 @@ import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, tasksAPI, usersAPI} from "../api/api"
 import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskSortType, TaskType, UserType} from "../types/types"
 import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
+import {newError} from "./appReducer"
 
 let initialState = {
     tasks: [] as Array<TaskType>,
@@ -148,7 +149,7 @@ export const getTasks = (
         dispatch(actions.setFilter({userIds: [], status: null, content: ""}))
         dispatch(actions.setFetching(false))
     } catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка загрузки задач'))
     }
 }
 
@@ -180,7 +181,7 @@ export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
         await dispatch(addIdToDeleted('tasks', taskId))
         await dispatch(deleteItem('tasks', taskId))
     } catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка удаления задачи'))
     }
 }
 
@@ -192,7 +193,7 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
         await dispatch(deleteItem('tasks', task.id))
         await dispatch(addNewItem('tasks', task))
     } catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка изменения задачи'))
     }
 }
 
@@ -202,7 +203,7 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
     } catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка добавления задачи'))
     }
 }
 

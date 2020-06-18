@@ -2,6 +2,8 @@ import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, usersAPI} from "../api/api"
 import {ProjectToUserIdsMatch, ProjectType} from "../types/types"
+import {useSnackbar} from "notistack"
+import {newError} from "./appReducer"
 
 let initialState = {
     projects: [] as Array<ProjectType>,
@@ -56,7 +58,7 @@ export const getProjects = (userIds: Array<number>): ThunkType => async (dispatc
         dispatch(actions.setFetching(false))
     }
     catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка загрузки проектов'))
     }
 }
 

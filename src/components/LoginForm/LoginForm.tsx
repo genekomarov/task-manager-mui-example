@@ -36,7 +36,6 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                         password: '',
                     }}
                     validate={values => {
-                        debugger
                         const errors: Partial<Values> = {}
 
                         if (!values.email) errors.email = 'Обязательно для заполнения'

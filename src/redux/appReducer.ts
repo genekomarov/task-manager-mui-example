@@ -6,7 +6,8 @@ import {fakeLogin, login, showLoginForm} from "./authReducer"
 import Cookies from 'js-cookie'
 
 let initialState = {
-    isInitialized: false
+    isInitialized: false,
+    errors: [] as Array<string>
 };
 
 type InitialStateType = typeof initialState
@@ -18,6 +19,14 @@ const appReducer = (state = initialState, action: ActionsType): InitialStateType
                 ...state,
                 isInitialized: action.isInitialized
             }
+            case "app/ADD_ERROR":
+                return {
+                    ...state,
+                    errors: [
+                        ...state.errors,
+                        action.message
+                    ]
+                }
         default:
             return state
     }
@@ -25,7 +34,8 @@ const appReducer = (state = initialState, action: ActionsType): InitialStateType
 
 type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
-    setInitialized: (isInitialized: boolean) => ({type: 'app/SET_INITIALIZED', isInitialized} as const)
+    setInitialized: (isInitialized: boolean) => ({type: 'app/SET_INITIALIZED', isInitialized} as const),
+    newError: (message: string) => ({type: 'app/ADD_ERROR', message} as const)
 }
 
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
@@ -41,8 +51,12 @@ export const appInitializing = (): ThunkType => async (dispatch) => {
 
         dispatch(actions.setInitialized(true))
     } catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка инициализации'))
     }
+}
+
+export const newError = (message: string): ThunkType => async (dispatch) => {
+    dispatch(actions.newError(message))
 }
 
 export default appReducer

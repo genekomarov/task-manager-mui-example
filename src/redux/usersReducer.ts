@@ -2,6 +2,8 @@ import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, usersAPI} from "../api/api"
 import {ProjectToUserIdsMatch, ProjectType, UserType} from "../types/types"
+import {useSnackbar} from "notistack"
+import {newError} from "./appReducer"
 
 let initialState = {
     users: [] as Array<UserType>,
@@ -50,7 +52,7 @@ export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatc
         dispatch(actions.setUsers(users))
         dispatch(actions.setFetching(false))
     } catch (e) {
-        alert(e.message)
+        dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))
     }
 
 }

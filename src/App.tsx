@@ -19,6 +19,10 @@ import {CircularProgress} from "@material-ui/core"
 import Backdrop from "@material-ui/core/Backdrop"
 import {appInitializing} from "./redux/appReducer"
 import LoginForm from "./components/LoginForm/LoginForm"
+import FormHelperText from "@material-ui/core/FormHelperText"
+import Snackbar from "@material-ui/core/Snackbar"
+import {Alert} from "@material-ui/lab"
+import {useSnackbar, VariantType} from "notistack"
 
 const drawerWidth = 240;
 
@@ -61,10 +65,16 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const App: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
+    const { enqueueSnackbar } = useSnackbar();
 
     useEffect( () => {
         props.appInitializing()
     },[])
+
+    useEffect(() => {
+        let variant: VariantType = "error"
+        props.errors.length > 0 && enqueueSnackbar(props.errors[props.errors.length-1], {variant})
+    }, [props.errors])
 
     const classes = useStyles();
     const theme = useTheme();
@@ -149,7 +159,8 @@ const mapStateToProps = (state: AppStateType) => {
     return {
         isInitialized: state.app.isInitialized,
         isAuth: state.auth.isAuth,
-        loginFormShown: state.auth.loginFormShown
+        loginFormShown: state.auth.loginFormShown,
+        errors: state.app.errors
     }
 }
 type MapStatePropsType = ReturnType<typeof mapStateToProps>

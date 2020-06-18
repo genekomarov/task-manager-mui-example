@@ -17,6 +17,7 @@ import FolderOpenIcon from '@material-ui/icons/FolderOpen';
 import {ProjectType, TaskFilterType, TaskSortType} from "../../../types/types"
 import {setSelectedUserId} from "../../../redux/usersReducer"
 import {actions, setFilter, setSort} from "../../../redux/tasksReducer"
+import {useSnackbar} from "notistack"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -10,9 +10,9 @@ import {connect} from "react-redux"
 import {TaskType, UserType} from "../../../types/types"
 import {AppStateType} from "../../../redux/store"
 import {changeTask, deleteTask} from "../../../redux/tasksReducer"
-import {Field, Form, Formik} from "formik"
-import {InputBase, TextField} from "formik-material-ui"
+import {Form, Formik} from "formik"
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles"
+import InputBase from "@material-ui/core/InputBase"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -93,27 +93,42 @@ const Task: React.FC<MapStatePropsType & MapDispatchProps & OwnType> = (props) =
                                              initialValues={{
                                                  title: task.title,
                                              }}
-                                             onSubmit={(values, { setSubmitting }) => {
-                                                 handleChangeTitle(values.title)
-                                                 setSubmitting(false)
+                                             onSubmit={(values, {setSubmitting}) => {
+                                                 setTimeout(() => {
+                                                     handleChangeTitle(values.title)
+                                                     setSubmitting(false)
+                                                 }, 0)
                                              }}
                                          >
-                                             {({ submitForm, isSubmitting }) => (
-                                                 <Form
-                                                     onBlur={submitForm}
-                                                 >
-                                                     <Field
-                                                         component={InputBase}
-                                                         name="title"
-                                                         type="title"
-                                                         id="title"
-                                                         label="Title"
-                                                         multiline
-                                                         fullWidth
-
-                                                     />
-                                                 </Form>
-                                             )}
+                                             {({
+                                                   values,
+                                                   handleChange,
+                                                   handleSubmit,
+                                               }) => {
+                                                 return (
+                                                     <Form onSubmit={handleSubmit}>
+                                                         <InputBase
+                                                             name="title"
+                                                             type="title"
+                                                             id="title"
+                                                             fullWidth
+                                                             multiline
+                                                             value={values.title}
+                                                             onChange={handleChange}
+                                                             onBlur={()=>{handleSubmit()}}
+                                                             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                                                                 if (e.key === 'Enter' && !e.ctrlKey) {
+                                                                     handleSubmit()
+                                                                     e.preventDefault()
+                                                                 } else if (e.key === 'Enter' && e.ctrlKey) {
+                                                                     e.currentTarget.value += '\n'
+                                                                     handleChange(e)
+                                                                 }
+                                                             }}
+                                                         />
+                                                     </Form>
+                                                 )
+                                             }}
                                          </Formik>
                                      )
                                      : task.title

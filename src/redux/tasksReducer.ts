@@ -16,7 +16,8 @@ let initialState = {
         firstCompleted: null as boolean | null,
         firstNew: null as boolean | null
     } as TaskSortType,
-    countOfShownTasks: 0
+    countOfShownTasks: 0,
+    idCounter: 1000
 };
 type InitialStateType = typeof initialState
 
@@ -65,7 +66,6 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                         : action.sort.firstNew
                 }
             }
-
         case "tasks/SET_COUNT_OF_SHOWN_TASKS":
             return {
                 ...state,
@@ -78,10 +78,13 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
             }
         case "tasks/CHANGE_TASK": {
             let changeTaskId = state.tasks.findIndex(t => t.id === action.taskId)
-            return {
+            return changeTaskId === -1
+                ? state
+                : {
                 ...state,
                 tasks: [
                     ...state.tasks.filter(t => t.id !== action.taskId),
+
                     {
                         ...state.tasks[changeTaskId],
                         isDone: action.status,
@@ -91,6 +94,22 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
             }
 
         }
+        case "tasks/NEW_TASK":
+            return {
+                ...state,
+                /*tasks: [
+                    ...state.tasks,
+                    {
+                        id: action.task.id,
+                        project: action.task.project,
+                        author: action.task.author,
+                        date: action.task.date,
+                        title: action.task.title,
+                        isDone: action.task.isDone
+                    }
+                ],*/
+                idCounter: state.idCounter + 1
+            }
         default:
             return state
     }
@@ -113,12 +132,8 @@ export const actions = {
         title
     } as const),
     deleteTask: (taskId: number) => ({type: 'tasks/DELETE_TASK', taskId} as const),
-    newTask: (project: number, author: number, data: number, title: string) => ({
-        type: 'tasks/NEW_TASK',
-        project,
-        author,
-        data,
-        title
+    newTask: (task: TaskType) => ({
+        type: 'tasks/NEW_TASK', task
     } as const),
 }
 
@@ -160,7 +175,7 @@ export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => as
 
 export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
     try {
-        let response = await tasksAPI.deleteTask(taskId)
+        /*let response = await tasksAPI.deleteTask(taskId)*/
         dispatch(actions.deleteTask(taskId))
         await dispatch(addIdToDeleted('tasks', taskId))
         await dispatch(deleteItem('tasks', taskId))
@@ -171,7 +186,7 @@ export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
 
 export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
     try {
-        let response = await tasksAPI.changeTask(task.id, task.title, task.isDone)
+        /*let response = await tasksAPI.changeTask(task.id, task.title, task.isDone)*/
         dispatch(actions.changeTask(task.id, task.isDone, task.title))
         await dispatch(addIdToDeleted('tasks', task.id))
         await dispatch(deleteItem('tasks', task.id))
@@ -179,7 +194,16 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
     } catch (e) {
         alert(e.message)
     }
+}
 
+export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
+    try {
+        /*let response = await tasksAPI.addNewTask(task)*/
+        dispatch(actions.newTask(task))
+        await dispatch(addNewItem('tasks', task))
+    } catch (e) {
+        alert(e.message)
+    }
 }
 
 export default tasksReducer

@@ -11,7 +11,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import {Typography} from "@material-ui/core"
 import DialogActions from '@material-ui/core/DialogActions';
-import {CircularProgress} from "@material-ui/core"
 import {isEmail} from "../../validators/validators"
 import FormHelperText from "@material-ui/core/FormHelperText"
 

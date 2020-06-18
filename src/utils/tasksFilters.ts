@@ -16,7 +16,7 @@ export const filterByStatus = (a: TaskType, b: TaskType, firstCompleted: boolean
 }
 
 export const filterByDate = (a: TaskType, b: TaskType, firstNew: boolean | null | undefined) => {
-    const dateDiff = parseInt(a.date) - parseInt(b.date)
+    const dateDiff = a.date - b.date
     if (firstNew === true || null) return dateDiff * -1
     else return dateDiff
 }

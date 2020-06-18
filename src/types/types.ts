@@ -24,7 +24,7 @@ export type TaskType = {
     id: number
     project: number
     author: number
-    date: string
+    date: number
     title: string
     isDone: boolean
 }

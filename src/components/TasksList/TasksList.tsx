@@ -10,6 +10,7 @@ import {TaskType} from "../../types/types"
 import {filterByDate, filterByStatus} from "../../utils/tasksFilters"
 import Task from "./Task/Task"
 import {setSelectedProjectId} from "../../redux/projectsReducer"
+import NewTask from "./NewTask/NewTask"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,6 +75,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                         ? <CircularProgress className={classes.progress} size={50}/>
                         : props.isAuth && filteredTasks.map(item => <Task key={item.id} task={item}/>)
                 }
+                <NewTask/>
             </ListMui>
         </ContainerMui>
     );

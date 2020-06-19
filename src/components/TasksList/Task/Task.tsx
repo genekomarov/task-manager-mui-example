@@ -13,7 +13,7 @@ import {changeTask, deleteTask} from "../../../redux/tasksReducer"
 import {Form, Formik} from "formik"
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles"
 import InputBase from "@material-ui/core/InputBase"
-import {keyDownOnTextarea} from "../../../utils/breakLineForTextarea"
+import {hendleKeyDownOnTextarea} from "../../../utils/wrapStringForTextarea"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -117,7 +117,7 @@ const Task: React.FC<MapStatePropsType & MapDispatchProps & OwnType> = (props) =
                                                              value={values.title}
                                                              onChange={handleChange}
                                                              onBlur={()=>{handleSubmit()}}
-                                                             onKeyDown={keyDownOnTextarea(handleSubmit, handleChange, navigator.userAgent)}
+                                                             onKeyDown={hendleKeyDownOnTextarea(handleSubmit, handleChange, navigator.userAgent)}
                                                          />
                                                      </Form>
                                                  )

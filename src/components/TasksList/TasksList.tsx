@@ -7,7 +7,7 @@ import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
 import {getTasks, setCountOfShownTasks, setFetching} from "../../redux/tasksReducer"
 import {TaskType} from "../../types/types"
-import {filterByDate, filterByStatus} from "../../utils/tasksFilters"
+import {sortByDate, sortByStatus} from "../../utils/tasksFilters"
 import Task from "./Task/Task"
 import {setSelectedProjectId} from "../../redux/projectsReducer"
 import NewTask from "./NewTask/NewTask"
@@ -56,8 +56,8 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
     })
 
     filteredTasks = filteredTasks.sort((a: TaskType, b: TaskType): number => {
-        let sortResultByStatus = filterByStatus(a, b, props.sort.firstCompleted)
-        let sortResultByDate = filterByDate(a, b, props.sort.firstNew)
+        let sortResultByStatus = sortByStatus(a, b, props.sort.firstCompleted)
+        let sortResultByDate = sortByDate(a, b, props.sort.firstNew)
 
         if (sortResultByStatus !== 0) return sortResultByStatus
         else return sortResultByDate

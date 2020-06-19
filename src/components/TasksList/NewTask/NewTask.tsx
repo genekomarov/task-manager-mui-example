@@ -15,7 +15,7 @@ import InputLabel from "@material-ui/core/InputLabel"
 import OutlinedInput from "@material-ui/core/OutlinedInput"
 import {newTask} from "../../../redux/tasksReducer"
 import {TaskType} from "../../../types/types"
-import {keyDownOnTextarea} from "../../../utils/breakLineForTextarea"
+import {hendleKeyDownOnTextarea} from "../../../utils/wrapStringForTextarea"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -78,7 +78,7 @@ const NewTask: React.FC<MapStatePropsType & MapDispatchProps & OwnType> = (props
                                             placeholder='Новая задача...'
                                             value={values.title}
                                             onChange={handleChange}
-                                            onKeyDown={keyDownOnTextarea(handleSubmit, handleChange, navigator.userAgent)}
+                                            onKeyDown={hendleKeyDownOnTextarea(handleSubmit, handleChange, navigator.userAgent)}
                                         />
                                     </FormControl>
                                 </div>

@@ -1,5 +1,5 @@
 import {ThunkAction} from "redux-thunk"
-import {AuthDataType, ProjectToUserIdsMatch, ProjectType, TaskType, UserType} from "../types/types"
+import {AuthDataType, ProjectToUserIdsMatchType, ProjectType, TaskType, UserType} from "../types/types"
 import {ActionsTypes, AppStateType} from "./store"
 
 let initialState = {
@@ -13,7 +13,7 @@ let initialState = {
             deleted: [] as Array<number> //ids of deleted items
         },
         projectsToUsers: {
-            items: [] as Array<ProjectToUserIdsMatch>, //new or changed items
+            items: [] as Array<ProjectToUserIdsMatchType>, //new or changed items
             deleted: [] as Array<number> //ids of deleted items
         },
         projects: {

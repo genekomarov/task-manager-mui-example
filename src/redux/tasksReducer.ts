@@ -1,7 +1,7 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, tasksAPI, usersAPI} from "../api/api"
-import {ProjectToUserIdsMatch, ProjectType, TaskFilterType, TaskSortType, TaskType, UserType} from "../types/types"
+import {ProjectToUserIdsMatchType, ProjectType, TaskFilterType, TaskSortType, TaskType, UserType} from "../types/types"
 import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
 import {newError} from "./appReducer"
 

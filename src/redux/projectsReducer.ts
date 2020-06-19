@@ -1,7 +1,7 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
 import {authAPI, projectsAPI, usersAPI} from "../api/api"
-import {ProjectToUserIdsMatch, ProjectType} from "../types/types"
+import {ProjectToUserIdsMatchType, ProjectType} from "../types/types"
 import {useSnackbar} from "notistack"
 import {newError} from "./appReducer"
 
@@ -52,7 +52,7 @@ type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 export const getProjects = (userIds: Array<number>): ThunkType => async (dispatch) => {
     try {
         dispatch(actions.setFetching(true))
-        let projectIds: Array<ProjectToUserIdsMatch> = await projectsAPI.getProjectIdsByUserIds(userIds)
+        let projectIds: Array<ProjectToUserIdsMatchType> = await projectsAPI.getProjectIdsByUserIds(userIds)
         let projects: Array<ProjectType> = await projectsAPI.getProjectsByIds(projectIds.map((p) => p.projectId))
         dispatch(actions.setProjects(projects))
         dispatch(actions.setFetching(false))

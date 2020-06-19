@@ -1,15 +1,14 @@
-import React, {useEffect, useMemo} from 'react'
+import React, {useEffect} from 'react'
+import {connect} from "react-redux"
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
 import ContainerMui from "@material-ui/core/Container"
-import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress"
-import {AppStateType} from "../../redux/store"
-import {connect} from "react-redux"
+import CircularProgressMui from "@material-ui/core/CircularProgress/CircularProgress"
 import {getTasks, setCountOfShownTasks, setFetching} from "../../redux/tasksReducer"
+import {AppStateType} from "../../redux/store"
 import {TaskType} from "../../types/types"
 import {sortByDate, sortByStatus} from "../../utils/tasksFilters"
 import Task from "./Task/Task"
-import {setSelectedProjectId} from "../../redux/projectsReducer"
 import NewTask from "./NewTask/NewTask"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,7 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
+const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
+
+    const classes = useStyles();
 
     useEffect(() => {
         props.usersIsFetching
@@ -40,7 +41,6 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
             : props.selectedProjectId !== null && props.getTasks([props.selectedProjectId], null)
     }, [props.usersIsFetching])
 
-    const classes = useStyles();
 
     let tasksWithClientSideData = props.tasks.filter(
         t => !props.tasksOnClient.deleted.filter(
@@ -72,7 +72,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
             <ListMui className={classes.root}>
                 {
                     props.isFetching && props.isAuth
-                        ? <CircularProgress className={classes.progress} size={50}/>
+                        ? <CircularProgressMui className={classes.progress} size={50}/>
                         : props.isAuth && (
                             <div>
                                 {filteredTasks.map(item => <Task key={item.id} task={item}/>)}
@@ -85,6 +85,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
     );
 }
 
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         isFetching: state.tasks.isFetching,
@@ -97,9 +98,8 @@ const mapStateToProps = (state: AppStateType) => {
         tasksOnClient: state.clientSideDb.clientSideData.tasks
     }
 }
-type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
-type MapDispatchProps = {
+type MapDispatchPropsType = {
     setFetching: (isFetching: boolean) => void,
     getTasks: (projectIds: Array<number> | null, userIds: Array<number> | null) => void
     setCountOfShownTasks: (countOfShownTasks: number) => void

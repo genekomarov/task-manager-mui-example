@@ -1,22 +1,20 @@
 import React, {useEffect} from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
+import {connect} from "react-redux"
+import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import ListMui from '@material-ui/core/List';
 import ListItemMui from '@material-ui/core/ListItem';
 import ListItemIconMui from '@material-ui/core/ListItemIcon';
 import ListItemTextMui from '@material-ui/core/ListItemText';
 import CollapseMui from '@material-ui/core/Collapse';
+import CircularProgressMui from "@material-ui/core/CircularProgress/CircularProgress"
 import ExpandLessMui from '@material-ui/icons/ExpandLess';
 import ExpandMoreMui from '@material-ui/icons/ExpandMore';
 import PeopleIconMui from '@material-ui/icons/People';
-import AccountCircleIconMui from '@material-ui/icons/AccountCircle';
-import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress"
+import PersonIconMui from '@material-ui/icons/Person';
+import PermIdentityIconMui from '@material-ui/icons/PermIdentity';
 import {AppStateType} from "../../../redux/store"
-import {connect} from "react-redux"
-import {getUsers, setFetching, setSelectedUserId} from "../../../redux/usersReducer"
-import FolderOpenIcon from "@material-ui/core/SvgIcon/SvgIcon"
-import PersonIcon from '@material-ui/icons/Person';
-import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import {TaskFilterType} from "../../../types/types"
+import {getUsers, setFetching, setSelectedUserId} from "../../../redux/usersReducer"
 import {setFilter} from "../../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,32 +33,35 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
-    /**Активируем каскад вертушек
-     * при начале инициализации*/
-    useEffect(() => {
-        props.projectsIsFetching && props.setFetching(true)
-    }, [props.projectsIsFetching])
-
-    useEffect(() => {
-        props.selectedProjectId!==null && props.getUsers([props.selectedProjectId])
-    },[props.selectedProjectId])
+const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
 
     const classes = useStyles()
     const [open, setOpen] = React.useState(true)
 
-    const handleClick = () => {
+    // Установка флага процесса загрузки при загрузке списка проектов
+    useEffect(() => {
+        props.projectsIsFetching && props.setFetching(true)
+    }, [props.projectsIsFetching])
+
+    // Запуск процесса получения списка пользователей после установки списка проектов
+    useEffect(() => {
+        props.selectedProjectId!==null && props.getUsers([props.selectedProjectId])
+    },[props.selectedProjectId])
+
+    const handleCollapseList = () => {
         setOpen(!open)
     }
 
-    const handleItemClick = (selectedUserId: number) => {
+    const handleSelectItem = (selectedUserId: number) => {
         props.setSelectedUserId(selectedUserId)
         props.setFilter({userIds: [selectedUserId], status: undefined, content: undefined}, true)
     }
 
     return (
         <div className={classes.root}>
-            <ListItemMui button onClick={handleClick}>
+
+            {/*Элемент заголовка списка*/}
+            <ListItemMui button onClick={handleCollapseList}>
                 <ListItemIconMui>
                     <PeopleIconMui />
                 </ListItemIconMui>
@@ -69,18 +70,20 @@ const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                     primaryTypographyProps={{variant: "body1"}}/>
                 {open ? <ExpandLessMui /> : <ExpandMoreMui />}
             </ListItemMui>
+
+            {/*Список*/}
             {props.isFetching && props.isAuth
-                ? <CircularProgress className={classes.progress}/>
+                ? <CircularProgressMui className={classes.progress}/>
                 : <CollapseMui in={open} timeout="auto" unmountOnExit>
                     {props.isAuth && props.users.map((item) => {
                         return (
                             <ListMui component="div" disablePadding key={item.id}>
-                                <ListItemMui button className={classes.nested} onClick={() => handleItemClick(item.id)}>
+                                <ListItemMui button className={classes.nested} onClick={() => handleSelectItem(item.id)}>
                                     <ListItemIconMui>
                                         {
                                             item.id === props.selectedUserId
-                                                ? <PermIdentityIcon/>
-                                                : <PersonIcon/>
+                                                ? <PermIdentityIconMui/>
+                                                : <PersonIconMui/>
                                         }
                                     </ListItemIconMui>
                                     <ListItemTextMui primary={
@@ -96,6 +99,7 @@ const Users: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
     )
 }
 
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         isFetching: state.users.isFetching,
@@ -107,9 +111,8 @@ const mapStateToProps = (state: AppStateType) => {
         tasks: state.tasks.tasks
     }
 }
-type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
-type MapDispatchProps = {
+type MapDispatchPropsType = {
     setFetching: (isFetching: boolean) => void,
     getUsers: (projectIds: Array<number>) => void,
     setSelectedUserId: (selectedUserId: number) => void,

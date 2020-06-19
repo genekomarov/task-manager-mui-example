@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Menu: React.FC<any> = () => {    
-    
 
     const classes = useStyles()
 
@@ -41,8 +40,10 @@ const Menu: React.FC<any> = () => {
         >
             <DividerMui />
             <Projects/>
+
             <div className={classes.verticalSpacing} />
             <Team/>
+
             <DividerMui />
         </ListMui>
     )

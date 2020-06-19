@@ -1,11 +1,11 @@
 import React, {ChangeEvent} from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {connect} from "react-redux"
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import AutocompleteMui from '@material-ui/lab/Autocomplete'
 import TextFieldMui from '@material-ui/core/TextField'
 import {AppStateType} from "../../../redux/store"
 import {TaskFilterType, UserType} from "../../../types/types"
 import {setFilter} from "../../../redux/tasksReducer"
-import {connect} from "react-redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,6 +22,7 @@ const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
 
     const classes = useStyles();
 
+    // Получение имен пользователей по их ID
     let filteredUsers = (() =>
         {
             if (props.filter.userIds) {
@@ -61,13 +62,13 @@ const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
     )
 }
 
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         users: state.users.users,
         filter: state.tasks.filter
     }
 }
-type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
     setFilter: (filter: TaskFilterType, rewrite?: boolean) => void

@@ -1,12 +1,10 @@
 import React, {ChangeEvent} from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {connect} from "react-redux"
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import TextFieldMui from '@material-ui/core/TextField'
 import {AppStateType} from "../../../redux/store"
-import {ProjectType, TaskFilterType} from "../../../types/types"
-import {getProjects, setFetching, setProjects, setSelectedProjectId} from "../../../redux/projectsReducer"
-import {setSelectedUserId} from "../../../redux/usersReducer"
+import {TaskFilterType} from "../../../types/types"
 import {setFilter} from "../../../redux/tasksReducer"
-import {connect} from "react-redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,12 +38,12 @@ const ByContentFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) 
     )
 }
 
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         filter: state.tasks.filter
     }
 }
-type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
     setFilter: (filter: TaskFilterType, rewrite?: boolean) => void

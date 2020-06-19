@@ -1,20 +1,20 @@
 import React from 'react';
 import {AppStateType} from "../../redux/store"
 import {connect} from "react-redux"
-import {login, setLoginErrorMessage, showLoginForm} from "../../redux/authReducer"
-import Dialog from '@material-ui/core/Dialog';
 import {Formik, Form} from 'formik';
-import {Button} from '@material-ui/core';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import {Typography} from "@material-ui/core"
-import DialogActions from '@material-ui/core/DialogActions';
+import DialogMui from '@material-ui/core/Dialog';
+import ButtonMui from '@material-ui/core/Button';
+import DialogTitleMui from '@material-ui/core/DialogTitle';
+import DialogContentMui from '@material-ui/core/DialogContent';
+import DialogContentTextMui from '@material-ui/core/DialogContentText';
+import TypographyMui from "@material-ui/core/Typography"
+import DialogActionsMui from '@material-ui/core/DialogActions';
+import FormHelperTextMui from "@material-ui/core/FormHelperText"
+import FormControlMui from "@material-ui/core/FormControl"
+import InputLabelMui from "@material-ui/core/InputLabel"
+import InputMui from "@material-ui/core/Input"
+import {login, setLoginErrorMessage, showLoginForm} from "../../redux/authReducer"
 import {isEmail} from "../../validators/validators"
-import FormHelperText from "@material-ui/core/FormHelperText"
-import FormControl from "@material-ui/core/FormControl"
-import InputLabel from "@material-ui/core/InputLabel"
-import Input from "@material-ui/core/Input"
 
 type Values = {
     email: string;
@@ -29,7 +29,7 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
     return (
         <div>
-            <Dialog open={true} onClose={handleClose} aria-labelledby="form-dialog-title">
+            <DialogMui open={true} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <Formik
                     initialValues={{
                         email: '',
@@ -56,16 +56,16 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                     {({values, errors, touched, handleChange, handleBlur, handleSubmit,
                           isSubmitting,}) => (
                         <Form onSubmit={handleSubmit}>
-                            <DialogTitle id="form-dialog-title">Авторизация</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText>
-                                    <Typography variant='caption'>
+                            <DialogTitleMui id="form-dialog-title">Авторизация</DialogTitleMui>
+                            <DialogContentMui>
+                                <DialogContentTextMui>
+                                    <TypographyMui variant='caption'>
                                         test user data. email: 'testuser@email.com' password: 'testuser_pass'
-                                    </Typography>
-                                </DialogContentText>
-                                <FormControl fullWidth error={!!errors.email && touched.email}>
-                                    <InputLabel htmlFor="email">Email</InputLabel>
-                                    <Input
+                                    </TypographyMui>
+                                </DialogContentTextMui>
+                                <FormControlMui fullWidth error={!!errors.email && touched.email}>
+                                    <InputLabelMui htmlFor="email">Email</InputLabelMui>
+                                    <InputMui
                                         name="email"
                                         type="email"
                                         id="email"
@@ -73,12 +73,12 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                    {<FormHelperText id="email-error">{errors.email && touched.email && errors.email}</FormHelperText>}
-                                </FormControl>
+                                    {<FormHelperTextMui id="email-error">{errors.email && touched.email && errors.email}</FormHelperTextMui>}
+                                </FormControlMui>
                                 <br/>
-                                <FormControl fullWidth error={!!errors.password && touched.password}>
-                                    <InputLabel htmlFor="password">Password</InputLabel>
-                                    <Input
+                                <FormControlMui fullWidth error={!!errors.password && touched.password}>
+                                    <InputLabelMui htmlFor="password">Password</InputLabelMui>
+                                    <InputMui
                                         name="password"
                                         type="password"
                                         id="password"
@@ -86,46 +86,46 @@ const LoginForm: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                     />
-                                    {<FormHelperText id="password-error">{errors.email && touched.email && errors.email}</FormHelperText>}
-                                </FormControl>
-                            </DialogContent>
+                                    {<FormHelperTextMui id="password-error">{errors.email && touched.email && errors.email}</FormHelperTextMui>}
+                                </FormControlMui>
+                            </DialogContentMui>
                             {
-                                props.loginErrorMessage && <DialogContent>
-                                    <FormHelperText id="my-helper-text" error={true}>
+                                props.loginErrorMessage && <DialogContentMui>
+                                    <FormHelperTextMui id="my-helper-text" error={true}>
                                         {props.loginErrorMessage}
-                                    </FormHelperText>
-                                </DialogContent>
+                                    </FormHelperTextMui>
+                                </DialogContentMui>
                             }
-                            <DialogActions>
-                                <Button
+                            <DialogActionsMui>
+                                <ButtonMui
                                     onClick={()=>handleSubmit()}
                                     color="primary"
                                     disabled={isSubmitting}
                                 >
                                     Войти
-                                </Button>
-                                <Button
+                                </ButtonMui>
+                                <ButtonMui
                                     onClick={handleClose}
                                     color="primary"
                                     disabled={isSubmitting}
                                 >
                                     Отмена
-                                </Button>
-                            </ DialogActions>
+                                </ButtonMui>
+                            </ DialogActionsMui>
                         </Form>
                     )}
                 </Formik>
-            </Dialog>
+            </DialogMui>
         </div>
     );
 }
 
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         loginErrorMessage: state.auth.loginErrorMessage
     }
 }
-type MapStatePropsType = ReturnType<typeof mapStateToProps>
 
 type MapDispatchProps = {
     showLoginForm: (loginFormShown: boolean) => void

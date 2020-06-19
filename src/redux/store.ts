@@ -25,13 +25,13 @@ type RootReducerType = typeof rootReducer
 export type AppStateType = ReturnType<RootReducerType>
 
 /**
- * Generic
- * Выведение типа объекта с подобъектами
+ * Generic.
+ * Получение типа объединения из подобъектов.
  * */
 type UnionTypeFromObj<T> = T extends {[key: string]: infer R} ? R : never
 /**
- * Generic
- * Выведение типа объекта с подобъектами в виде возвращаемых значений для подобъектов функций
+ * Generic.
+ * Получение типа объединения из возвращаемых значений функций другого типа объединения.
  * */
 export type ActionsTypes<T extends {[key: string]: (...args: any[]) => any}> = ReturnType<UnionTypeFromObj<T>>
 

@@ -4,6 +4,10 @@ import {authAPI, usersAPI} from "../api/api"
 import {AuthorizationFailedException} from "../exceptions/exceptions"
 import Cookies from 'js-cookie'
 
+type InitialStateType = typeof initialState
+type ActionsType = ActionsTypes<typeof actions>
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
+
 let initialState = {
     id: null as number | null,
     email: null as string | null,
@@ -12,8 +16,6 @@ let initialState = {
     loginFormShown: false,
     loginErrorMessage: null as string | null
 };
-
-type InitialStateType = typeof initialState
 
 const clientSideApiReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
@@ -40,7 +42,6 @@ const clientSideApiReducer = (state = initialState, action: ActionsType): Initia
     }
 }
 
-type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
     setUserData: (
         id: number | null,
@@ -52,7 +53,12 @@ export const actions = {
     setLoginErrorMessage: (loginErrorMessage: string | null) => ({type: 'auth/SET_LOGIN_ERROR_MESSAGE', loginErrorMessage} as const)
 }
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
+/**
+ * Авторизация пользователя
+ * @param {string} email
+ * @param {string} password
+ * @return {Promise<void>}
+ * */
 export const login = (email: string, password: string): ThunkType => async (dispatch) => {
     try {
         let authData = await authAPI.auth(email, password)
@@ -70,31 +76,30 @@ export const login = (email: string, password: string): ThunkType => async (disp
     }
 }
 
-export const fakeLogin = (): ThunkType => async (dispatch) => {
-    return new Promise((resolve, reject) => {
-        try {
-            setTimeout(() => {
-                dispatch(actions.setUserData(0, 'testuser@email.com', 'testuser', true))
-                resolve()
-            } ,2000)
-        }
-        catch (e) {
-            alert(e.message)
-            reject()
-        }
-    })
-}
-
+/**
+ * Выход пользователя
+ * @return {Promise<void>}
+ * */
 export const logout = (): ThunkType => async (dispatch) => {
     Cookies.remove('email')
     Cookies.remove('password')
     dispatch(actions.setUserData(null, null, null, false))
 }
 
+/**
+ * Показывает форму логина
+ * @param {boolean} loginFormShown
+ * @return {Promise<void>}
+ * */
 export const showLoginForm = (loginFormShown: boolean): ThunkType => async (dispatch) => {
     dispatch(actions.showLoginForm(loginFormShown))
 }
 
+/**
+ * Устанавливает ошибку логина
+ * @param {string | null} loginErrorMessage
+ * @return {Promise<void>}
+ * */
 export const setLoginErrorMessage = (loginErrorMessage: string | null): ThunkType => async (dispatch) => {
     dispatch(actions.setLoginErrorMessage(loginErrorMessage))
 }

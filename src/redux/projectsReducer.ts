@@ -1,18 +1,18 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
-import {authAPI, projectsAPI, usersAPI} from "../api/api"
+import {projectsAPI} from "../api/api"
 import {ProjectToUserIdsMatchType, ProjectType} from "../types/types"
-import {useSnackbar} from "notistack"
 import {newError} from "./appReducer"
+
+type InitialStateType = typeof initialState
+type ActionsType = ActionsTypes<typeof actions>
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
     projects: [] as Array<ProjectType>,
     isFetching: false,
     selectedProjectId: null as number | null
 };
-
-type InitialStateType = typeof initialState
-
 
 const projectsReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
@@ -37,7 +37,6 @@ const projectsReducer = (state = initialState, action: ActionsType): InitialStat
     }
 }
 
-type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
     setProjects: (projects: Array<ProjectType>) => ({
         type: 'projects/SET_PROJECTS',
@@ -48,7 +47,11 @@ export const actions = {
     setSelectedProjectId: (selectedProjectId: number) => ({type: 'projects/SET_SELECTED_PROJECT_ID', selectedProjectId} as const),
 }
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
+/**
+ * Получение проектов для указанного списка ID пользователей
+ * @param {Array<number>} userIds
+ * @return {Promise<void>}
+ * */
 export const getProjects = (userIds: Array<number>): ThunkType => async (dispatch) => {
     try {
         dispatch(actions.setFetching(true))
@@ -62,14 +65,29 @@ export const getProjects = (userIds: Array<number>): ThunkType => async (dispatc
     }
 }
 
+/**
+ * Установка списка проектов
+ * @param {Array<ProjectType>} projects
+ * @return {Promise<void>}
+ * */
 export const setProjects = (projects: Array<ProjectType>): ThunkType => async (dispatch) => {
     dispatch(actions.setProjects(projects))
 }
 
+/**
+ * Установка флага получения данных
+ * @param {boolean} isFetching
+ * @return {Promise<void>}
+ * */
 export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
     dispatch(actions.setFetching(isFetching))
 }
 
+/**
+ * Установка значения ID выбранного проекта
+ * @param {number} selectedProjectId
+ * @return {Promise<void>}
+ * */
 export const setSelectedProjectId = (selectedProjectId: number): ThunkType => async (dispatch) => {
     dispatch(actions.setSelectedProjectId(selectedProjectId))
 }

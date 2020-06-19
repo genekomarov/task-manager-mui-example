@@ -1,9 +1,13 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
-import {authAPI, projectsAPI, tasksAPI, usersAPI} from "../api/api"
-import {ProjectToUserIdsMatchType, ProjectType, TaskFilterType, TaskSortType, TaskType, UserType} from "../types/types"
+import {tasksAPI} from "../api/api"
+import {TaskFilterType, TaskSortType, TaskType} from "../types/types"
 import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
 import {newError} from "./appReducer"
+
+type InitialStateType = typeof initialState
+type ActionsType = ActionsTypes<typeof actions>
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
     tasks: [] as Array<TaskType>,
@@ -20,7 +24,6 @@ let initialState = {
     countOfShownTasks: 0,
     idCounter: 1000
 };
-type InitialStateType = typeof initialState
 
 const tasksReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
@@ -93,7 +96,6 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                     }
                 ],
             }
-
         }
         case "tasks/NEW_TASK":
             return {
@@ -116,16 +118,12 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
     }
 };
 
-type ActionsType = ActionsTypes<typeof actions>
 export const actions = {
     setTasks: (tasks: Array<TaskType>) => ({type: 'tasks/SET_TASKS', tasks} as const),
     setFetching: (isFetching: boolean) => ({type: 'tasks/SET_FETCHING', isFetching} as const),
     setFilter: (filter: TaskFilterType) => ({type: 'tasks/SET_FILTER', filter} as const),
     setSort: (sort: TaskSortType) => ({type: 'tasks/SET_SORT', sort} as const),
-    setCountOfShownTasks: (countOfShownTasks: number) => ({
-        type: 'tasks/SET_COUNT_OF_SHOWN_TASKS',
-        countOfShownTasks
-    } as const),
+    setCountOfShownTasks: (countOfShownTasks: number) => ({type: 'tasks/SET_COUNT_OF_SHOWN_TASKS', countOfShownTasks} as const),
     changeTask: (taskId: number, status: boolean, title: string) => ({
         type: 'tasks/CHANGE_TASK',
         taskId,
@@ -133,16 +131,16 @@ export const actions = {
         title
     } as const),
     deleteTask: (taskId: number) => ({type: 'tasks/DELETE_TASK', taskId} as const),
-    newTask: (task: TaskType) => ({
-        type: 'tasks/NEW_TASK', task
-    } as const),
+    newTask: (task: TaskType) => ({type: 'tasks/NEW_TASK', task} as const),
 }
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
-export const getTasks = (
-    projectIds: Array<number> | null,
-    userIds: Array<number> | null
-): ThunkType => async (dispatch) => {
+/**
+ * Получение задач для указанного списка ID проектов или пользователей
+ * @param {Array<number> | null} projectIds
+ * @param {Array<number> | null} userIds
+ * @return {Promise<void>}
+ * */
+export const getTasks = (projectIds: Array<number> | null, userIds: Array<number> | null): ThunkType => async (dispatch) => {
     try {
         let tasks = await tasksAPI.getTasksByProjectOrUserIds(projectIds, userIds)
         dispatch(actions.setTasks(tasks))
@@ -153,10 +151,21 @@ export const getTasks = (
     }
 }
 
+/**
+ * Установка флага получения данных
+ * @param {boolean} isFetching
+ * @return {Promise<void>}
+ * */
 export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
     dispatch(actions.setFetching(isFetching))
 }
 
+/**
+ * Установка фильтра
+ * @param {TaskFilterType} filter
+ * @param {boolean} rewrite - Флаг предварительного сброса текущего значения перед установкой нового
+ * @return {Promise<void>}
+ * */
 export const setFilter = (filter: TaskFilterType, rewrite = false): ThunkType => async (dispatch) => {
     if (rewrite) dispatch(actions.setFilter({
         userIds: filter.userIds !== undefined ? null : undefined,
@@ -166,16 +175,33 @@ export const setFilter = (filter: TaskFilterType, rewrite = false): ThunkType =>
     dispatch(actions.setFilter(filter))
 }
 
+/**
+ * Установка сортировки
+ * @param {TaskSortType} sort
+ * @return {Promise<void>}
+ * */
 export const setSort = (sort: TaskSortType): ThunkType => async (dispatch) => {
     dispatch(actions.setSort(sort))
 }
 
+/**
+ * Установка количества показанных задач
+ * @param {number} countOfShownTasks
+ * @return {Promise<void>}
+ * */
 export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => async (dispatch) => {
     dispatch(actions.setCountOfShownTasks(countOfShownTasks))
 }
 
+/**
+ * Удаление задачи
+ * @param {number} taskId
+ * @return {Promise<void>}
+ * */
 export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
     try {
+        // Эта строка закомментрированая, так как используется fake api
+        // Попытка удаления задачи, не существующей на сервере, приводит к выбросу исключения
         /*let response = await tasksAPI.deleteTask(taskId)*/
         dispatch(actions.deleteTask(taskId))
         await dispatch(addIdToDeleted('tasks', taskId))
@@ -185,8 +211,15 @@ export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
     }
 }
 
+/**
+ * Изменение задачи
+ * @param {TaskType} task
+ * @return {Promise<void>}
+ * */
 export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
     try {
+        // Эта строка закомментрированая, так как используется fake api
+        // Попытка изменения задачи, не существующей на сервере, приводит к выбросу исключения
         /*let response = await tasksAPI.changeTask(task.id, task.title, task.isDone)*/
         dispatch(actions.changeTask(task.id, task.isDone, task.title))
         await dispatch(addIdToDeleted('tasks', task.id))
@@ -197,9 +230,14 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
     }
 }
 
+/**
+ * Добавление задачи
+ * @param {TaskType} task
+ * @return {Promise<void>}
+ * */
 export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
     try {
-        /*let response = await tasksAPI.addNewTask(task)*/
+        let response = await tasksAPI.addNewTask(task)
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
     } catch (e) {

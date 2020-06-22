@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
-            maxWidth: 600,
             backgroundColor: theme.palette.background.paper,
             display: 'flex',
             flexDirection: 'column',
@@ -24,10 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
             alignSelf: 'center',
             margin: theme.spacing(2),
         },
-        itemSecondaryText: {
-            display: 'flex',
-            justifyContent: 'space-between',
-        },
     }),
 )
 
@@ -35,19 +30,22 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) =>
 
     const classes = useStyles();
 
+    // Установка флага процесса загрузки при загрузке списка пользователей
+    let {usersIsFetching, setFetching, selectedProjectId, getTasks} = props
     useEffect(() => {
-        props.usersIsFetching
-            ? props.setFetching(true)
-            : props.selectedProjectId !== null && props.getTasks([props.selectedProjectId], null)
-    }, [props.usersIsFetching])
+        usersIsFetching
+            ? setFetching(true)
+            : selectedProjectId !== null && getTasks([selectedProjectId], null)
+    }, [usersIsFetching, setFetching, selectedProjectId, getTasks])
 
-
+    // Объединение данных, полученных с сервера, с данными на стороне клиента
     let tasksWithClientSideData = props.tasks.filter(
         t => !props.tasksOnClient.deleted.filter(
             item => item === t.id
         ).length
     ).concat(props.tasksOnClient.items.filter(item => item.project === props.selectedProjectId))
 
+    // Фильтрация задач
     let filteredTasks = tasksWithClientSideData.filter((t) => {
         let statusFilter = props.filter.status !== null ? t.isDone === props.filter.status : true
         let usersFilter = props.filter.userIds && props.filter.userIds.length > 0 ? props.filter.userIds.filter(id => id === t.author).length > 0 : true
@@ -55,6 +53,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) =>
         return statusFilter && usersFilter && contentFilter
     })
 
+    // Сортировка задач
     filteredTasks = filteredTasks.sort((a: TaskType, b: TaskType): number => {
         let sortResultByStatus = sortByStatus(a, b, props.sort.firstCompleted)
         let sortResultByDate = sortByDate(a, b, props.sort.firstNew)
@@ -63,11 +62,15 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) =>
         else return sortResultByDate
     })
 
+    // Установка значения числа показываемых задач
+    let {setCountOfShownTasks} = props
     useEffect(()=>{
-        props.setCountOfShownTasks(filteredTasks.length)
-    },[filteredTasks])
+        setCountOfShownTasks(filteredTasks.length)
+    },[filteredTasks.length, setCountOfShownTasks])
 
     return (
+
+        /*Установка положения области задач по середине блока и ширины*/
         <ContainerMui maxWidth={"sm"}>
             <ListMui className={classes.root}>
                 {
@@ -78,7 +81,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) =>
                                 {filteredTasks.map(item => <Task key={item.id} task={item}/>)}
                                 <NewTask/>
                             </div>
-                    )
+                        )
                 }
             </ListMui>
         </ContainerMui>

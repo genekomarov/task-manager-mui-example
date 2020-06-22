@@ -40,11 +40,12 @@ const Projects: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => 
     const [open, setOpen] = React.useState(true)
 
     // Изменение списка проектов при изменении статуса авторизации
+    let {myId, getProjects, setProjects} = props
     useEffect(() => {
-        props.myId!==null
-            ? props.getProjects([props.myId])
-            : props.setProjects([])
-    },[props.myId])
+        myId!==null
+            ? getProjects([myId])
+            : setProjects([])
+    },[myId, getProjects, setProjects])
 
     const handleCollapseList = () => {
         setOpen(!open)

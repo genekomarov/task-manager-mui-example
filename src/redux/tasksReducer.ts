@@ -237,7 +237,7 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
  * */
 export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
     try {
-        let response = await tasksAPI.addNewTask(task)
+        await tasksAPI.addNewTask(task)
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
     } catch (e) {

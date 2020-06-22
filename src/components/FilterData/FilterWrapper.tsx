@@ -7,7 +7,11 @@ import CollapseMui from '@material-ui/core/Collapse'
 import ExpandLessMui from '@material-ui/icons/ExpandLess'
 import ExpandMoreMui from '@material-ui/icons/ExpandMore'
 import SearchIconMui from '@material-ui/icons/Search'
-import Filter from "./Filter"
+import FilterRow from "./FilterRow/FilterRow"
+import CombinedSort from "./CombinedSort/CombinedSort"
+import ByStatusFilter from "./ByStatusFilter/ByStatusFilter"
+import ByUsersFilter from "./ByUsersFilter/ByUsersFilter"
+import ByContentFilter from "./ByContentFilter/ByContentFilter"
 
 const FilterWrapper: React.FC<any> = () => {
 
@@ -30,8 +34,18 @@ const FilterWrapper: React.FC<any> = () => {
             </ListItemMui>
             <CollapseMui in={open} timeout="auto" unmountOnExit>
                 <ListMui component="div" disablePadding>
-
-                    <Filter/>
+                    <ListMui disablePadding>
+                        <FilterRow rowNumber={1}>
+                            <CombinedSort/>
+                            <ByStatusFilter/>
+                        </FilterRow>
+                        <FilterRow rowNumber={2}>
+                            <ByUsersFilter/>
+                        </FilterRow>
+                        <FilterRow rowNumber={3}>
+                            <ByContentFilter/>
+                        </FilterRow>
+                    </ListMui>
                 </ListMui>
             </CollapseMui>
         </>

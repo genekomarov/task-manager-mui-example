@@ -1,18 +1,11 @@
 import React from "react"
+import {connect} from "react-redux"
 import ListItemMui from "@material-ui/core/ListItem/ListItem"
 import ListItemSecondaryActionMui from "@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction"
 import IconButtonMui from "@material-ui/core/IconButton/IconButton"
 import BackspaceIconMui from '@material-ui/icons/Backspace'
-import {AppStateType} from "../../../redux/store"
-import {appInitializing} from "../../../redux/appReducer"
-import {connect} from "react-redux"
 import {TaskFilterType, TaskSortType} from "../../../types/types"
 import {setFilter, setSort} from "../../../redux/tasksReducer"
-
-type OwnProps = {
-    children: React.ReactElement | React.ReactElement[]
-    rowNumber: number
-}
 
 const FilterRow: React.FC<OwnProps & MapDispatchProps> = (props) => {
 
@@ -29,7 +22,6 @@ const FilterRow: React.FC<OwnProps & MapDispatchProps> = (props) => {
                 props.setFilter({userIds: undefined, status: undefined, content: null})
                 break
             default: break
-
         }
     }
 
@@ -45,13 +37,10 @@ const FilterRow: React.FC<OwnProps & MapDispatchProps> = (props) => {
     )
 }
 
-const mapStateToProps = (state: AppStateType) => {
-    return {
-
-    }
+type OwnProps = {
+    children: React.ReactElement | React.ReactElement[]
+    rowNumber: number
 }
-type MapStatePropsType = ReturnType<typeof mapStateToProps>
-
 type MapDispatchProps = {
     setFilter: (filter: TaskFilterType) => void
     setSort: (sort: TaskSortType) => void
@@ -61,4 +50,4 @@ const mapDispatchToProps = {
     setSort
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FilterRow)
+export default connect(null, mapDispatchToProps)(FilterRow)

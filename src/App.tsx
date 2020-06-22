@@ -67,16 +67,18 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     const [mobileOpen, setMobileOpen] = React.useState(false)
 
     // Запуск инициализации приложения
+    let {appInitializing} = props
     useEffect(() => {
-        props.appInitializing()
-    }, [])
+        appInitializing()
+    }, [appInitializing])
 
     // Добавление ошибки в Snackbar
     const {enqueueSnackbar} = useSnackbar()
+    let {errors} = props
     useEffect(() => {
         let variant: VariantType = "error"
-        props.errors.length > 0 && enqueueSnackbar(props.errors[props.errors.length - 1], {variant})
-    }, [props.errors])
+        errors.length > 0 && enqueueSnackbar(errors[errors.length - 1], {variant})
+    }, [errors, enqueueSnackbar])
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -87,8 +89,6 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
         <div>
             <div className={classes.toolbar}/>
             <DividerMui/>
-
-            {/*Содержимое боковой панели*/}
             <Menu/>
         </div>
     );

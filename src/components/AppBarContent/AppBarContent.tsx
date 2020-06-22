@@ -1,7 +1,6 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
 import {connect} from "react-redux"
-import {Helmet} from "react-helmet"
 import IconButtonMui from '@material-ui/core/IconButton'
 import TypographyMui from '@material-ui/core/Typography'
 import MenuItemMui from '@material-ui/core/MenuItem'
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 display: 'none',
             },
         },
-        typography__authorizedUserNickname: {
+        authorizedUserNickname__typography: {
             marginRight: theme.spacing(2),
             alignSelf: 'center',
         },
@@ -49,6 +48,12 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
     const isMenuOpen = Boolean(anchorEl)
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+
+    const countOfShownTasks = props.isAuth ? props.countOfShownTasks : 0
+
+    useEffect(()=>{
+        document.title = `(${countOfShownTasks}) Менеджер задач`
+    },[countOfShownTasks])
 
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget)
@@ -75,8 +80,6 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
         handleMenuClose()
         props.logout()
     }
-
-    const countOfShownTasks = props.isAuth ? props.countOfShownTasks : 0
 
     const menuId = 'primary-search-account-menu'
     const renderMenu = (
@@ -126,7 +129,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
                 {`Менеджер задач (${countOfShownTasks})`}
 
                 {/*Установка текста заголовка в название вкладки браузера*/}
-                <Helmet title={`(${countOfShownTasks}) Менеджер задач`}/>
+                {}
             </TypographyMui>
 
             <div className={classes.grow}/>
@@ -140,7 +143,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
                     </div>
                     :
                     <div className={classes.sectionDesktop}>
-                        <TypographyMui className={classes.typography__authorizedUserNickname}
+                        <TypographyMui className={classes.authorizedUserNickname__typography}
                                        variant='body1'>{props.myNickname}</TypographyMui>
                         <IconButtonMui
                             edge="end"

@@ -1,7 +1,7 @@
 import React from "react"
 
 /**
- * Переновит строку в зависимости от положения коретки у объекта события onKeyDown для текстровых полей
+ * Переносит строку в зависимости от положения коретки у объекта события onKeyDown для текстровых полей
  *
  * @param {React.KeyboardEvent<HTMLInputElement>} e - Объект события onKeyDown
  * @return {React.KeyboardEvent<HTMLInputElement>} Объект события с измененным значением поля

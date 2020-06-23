@@ -9,7 +9,7 @@ const TabsPanel: React.FC = () => {
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue);
     };
-
+    // todo: сбрасываем выбранный проект, чистим команду, получаем и сетаем свои таски
     return (
         <Tabs value={value} onChange={handleChange}>
             <Tab label={'Все пользователи'} href={'/'} to={'/'} component={NavLink}/>

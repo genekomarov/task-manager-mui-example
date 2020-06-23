@@ -22,7 +22,8 @@ let initialState = {
         firstNew: null as boolean | null
     } as TaskSortType,
     countOfShownTasks: 0,
-    idCounter: 1000
+    idCounter: 1000,
+    addNewTaskInProcess: false
 };
 
 const tasksReducer = (state = initialState, action: ActionsType): InitialStateType => {
@@ -113,6 +114,11 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                 ],*/
                 idCounter: state.idCounter + 1
             }
+            case "tasks/SET_ADD_NEW_TASK_IN_PROGRESS":
+                return {
+                    ...state,
+                    addNewTaskInProcess: action.inProgress
+                }
         default:
             return state
     }
@@ -132,6 +138,7 @@ export const actions = {
     } as const),
     deleteTask: (taskId: number) => ({type: 'tasks/DELETE_TASK', taskId} as const),
     newTask: (task: TaskType) => ({type: 'tasks/NEW_TASK', task} as const),
+    setAddNewTaskInProgress: (inProgress: boolean) => ({type: 'tasks/SET_ADD_NEW_TASK_IN_PROGRESS', inProgress} as const)
 }
 
 /**
@@ -237,11 +244,14 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
  * */
 export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
     try {
+        dispatch(actions.setAddNewTaskInProgress(true))
         await tasksAPI.addNewTask(task)
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка добавления задачи'))
+    } finally {
+        dispatch(actions.setAddNewTaskInProgress(false))
     }
 }
 

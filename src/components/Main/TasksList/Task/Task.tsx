@@ -55,7 +55,10 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
                     }}
                     onSubmit={(values, {setSubmitting}) => {
                         setTimeout(() => {
-                            handleChangeTitle(values.title)
+                            if (values.title === '') values.title = task.title
+                            else {
+                                handleChangeTitle(values.title)
+                            }
                             setSubmitting(false)
                         }, 0)
                     }}
@@ -95,11 +98,12 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
             <ListItemIconMui onChange={handleChangeStatus}>
                 <CheckboxMui
                     className={task.author !== props.myId ? classes.checkbox_cursor_default : ''}
-                    color={task.author === props.myId ? 'secondary' : 'primary'}
+                    color='secondary'
                     edge="start"
                     checked={task.isDone}
                     tabIndex={-1}
                     disableRipple
+                    disabled={task.author !== props.myId}
                 />
             </ListItemIconMui>
             <ListItemTextMui

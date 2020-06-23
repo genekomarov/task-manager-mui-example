@@ -35,10 +35,13 @@ const NewTask: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
             initialValues={{title: ''}}
             onSubmit={(values, {setSubmitting}) => {
                 setTimeout(() => {
-                    props.selectedProjectId !== null && props.myId !== null && handleNewTask(
-                        props.idCounter, props.selectedProjectId, props.myId, Date.now(), values.title, false
-                    )
-                    values.title=''
+                    if (values.title === '') setSubmitting(false)
+                    else {
+                        props.selectedProjectId !== null && props.myId !== null && handleNewTask(
+                            props.idCounter, props.selectedProjectId, props.myId, Date.now(), values.title, false
+                        )
+                        values.title=''
+                    }
                     setSubmitting(false)
                 }, 0)
             }}
@@ -61,6 +64,7 @@ const NewTask: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                                                 hendleKeyDownOnTextarea(
                                                     handleSubmit, handleChange, navigator.userAgent
                                                 )}
+                                            disabled={props.inProgress}
                                         />
                                     </FormControl>
                                 </div>
@@ -70,6 +74,7 @@ const NewTask: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
                                 <IconButtonMui
                                     onClick={() => {handleSubmit()}}
                                     edge="end"
+                                    disabled={props.inProgress}
                                 >
                                     <AddCircleIcon fontSize='large'/>
                                 </IconButtonMui>
@@ -87,7 +92,8 @@ const mapStateToProps = (state: AppStateType) => {
     return {
         idCounter: state.tasks.idCounter,
         selectedProjectId: state.projects.selectedProjectId,
-        myId: state.auth.id
+        myId: state.auth.id,
+        inProgress: state.tasks.addNewTaskInProcess
     }
 }
 

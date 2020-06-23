@@ -101,7 +101,8 @@ const mapStateToProps = (state: AppStateType) => {
         tasks: state.tasks.tasks,
         filter: state.tasks.filter,
         sort: state.tasks.sort,
-        tasksOnClient: state.clientSideDb.clientSideData.tasks
+        tasksOnClient: state.clientSideDb.clientSideData.tasks,
+        addNewTaskInProcess: state.tasks.addNewTaskInProcess
     }
 }
 

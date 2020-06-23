@@ -12,6 +12,7 @@ import CombinedSort from "./CombinedSort/CombinedSort"
 import ByStatusFilter from "./ByStatusFilter/ByStatusFilter"
 import ByUsersFilter from "./ByUsersFilter/ByUsersFilter"
 import ByContentFilter from "./ByContentFilter/ByContentFilter"
+import {Route} from "react-router-dom"
 
 const FilterWrapper: React.FC<any> = () => {
 
@@ -39,9 +40,13 @@ const FilterWrapper: React.FC<any> = () => {
                             <CombinedSort/>
                             <ByStatusFilter/>
                         </FilterRow>
-                        <FilterRow rowNumber={2}>
-                            <ByUsersFilter/>
-                        </FilterRow>
+
+                        <Route exact path='/'>
+                            <FilterRow rowNumber={2}>
+                                <ByUsersFilter/>
+                            </FilterRow>
+                        </Route>
+
                         <FilterRow rowNumber={3}>
                             <ByContentFilter/>
                         </FilterRow>

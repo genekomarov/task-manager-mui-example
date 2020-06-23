@@ -2,9 +2,9 @@ import React, {ChangeEvent} from 'react'
 import {connect} from "react-redux"
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import TextFieldMui from '@material-ui/core/TextField'
-import {AppStateType} from "../../../redux/store"
-import {TaskFilterType} from "../../../types/types"
-import {setFilter} from "../../../redux/tasksReducer"
+import {AppStateType} from "../../../../redux/store"
+import {TaskFilterType} from "../../../../types/types"
+import {setFilter} from "../../../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

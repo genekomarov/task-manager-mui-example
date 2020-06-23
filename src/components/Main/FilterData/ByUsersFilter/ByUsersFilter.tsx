@@ -3,9 +3,9 @@ import {connect} from "react-redux"
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import AutocompleteMui from '@material-ui/lab/Autocomplete'
 import TextFieldMui from '@material-ui/core/TextField'
-import {AppStateType} from "../../../redux/store"
-import {TaskFilterType, UserType} from "../../../types/types"
-import {setFilter} from "../../../redux/tasksReducer"
+import {AppStateType} from "../../../../redux/store"
+import {TaskFilterType, UserType} from "../../../../types/types"
+import {setFilter} from "../../../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

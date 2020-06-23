@@ -9,10 +9,10 @@ import IconButtonMui from '@material-ui/core/IconButton'
 import FormControl from "@material-ui/core/FormControl"
 import OutlinedInput from "@material-ui/core/OutlinedInput"
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import {AppStateType} from "../../../redux/store"
-import {TaskType} from "../../../types/types"
-import {newTask} from "../../../redux/tasksReducer"
-import {hendleKeyDownOnTextarea} from "../../../utils/wrapStringForTextarea"
+import {AppStateType} from "../../../../redux/store"
+import {newTask} from "../../../../redux/tasksReducer"
+import {TaskType} from "../../../../types/types"
+import {hendleKeyDownOnTextarea} from "../../../../utils/wrapStringForTextarea"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

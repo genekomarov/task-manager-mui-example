@@ -5,12 +5,15 @@ import store from "./redux/store"
 import * as serviceWorker from './serviceWorker';
 import {SnackbarProvider} from "notistack"
 import App from './App';
+import {BrowserRouter, HashRouter} from "react-router-dom"
 
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <SnackbarProvider maxSnack={3}>
-                <App/>
+                <HashRouter>
+                    <App/>
+                </HashRouter>
             </SnackbarProvider>
         </Provider>
     </React.StrictMode>,

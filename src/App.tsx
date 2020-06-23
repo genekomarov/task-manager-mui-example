@@ -4,22 +4,16 @@ import {AppStateType} from "./redux/store"
 import {connect} from "react-redux"
 import {useSnackbar, VariantType} from "notistack"
 import {makeStyles, useTheme, Theme, createStyles} from '@material-ui/core/styles'
-import AppBarMui from '@material-ui/core/AppBar'
 import CssBaselineMui from '@material-ui/core/CssBaseline'
 import DividerMui from '@material-ui/core/Divider'
 import DrawerMui from '@material-ui/core/Drawer'
 import HiddenMui from '@material-ui/core/Hidden'
-import IconButtonMui from '@material-ui/core/IconButton'
-import ToolbarMui from '@material-ui/core/Toolbar'
-import CircularProgressMui from "@material-ui/core/CircularProgress"
-import BackdropMui from "@material-ui/core/Backdrop"
-import MenuIconMui from '@material-ui/icons/Menu'
 import Menu from "./components/Menu/Menu"
-import AppBarContent from "./components/AppBarContent/AppBarContent"
-import FilterWrapper from "./components/FilterData/FilterWrapper"
-import TasksList from "./components/TasksList/TasksList"
 import LoginForm from "./components/LoginForm/LoginForm"
 import {appInitializing} from "./redux/appReducer"
+import BackdropPreloader from "./components/BackdropPreloader/BackdropPreloader"
+import AppTopBar from "./components/AppTopBar/AppTopBar"
+import Main from "./components/Main/Main"
 
 const drawerWidth = 240; //Ширина бокового меню
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,23 +33,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginLeft: drawerWidth,
             },
         },
-        menuButton: {
-            marginRight: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-                display: 'none',
-            },
-        },
+
         toolbar: theme.mixins.toolbar,
         drawerPaper: {
             width: drawerWidth,
-        },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing(3),
-        },
-        backdrop: {
-            zIndex: theme.zIndex.drawer + 1,
-            color: '#fff',
         },
     }),
 );
@@ -64,7 +45,10 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
 
     const classes = useStyles();
     const theme = useTheme();
+
+    //Управление показом боковой панели в мобильном режиме
     const [mobileOpen, setMobileOpen] = React.useState(false)
+    const handleDrawerToggle = () => {setMobileOpen(!mobileOpen)}
 
     // Запуск инициализации приложения
     let {appInitializing} = props
@@ -80,11 +64,7 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
         errors.length > 0 && enqueueSnackbar(errors[errors.length - 1], {variant})
     }, [errors, enqueueSnackbar])
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
-
-    // Боковая панель
+    // Содержимое боковой панели
     const drawer = (
         <div>
             <div className={classes.toolbar}/>
@@ -96,10 +76,8 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     return (
         <div className={classes.root}>
 
-            {/*Затемнение с индикатором загрузки*/}
-            <BackdropMui className={classes.backdrop} open={!props.isInitialized}>
-                <CircularProgressMui color="inherit"/>
-            </BackdropMui>
+            {/*Затемнение и прелодер при инициализации*/}
+            <BackdropPreloader open={!props.isInitialized}/>
 
             {/*Форма логина*/}
             {props.loginFormShown && <LoginForm/>}
@@ -107,23 +85,10 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
             <CssBaselineMui/>
 
             {/*Верхняя панель*/}
-            <AppBarMui position="fixed" className={classes.appBar}>
-                <ToolbarMui>
-                    <IconButtonMui
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIconMui/>
-                    </IconButtonMui>
-                    <AppBarContent/>
-                </ToolbarMui>
-            </AppBarMui>
+            <AppTopBar/>
 
             {/*Обертка над боковой панелью для управления режимом отображения*/}
-            <nav className={classes.drawer} aria-label="menu folders">
+            <nav className={classes.drawer}>
                 <HiddenMui smUp implementation="css">
                     <DrawerMui
                         variant="temporary"
@@ -147,14 +112,8 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
                 </HiddenMui>
             </nav>
 
-            {/*Отображение основного контента*/}
-            {
-                props.isAuth && <main className={classes.content}>
-                    <div className={classes.toolbar}/>
-                    <FilterWrapper/>
-                    <TasksList/>
-                </main>
-            }
+            {/*Основное содержимое*/}
+            {props.isAuth && <Main/>}
         </div>
     )
 }

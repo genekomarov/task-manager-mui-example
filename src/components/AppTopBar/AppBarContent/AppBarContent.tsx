@@ -8,8 +8,8 @@ import MenuMui from '@material-ui/core/Menu'
 import ButtonMui from "@material-ui/core/Button"
 import AccountCircleIconMui from '@material-ui/icons/AccountCircle'
 import MoreIconMui from '@material-ui/icons/MoreVert'
-import {AppStateType} from "../../redux/store"
-import {logout, showLoginForm} from "../../redux/authReducer"
+import {AppStateType} from "../../../redux/store"
+import {logout, showLoginForm} from "../../../redux/authReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

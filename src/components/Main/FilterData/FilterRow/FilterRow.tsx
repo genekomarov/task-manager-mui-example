@@ -4,8 +4,8 @@ import ListItemMui from "@material-ui/core/ListItem/ListItem"
 import ListItemSecondaryActionMui from "@material-ui/core/ListItemSecondaryAction/ListItemSecondaryAction"
 import IconButtonMui from "@material-ui/core/IconButton/IconButton"
 import BackspaceIconMui from '@material-ui/icons/Backspace'
-import {TaskFilterType, TaskSortType} from "../../../types/types"
-import {setFilter, setSort} from "../../../redux/tasksReducer"
+import {TaskFilterType, TaskSortType} from "../../../../types/types"
+import {setFilter, setSort} from "../../../../redux/tasksReducer"
 
 const FilterRow: React.FC<OwnProps & MapDispatchProps> = (props) => {
 

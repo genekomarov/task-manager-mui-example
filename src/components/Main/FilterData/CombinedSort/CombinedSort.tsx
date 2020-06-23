@@ -7,9 +7,9 @@ import SelectMui from '@material-ui/core/Select'
 import InputAdornmentMui from '@material-ui/core/InputAdornment'
 import Divider from "@material-ui/core/Divider"
 import FilterListIconMui from '@material-ui/icons/FilterList'
-import {AppStateType} from "../../../redux/store"
-import {TaskSortType} from "../../../types/types"
-import {setSort} from "../../../redux/tasksReducer"
+import {AppStateType} from "../../../../redux/store"
+import {setSort} from "../../../../redux/tasksReducer"
+import {TaskSortType} from "../../../../types/types"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

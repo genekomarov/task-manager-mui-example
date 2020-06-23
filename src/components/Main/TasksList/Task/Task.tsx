@@ -10,11 +10,11 @@ import CheckboxMui from '@material-ui/core/Checkbox'
 import IconButtonMui from '@material-ui/core/IconButton'
 import InputBaseMui from "@material-ui/core/InputBase"
 import DeleteOutlineIconMui from '@material-ui/icons/DeleteOutline'
-import {AppStateType} from "../../../redux/store"
-import {TaskType, UserType} from "../../../types/types"
-import {changeTask, deleteTask} from "../../../redux/tasksReducer"
-import {hendleKeyDownOnTextarea} from "../../../utils/wrapStringForTextarea"
-import {getDateString} from "../../../utils/dateHelper"
+import {TaskType, UserType} from "../../../../types/types"
+import {AppStateType} from "../../../../redux/store"
+import {changeTask, deleteTask} from "../../../../redux/tasksReducer"
+import {getDateString} from "../../../../utils/dateHelper"
+import {hendleKeyDownOnTextarea} from "../../../../utils/wrapStringForTextarea"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

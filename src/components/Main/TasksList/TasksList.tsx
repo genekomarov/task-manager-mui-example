@@ -4,12 +4,13 @@ import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
 import ContainerMui from "@material-ui/core/Container"
 import CircularProgressMui from "@material-ui/core/CircularProgress/CircularProgress"
-import {getTasks, setCountOfShownTasks, setFetching} from "../../redux/tasksReducer"
-import {AppStateType} from "../../redux/store"
-import {TaskType} from "../../types/types"
-import {sortByDate, sortByStatus} from "../../utils/tasksFilters"
 import Task from "./Task/Task"
 import NewTask from "./NewTask/NewTask"
+import {Route} from "react-router"
+import {AppStateType} from "../../../redux/store"
+import {getTasks, setCountOfShownTasks, setFetching} from "../../../redux/tasksReducer"
+import {TaskType} from "../../../types/types"
+import {sortByDate, sortByStatus} from "../../../utils/tasksFilters"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -79,7 +80,9 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) =>
                         : props.isAuth && (
                             <div>
                                 {filteredTasks.map(item => <Task key={item.id} task={item}/>)}
-                                <NewTask/>
+                                <Route exact path='/'>
+                                    <NewTask/>
+                                </Route>
                             </div>
                         )
                 }

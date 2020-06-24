@@ -1,28 +1,21 @@
 import './App.css'
-import React from 'react'
-import * as Api from '../src/api/api'
-import store from "./redux/store"
-import {getCounter} from "./utils/universalCounter"
-import {login, logout} from './redux/authReducer'
-import {getProjects} from "./redux/projectsReducer"
-import {getUsers} from "./redux/usersReducer"
-import {getTasks} from "./redux/tasksReducer"
-import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles'
-import AppBarMui from '@material-ui/core/AppBar'
+import React, {useEffect} from 'react'
+import {AppStateType} from "./redux/store"
+import {connect} from "react-redux"
+import {useSnackbar, VariantType} from "notistack"
+import {makeStyles, useTheme, Theme, createStyles} from '@material-ui/core/styles'
 import CssBaselineMui from '@material-ui/core/CssBaseline'
 import DividerMui from '@material-ui/core/Divider'
 import DrawerMui from '@material-ui/core/Drawer'
 import HiddenMui from '@material-ui/core/Hidden'
-import IconButtonMui from '@material-ui/core/IconButton'
-import ToolbarMui from '@material-ui/core/Toolbar'
-import MenuIconMui from '@material-ui/icons/Menu'
 import Menu from "./components/Menu/Menu"
-import AppBarContent from "./components/AppBarContent/AppBarContent"
-import FilterWrapper from "./components/FilterData/FilterWrapper"
-import TasksList from "./components/TasksList/TasksList"
+import LoginForm from "./components/LoginForm/LoginForm"
+import {appInitializing} from "./redux/appReducer"
+import BackdropPreloader from "./components/BackdropPreloader/BackdropPreloader"
+import AppTopBar from "./components/AppTopBar/AppTopBar"
+import Main from "./components/Main/Main"
 
-const drawerWidth = 240;
-
+const drawerWidth = 240; //Ширина бокового меню
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -40,99 +33,77 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginLeft: drawerWidth,
             },
         },
-        menuButton: {
-            marginRight: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-                display: 'none',
-            },
-        },
+
         toolbar: theme.mixins.toolbar,
         drawerPaper: {
             width: drawerWidth,
         },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing(3),
-        },
     }),
 );
 
-export default function App() {
-
-// @ts-ignore
-window.api = Api
-// @ts-ignore
-window.counter = getCounter
-// @ts-ignore
-window.dispatch = store.dispatch
-// @ts-ignore
-window.thunk = {}
-// @ts-ignore
-window.thunk.login = login
-// @ts-ignore
-window.thunk.logout = logout
-// @ts-ignore
-window.thunk.getProjects = getProjects
-// @ts-ignore
-window.thunk.getUsers = getUsers
-// @ts-ignore
-window.thunk.getTasks = getTasks
+const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
 
     const classes = useStyles();
     const theme = useTheme();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    //Управление показом боковой панели в мобильном режиме
+    const [mobileOpen, setMobileOpen] = React.useState(false)
+    const handleDrawerToggle = () => {setMobileOpen(!mobileOpen)}
 
+    // Запуск инициализации приложения
+    let {appInitializing} = props
+    useEffect(() => {
+        appInitializing()
+    }, [appInitializing])
+
+    // Добавление ошибки в Snackbar
+    const {enqueueSnackbar} = useSnackbar()
+    let {errors} = props
+    useEffect(() => {
+        let variant: VariantType = "error"
+        errors.length > 0 && enqueueSnackbar(errors[errors.length - 1], {variant})
+    }, [errors, enqueueSnackbar])
+
+    // Содержимое боковой панели
     const drawer = (
         <div>
-            <div className={classes.toolbar} />
-            <DividerMui />
-            <Menu />
+            <div className={classes.toolbar}/>
+            <DividerMui/>
+            <Menu/>
         </div>
     );
 
     return (
         <div className={classes.root}>
-            <CssBaselineMui />
-            <AppBarMui position="fixed" className={classes.appBar}>
-                <ToolbarMui>
-                    <IconButtonMui
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIconMui />
-                    </IconButtonMui>
-                    <AppBarContent/>
-                </ToolbarMui>
-            </AppBarMui>
-            <nav className={classes.drawer} aria-label="menu folders">
+
+            {/*Затемнение и прелодер при инициализации*/}
+            <BackdropPreloader open={!props.isInitialized}/>
+
+            {/*Форма логина*/}
+            {props.loginFormShown && <LoginForm/>}
+
+            <CssBaselineMui/>
+
+            {/*Верхняя панель*/}
+            <AppTopBar/>
+
+            {/*Обертка над боковой панелью для управления режимом отображения*/}
+            <nav className={classes.drawer}>
                 <HiddenMui smUp implementation="css">
                     <DrawerMui
                         variant="temporary"
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        ModalProps={{
-                            keepMounted: true,
-                        }}
+                        classes={{paper: classes.drawerPaper,}}
+                        ModalProps={{keepMounted: true,}}
                     >
                         {drawer}
                     </DrawerMui>
                 </HiddenMui>
                 <HiddenMui xsDown implementation="css">
                     <DrawerMui
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
+                        classes={{paper: classes.drawerPaper,}}
                         variant="permanent"
                         open
                     >
@@ -140,11 +111,28 @@ window.thunk.getTasks = getTasks
                     </DrawerMui>
                 </HiddenMui>
             </nav>
-            <main className={classes.content}>
-                <div className={classes.toolbar} />
-                <FilterWrapper/>
-                <TasksList/>
-            </main>
+
+            {/*Основное содержимое*/}
+            {props.isAuth && <Main/>}
         </div>
-    );
+    )
 }
+
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        isInitialized: state.app.isInitialized,
+        isAuth: state.auth.isAuth,
+        loginFormShown: state.auth.loginFormShown,
+        errors: state.app.errors
+    }
+}
+
+type MapDispatchPropsType = {
+    appInitializing: () => void
+}
+const mapDispatchToProps = {
+    appInitializing
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

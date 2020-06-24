@@ -1,3 +1,6 @@
+/**
+ * Исключение ошибки авторизации
+ * */
 export class AuthorizationFailedException {
     message: string;
     constructor () {

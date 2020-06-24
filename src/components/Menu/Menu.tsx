@@ -4,7 +4,7 @@ import ListSubheaderMui from '@material-ui/core/ListSubheader'
 import ListMui from '@material-ui/core/List'
 import DividerMui from "@material-ui/core/Divider/Divider"
 import Projects from "./Projects/Projects"
-import Team from "./Team/Team"
+import Team from "./Users/Users"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,11 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'flex-end',
         },
     }),
-);
+)
 
-export default function Menu() {
+const Menu: React.FC<any> = () => {    
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     return (
         <ListMui
@@ -40,9 +40,13 @@ export default function Menu() {
         >
             <DividerMui />
             <Projects/>
+
             <div className={classes.verticalSpacing} />
             <Team/>
+
             <DividerMui />
         </ListMui>
-    );
+    )
 }
+
+export default Menu

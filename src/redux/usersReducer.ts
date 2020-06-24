@@ -1,42 +1,80 @@
 import {ThunkAction} from "redux-thunk"
 import {ActionsTypes, AppStateType} from "./store"
-import {authAPI, projectsAPI, usersAPI} from "../api/api"
-import {ProjectToUserIdsMatch, ProjectType, UserType} from "../types/types"
-
-let initialState = {
-    users: [] as Array<UserType>
-};
+import {usersAPI} from "../api/api"
+import {ProjectToUserIdsMatchType, UserType} from "../types/types"
+import {newError} from "./appReducer"
 
 type InitialStateType = typeof initialState
+type ActionsType = ActionsTypes<typeof actions>
+type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
+let initialState = {
+    users: [] as Array<UserType>,
+    isFetching: false,
+    selectedUserId: null as number | null
+};
 
 const usersReducer = (state = initialState, action: ActionsType): InitialStateType => {
     switch (action.type) {
-        case "SET_USERS":
+        case "users/SET_USERS":
             return {
                 ...state,
                 users: action.users
             }
-        default: return state
+        case "users/SET_FETCHING":
+            return {
+                ...state,
+                isFetching: action.isFetching
+            }
+        case "users/SET_SELECTED_USER_ID":
+            return {
+                ...state,
+                selectedUserId: action.selectedUserId
+            }
+        default:
+            return state
     }
-};
-
-type ActionsType = ActionsTypes<typeof actions>
-export const actions = {
-    setUsers: (users: Array<UserType>) => ({type: 'SET_USERS', users} as const),
 }
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
+export const actions = {
+    setUsers: (users: Array<UserType>) => ({type: 'users/SET_USERS', users} as const),
+    setFetching: (isFetching: boolean) => ({type: 'users/SET_FETCHING', isFetching} as const),
+    setSelectedUserId: (selectedUserId: number | null) => ({type: 'users/SET_SELECTED_USER_ID', selectedUserId} as const)
+}
+
+/**
+ * Получение пользователей для указанного списка ID проектов
+ * @param {Array<number>} projectIds
+ * @return {Promise<void>}
+ * */
 export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatch) => {
     try {
-        let userIds: Array<ProjectToUserIdsMatch> = await usersAPI.getUserIdsByProjectIds(projectIds)
+        dispatch(actions.setFetching(true))
+        let userIds: Array<ProjectToUserIdsMatchType> = await usersAPI.getUserIdsByProjectIds(projectIds)
         let users: Array<UserType> = await usersAPI.getUsersByIds(userIds.map((u) => u.userId))
         dispatch(actions.setUsers(users))
+        dispatch(actions.setFetching(false))
+    } catch (e) {
+        dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))
     }
-    catch (e) {
-        alert(e.message)
-    }
+}
 
+/**
+ * Установка флага получения данных
+ * @param {boolean} isFetching
+ * @return {Promise<void>}
+ * */
+export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) => {
+    dispatch(actions.setFetching(isFetching))
+}
+
+/**
+ * Установка значения ID выбранного проекта
+ * @param {number | null} selectedUserId
+ * @return {Promise<void>}
+ * */
+export const setSelectedUserId = (selectedUserId: number | null): ThunkType => async (dispatch) => {
+    dispatch(actions.setSelectedUserId(selectedUserId))
 }
 
 export default usersReducer

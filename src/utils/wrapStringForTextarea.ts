@@ -14,7 +14,7 @@ const getEventWithWrappedString = (e: React.KeyboardEvent<HTMLInputElement>) => 
     //Формируем строку с переносами
     e.currentTarget.value =
         value.slice(0, start !== null ? start : undefined) + '\n' +
-        value.slice(end !== null ? end : undefined, value.length-1)
+        value.slice(end !== null ? end : undefined, value.length)
 
     //Устанавливам положение коретки
     e.currentTarget.selectionStart = start ? start + 1 : value.length - 1
@@ -40,6 +40,7 @@ export const hendleKeyDownOnTextarea = (
         if (/Windows NT/.test(userAgent)) {
             handleSubmit()
             e.preventDefault()
+            e.currentTarget.blur()
         }
     } else if (e.key === 'Enter' && e.ctrlKey) {
         handleChange(getEventWithWrappedString(e))

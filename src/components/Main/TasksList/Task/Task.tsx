@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {connect} from "react-redux"
 import {Form, Formik} from "formik"
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles"
@@ -30,6 +30,10 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
 
     const task: TaskType = props.task
 
+    useEffect(() => {
+        console.log(task.title)
+    },[task])
+
     const userById = (users: Array<UserType>, authorId: number): UserType => {
         let filteredUsers = users.filter(u => u.id === authorId)
         return filteredUsers[0]
@@ -50,6 +54,8 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
     // Содержание задачи. Если автор авторизованный пользователь, выводим редактируемое поле
     const taskTitle = task.author === props.myId
             ? <Formik
+                    enableReinitialize={true}
+                    initialTouched={{title: false}}
                     initialValues={{
                         title: task.title,
                     }}
@@ -80,7 +86,8 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
                                     onKeyDown={
                                         hendleKeyDownOnTextarea(
                                             handleSubmit, handleChange, navigator.userAgent
-                                        )}
+                                        )
+                                    }
                                 />
                             </Form>
                         )

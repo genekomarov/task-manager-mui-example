@@ -4,6 +4,7 @@ import {tasksAPI} from "../api/api"
 import {TaskFilterType, TaskSortType, TaskType} from "../types/types"
 import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
 import {newError} from "./appReducer"
+import {sortByDate, sortByStatus} from "../utils/tasksFilters"
 
 type InitialStateType = typeof initialState
 type ActionsType = ActionsTypes<typeof actions>
@@ -11,6 +12,7 @@ type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
     tasks: [] as Array<TaskType>,
+    filteredTasks: [] as Array<TaskType>,
     isFetching: false,
     filter: {
         userIds: null as Array<number> | null,
@@ -86,21 +88,22 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
             return changeTaskId === -1
                 ? state
                 : {
-                ...state,
-                tasks: [
-                    ...state.tasks.filter(t => t.id !== action.taskId),
+                    ...state,
+                    tasks: [
+                        ...state.tasks.filter(t => t.id !== action.taskId),
 
-                    {
-                        ...state.tasks[changeTaskId],
-                        isDone: action.status,
-                        title: action.title
-                    }
-                ],
-            }
+                        {
+                            ...state.tasks[changeTaskId],
+                            isDone: action.status,
+                            title: action.title
+                        }
+                    ],
+                }
         }
         case "tasks/NEW_TASK":
             return {
                 ...state,
+                // todo: Почему закомментировано?
                 /*tasks: [
                     ...state.tasks,
                     {
@@ -114,11 +117,16 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                 ],*/
                 idCounter: state.idCounter + 1
             }
-            case "tasks/SET_ADD_NEW_TASK_IN_PROGRESS":
-                return {
-                    ...state,
-                    addNewTaskInProcess: action.inProgress
-                }
+        case "tasks/SET_ADD_NEW_TASK_IN_PROGRESS":
+            return {
+                ...state,
+                addNewTaskInProcess: action.inProgress
+            }
+        case "tasks/SET_FILTERED_TASKS":
+            return {
+                ...state,
+                filteredTasks: action.tasks
+            }
         default:
             return state
     }
@@ -129,7 +137,10 @@ export const actions = {
     setFetching: (isFetching: boolean) => ({type: 'tasks/SET_FETCHING', isFetching} as const),
     setFilter: (filter: TaskFilterType) => ({type: 'tasks/SET_FILTER', filter} as const),
     setSort: (sort: TaskSortType) => ({type: 'tasks/SET_SORT', sort} as const),
-    setCountOfShownTasks: (countOfShownTasks: number) => ({type: 'tasks/SET_COUNT_OF_SHOWN_TASKS', countOfShownTasks} as const),
+    setCountOfShownTasks: (countOfShownTasks: number) => ({
+        type: 'tasks/SET_COUNT_OF_SHOWN_TASKS',
+        countOfShownTasks
+    } as const),
     changeTask: (taskId: number, status: boolean, title: string) => ({
         type: 'tasks/CHANGE_TASK',
         taskId,
@@ -138,7 +149,11 @@ export const actions = {
     } as const),
     deleteTask: (taskId: number) => ({type: 'tasks/DELETE_TASK', taskId} as const),
     newTask: (task: TaskType) => ({type: 'tasks/NEW_TASK', task} as const),
-    setAddNewTaskInProgress: (inProgress: boolean) => ({type: 'tasks/SET_ADD_NEW_TASK_IN_PROGRESS', inProgress} as const)
+    setAddNewTaskInProgress: (inProgress: boolean) => ({
+        type: 'tasks/SET_ADD_NEW_TASK_IN_PROGRESS',
+        inProgress
+    } as const),
+    setFilteredTasks: (tasks: Array<TaskType>) => ({type: 'tasks/SET_FILTERED_TASKS', tasks} as const)
 }
 
 /**
@@ -152,6 +167,7 @@ export const getTasks = (projectIds: Array<number> | null, userIds: Array<number
         let tasks = await tasksAPI.getTasksByProjectOrUserIds(projectIds, userIds)
         dispatch(actions.setTasks(tasks))
         dispatch(actions.setFilter({userIds: [], status: null, content: ""}))
+        dispatch(filterTasks())
         dispatch(actions.setFetching(false))
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка загрузки задач'))
@@ -180,6 +196,7 @@ export const setFilter = (filter: TaskFilterType, rewrite = false): ThunkType =>
         content: filter.content !== undefined ? null : undefined,
     }))
     dispatch(actions.setFilter(filter))
+    dispatch(filterTasks())
 }
 
 /**
@@ -189,6 +206,7 @@ export const setFilter = (filter: TaskFilterType, rewrite = false): ThunkType =>
  * */
 export const setSort = (sort: TaskSortType): ThunkType => async (dispatch) => {
     dispatch(actions.setSort(sort))
+    dispatch(filterTasks())
 }
 
 /**
@@ -213,6 +231,7 @@ export const deleteTask = (taskId: number): ThunkType => async (dispatch) => {
         dispatch(actions.deleteTask(taskId))
         await dispatch(addIdToDeleted('tasks', taskId))
         await dispatch(deleteItem('tasks', taskId))
+        dispatch(filterTasks())
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка удаления задачи'))
     }
@@ -232,6 +251,7 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
         await dispatch(addIdToDeleted('tasks', task.id))
         await dispatch(deleteItem('tasks', task.id))
         await dispatch(addNewItem('tasks', task))
+        await dispatch(filterTasks())
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка изменения задачи'))
     }
@@ -248,11 +268,52 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
         await tasksAPI.addNewTask(task)
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
+        dispatch(filterTasks())
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка добавления задачи'))
     } finally {
         dispatch(actions.setAddNewTaskInProgress(false))
     }
+}
+
+/**
+ * Объединение данных сервера с данными клиента, фильтрация и сортировка
+ * @return {Promise<void>}
+ * */
+export const filterTasks = (): ThunkType => async (dispatch, getState) => {
+    let state = getState()
+    let tasks = state.tasks.tasks
+    let tasksOnClient = state.clientSideDb.clientSideData.tasks
+    let selectedProjectId = state.projects.selectedProjectId
+    let filter = state.tasks.filter
+    let sort = state.tasks.sort
+
+    // Объединение данных, полученных с сервера, с данными на стороне клиента
+    let tasksWithClientSideData = tasks.filter(
+        t => !tasksOnClient.deleted.filter(
+            item => item === t.id
+        ).length
+    ).concat(tasksOnClient.items.filter(item => item.project === selectedProjectId))
+
+    // Фильтрация задач
+    let filteredTasks = tasksWithClientSideData.filter((t) => {
+        let statusFilter = filter.status !== null ? t.isDone === filter.status : true
+        let usersFilter = filter.userIds && filter.userIds.length > 0 ? filter.userIds.filter(id => id === t.author).length > 0 : true
+        let contentFilter = filter.content ? t.title.match(new RegExp(filter.content, 'gi')) : true
+        return statusFilter && usersFilter && contentFilter
+    })
+
+    // Сортировка задач
+    filteredTasks = filteredTasks.sort((a: TaskType, b: TaskType): number => {
+        let sortResultByStatus = sortByStatus(a, b, sort.firstCompleted)
+        let sortResultByDate = sortByDate(a, b, sort.firstNew)
+
+        if (sortResultByStatus !== 0) return sortResultByStatus
+        else return sortResultByDate
+    })
+
+    dispatch(actions.setCountOfShownTasks(filteredTasks.length))
+    dispatch(actions.setFilteredTasks(filteredTasks))
 }
 
 export default tasksReducer

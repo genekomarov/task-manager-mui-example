@@ -1,21 +1,41 @@
 import React from 'react'
 import {NavLink} from "react-router-dom"
-import Tabs from "@material-ui/core/Tabs"
 import Tab from "@material-ui/core/Tab"
+import {selectMyTasks} from "../../../redux/tasksReducer"
+import {AppStateType} from "../../../redux/store"
+import {connect} from "react-redux"
+import {setSelectedProjectId} from "../../../redux/projectsReducer"
+import {ROUTE} from "../../../redux/appReducer"
 
-const TabsPanel: React.FC = () => {
+const TabsPanel: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
 
-    const [value, setValue] = React.useState(0);
-    const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-        setValue(newValue);
-    };
-    // todo: сбрасываем выбранный проект, чистим команду, получаем и сетаем свои таски
     return (
-        <Tabs value={value} onChange={handleChange}>
-            <Tab label={'Все пользователи'} href={'/'} to={'/'} component={NavLink}/>
-            <Tab label={'Только мои задачи'} href={'/my-tasks'} to={'/my-tasks'} component={NavLink}/>
-        </Tabs>
+        <div>
+                <Tab selected={props.route === ROUTE.ROOT}
+                    onClick={() => props.setSelectedProjectId(props.projects[0].id)}
+                    label={'Задачи по проектам'} href={'/'} to={'/'} component={NavLink}/>
+                <Tab selected={props.route === ROUTE.MY_TASKS}
+                    onClick={() => props.selectMyTasks()} label={'Мои задачи (Все)'} href={'/my-tasks'} to={'/my-tasks'}
+                     component={NavLink}/>
+        </div>
     )
 }
 
-export default TabsPanel
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        projects: state.projects.projects,
+        route: state.app.route
+    }
+}
+
+type MapDispatchPropsType = {
+    selectMyTasks: () => void,
+    setSelectedProjectId: (selectedProjectId: number | null) => void
+}
+const mapDispatchToProps = {
+    selectMyTasks,
+    setSelectedProjectId
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TabsPanel)

@@ -17,6 +17,8 @@ import {ProjectType, TaskFilterType, TaskSortType} from "../../../types/types"
 import {getProjects, setProjects, setSelectedProjectId} from "../../../redux/projectsReducer"
 import {setSelectedUserId} from "../../../redux/usersReducer"
 import {setFilter, setSort} from "../../../redux/tasksReducer"
+import {NavLink} from "react-router-dom"
+import Tab from "@material-ui/core/Tab"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -79,7 +81,13 @@ const Projects: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => 
                     {props.isAuth  && props.projects.map((item) => {
                         return (
                             <ListMui component="div" disablePadding key={item.id}>
-                                <ListItemMui button className={classes.nested} onClick={() => handleSelectList(item.id)}>
+                                <ListItemMui
+                                    /*button*/
+                                    className={classes.nested}
+                                    onClick={() => handleSelectList(item.id)}
+                                    to={'/'}
+                                    component={NavLink}
+                                >
                                     <ListItemIconMui>
                                         {
                                             item.id === props.selectedProjectId

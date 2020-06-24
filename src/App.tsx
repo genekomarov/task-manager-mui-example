@@ -10,10 +10,11 @@ import DrawerMui from '@material-ui/core/Drawer'
 import HiddenMui from '@material-ui/core/Hidden'
 import Menu from "./components/Menu/Menu"
 import LoginForm from "./components/LoginForm/LoginForm"
-import {appInitializing} from "./redux/appReducer"
+import {actions, appInitializing, ROUTE, setRoute, RouteType} from "./redux/appReducer"
 import BackdropPreloader from "./components/BackdropPreloader/BackdropPreloader"
 import AppTopBar from "./components/AppTopBar/AppTopBar"
 import Main from "./components/Main/Main"
+import { withRouter, RouteComponentProps } from "react-router";
 
 const drawerWidth = 240; //Ширина бокового меню
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
+const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsType> = (props) => {
 
     const classes = useStyles();
     const theme = useTheme();
@@ -55,6 +56,22 @@ const App: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     useEffect(() => {
         appInitializing()
     }, [appInitializing])
+
+    // Настраиваем текущее значение роутинга
+    let locationPath = props.history.location.pathname
+    let pushIntoHistory = props.history.push
+    let {setRoute} = props
+    useEffect(() => {
+        let isRouteSet = false
+        let key: RouteType
+        for (key in ROUTE)
+            if (ROUTE[key] === locationPath) {
+                setRoute(locationPath)
+                isRouteSet = true
+                break
+            }
+        !isRouteSet && pushIntoHistory('/404')
+    }, [locationPath, setRoute, pushIntoHistory])
 
     // Добавление ошибки в Snackbar
     const {enqueueSnackbar} = useSnackbar()
@@ -129,10 +146,12 @@ const mapStateToProps = (state: AppStateType) => {
 }
 
 type MapDispatchPropsType = {
-    appInitializing: () => void
+    appInitializing: () => void,
+    setRoute: (route: string) => void
 }
 const mapDispatchToProps = {
-    appInitializing
+    appInitializing,
+    setRoute
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))

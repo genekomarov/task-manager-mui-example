@@ -3,8 +3,10 @@ import {ActionsTypes, AppStateType} from "./store"
 import {tasksAPI} from "../api/api"
 import {TaskFilterType, TaskSortType, TaskType} from "../types/types"
 import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
-import {newError} from "./appReducer"
+import {newError, ROUTE} from "./appReducer"
 import {sortByDate, sortByStatus} from "../utils/tasksFilters"
+import {setSelectedProjectId} from "./projectsReducer"
+import {setUsers} from "./usersReducer"
 
 type InitialStateType = typeof initialState
 type ActionsType = ActionsTypes<typeof actions>
@@ -167,7 +169,7 @@ export const getTasks = (projectIds: Array<number> | null, userIds: Array<number
         let tasks = await tasksAPI.getTasksByProjectOrUserIds(projectIds, userIds)
         dispatch(actions.setTasks(tasks))
         dispatch(actions.setFilter({userIds: [], status: null, content: ""}))
-        dispatch(filterTasks())
+        await dispatch(filterTasks())
         dispatch(actions.setFetching(false))
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка загрузки задач'))
@@ -216,6 +218,11 @@ export const setSort = (sort: TaskSortType): ThunkType => async (dispatch) => {
  * */
 export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => async (dispatch) => {
     dispatch(actions.setCountOfShownTasks(countOfShownTasks))
+}
+
+export const setTasks = (tasks: Array<TaskType>): ThunkType => async (dispatch) => {
+    dispatch(actions.setTasks(tasks))
+    dispatch(actions.setFetching(false))
 }
 
 /**
@@ -281,19 +288,25 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
  * @return {Promise<void>}
  * */
 export const filterTasks = (): ThunkType => async (dispatch, getState) => {
-    let state = getState()
-    let tasks = state.tasks.tasks
-    let tasksOnClient = state.clientSideDb.clientSideData.tasks
-    let selectedProjectId = state.projects.selectedProjectId
-    let filter = state.tasks.filter
-    let sort = state.tasks.sort
+    const state = getState()
+    const tasks = state.tasks.tasks
+    const tasksOnClient = state.clientSideDb.clientSideData.tasks
+    const selectedProjectId = state.projects.selectedProjectId
+    const filter = state.tasks.filter
+    const sort = state.tasks.sort
+    const route = state.app.route
 
     // Объединение данных, полученных с сервера, с данными на стороне клиента
     let tasksWithClientSideData = tasks.filter(
         t => !tasksOnClient.deleted.filter(
             item => item === t.id
         ).length
-    ).concat(tasksOnClient.items.filter(item => item.project === selectedProjectId))
+    ).concat(
+        route === ROUTE.ROOT
+            ? tasksOnClient.items.filter(item => item.project === selectedProjectId)
+            : tasksOnClient.items
+    )
+    // todo: Проверять страницу отображения!!
 
     // Фильтрация задач
     let filteredTasks = tasksWithClientSideData.filter((t) => {
@@ -314,6 +327,15 @@ export const filterTasks = (): ThunkType => async (dispatch, getState) => {
 
     dispatch(actions.setCountOfShownTasks(filteredTasks.length))
     dispatch(actions.setFilteredTasks(filteredTasks))
+}
+
+export const selectMyTasks = ():ThunkType => async (dispatch, getState) => {
+    let myId = getState().auth.id
+    dispatch(actions.setFetching(true))
+    dispatch(setSelectedProjectId(null))
+    dispatch(setUsers([]))
+    if (myId !== null) await dispatch(getTasks([], [myId]))
+    dispatch(actions.setFetching(false))
 }
 
 export default tasksReducer

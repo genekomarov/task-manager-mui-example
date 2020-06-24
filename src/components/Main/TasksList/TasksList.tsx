@@ -6,9 +6,11 @@ import ContainerMui from "@material-ui/core/Container"
 import CircularProgressMui from "@material-ui/core/CircularProgress/CircularProgress"
 import Task from "./Task/Task"
 import NewTask from "./NewTask/NewTask"
-import {Route} from "react-router"
+import {Route, RouteComponentProps, withRouter} from "react-router"
 import {AppStateType} from "../../../redux/store"
-import {getTasks, setFetching} from "../../../redux/tasksReducer"
+import {getTasks, selectMyTasks, setFetching, setTasks} from "../../../redux/tasksReducer"
+import {TaskType} from "../../../types/types"
+import {ROUTE} from "../../../redux/appReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,17 +27,22 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
+const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsType> = (props) => {
 
     const classes = useStyles();
 
     // Установка флага процесса загрузки при загрузке списка пользователей
-    let {usersIsFetching, setFetching, selectedProjectId, getTasks} = props
+    let {usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks} = props
     useEffect(() => {
         usersIsFetching
             ? setFetching(true)
-            : selectedProjectId !== null && getTasks([selectedProjectId], null)
-    }, [usersIsFetching, setFetching, selectedProjectId, getTasks])
+            : selectedProjectId !== null
+                ? getTasks([selectedProjectId], null)
+                : props.route === ROUTE.MY_TASKS
+                    ? props.selectMyTasks()
+                    : setTasks([])
+    }, [usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks])
+    // todo: баг при открытии страницы mytask
 
     return (
         /*Установка положения области задач по середине блока и ширины*/
@@ -47,9 +54,7 @@ const TasksList: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) =>
                         : props.isAuth && (
                             <div>
                                 {props.filteredTasks.map(item => <Task key={item.id} task={item}/>)}
-                                <Route exact path='/'>
-                                    <NewTask/>
-                                </Route>
+                                {props.route === ROUTE.ROOT && <NewTask/>}
                             </div>
                         )
                 }
@@ -66,17 +71,22 @@ const mapStateToProps = (state: AppStateType) => {
         usersIsFetching: state.users.isFetching,
         selectedProjectId: state.projects.selectedProjectId,
         addNewTaskInProcess: state.tasks.addNewTaskInProcess,
-        filteredTasks: state.tasks.filteredTasks
+        filteredTasks: state.tasks.filteredTasks,
+        route: state.app.route
     }
 }
 
 type MapDispatchPropsType = {
     setFetching: (isFetching: boolean) => void,
-    getTasks: (projectIds: Array<number> | null, userIds: Array<number> | null) => void
+    getTasks: (projectIds: Array<number> | null, userIds: Array<number> | null) => void,
+    setTasks: (tasks: Array<TaskType>) => void,
+    selectMyTasks: () => void
 }
 const mapDispatchToProps = {
     setFetching,
     getTasks,
+    setTasks,
+    selectMyTasks
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksList)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TasksList))

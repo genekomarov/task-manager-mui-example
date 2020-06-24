@@ -3,13 +3,23 @@ import {ActionsTypes, AppStateType} from "./store"
 import {login, showLoginForm} from "./authReducer"
 import Cookies from 'js-cookie'
 
+// Пути адресной строки
+export type RouteType = keyof typeof ROUTE
+export const ROUTE = {
+    ROOT: '/',
+    MY_TASKS: '/my-tasks',
+    USER_TASKS: '/user',
+    PAGE_404: '/404'
+}
+
 type InitialStateType = typeof initialState
 type ActionsType = ActionsTypes<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
     isInitialized: false,
-    errors: [] as Array<string>
+    errors: [] as Array<string>,
+    route: ROUTE.ROOT
 };
 
 const appReducer = (state = initialState, action: ActionsType): InitialStateType => {
@@ -27,6 +37,11 @@ const appReducer = (state = initialState, action: ActionsType): InitialStateType
                     action.message
                 ]
             }
+        case "app/SET_ROUTE":
+            return {
+                ...state,
+                route: action.route
+            }
         default:
             return state
     }
@@ -34,7 +49,8 @@ const appReducer = (state = initialState, action: ActionsType): InitialStateType
 
 export const actions = {
     setInitialized: (isInitialized: boolean) => ({type: 'app/SET_INITIALIZED', isInitialized} as const),
-    newError: (message: string) => ({type: 'app/ADD_ERROR', message} as const)
+    newError: (message: string) => ({type: 'app/ADD_ERROR', message} as const),
+    setRoute: (route: string) => ({type: 'app/SET_ROUTE', route} as const)
 }
 
 /**
@@ -63,6 +79,15 @@ export const appInitializing = (): ThunkType => async (dispatch) => {
  * */
 export const newError = (message: string): ThunkType => async (dispatch) => {
     dispatch(actions.newError(message))
+}
+
+export const setRoute = (route: string): ThunkType => async (dispatch) => {
+    let key: keyof typeof ROUTE
+    for (key in ROUTE)
+        if (ROUTE[key] === route) {
+            dispatch(actions.setRoute(route))
+            break
+        } else dispatch(actions.setRoute('404'))
 }
 
 export default appReducer

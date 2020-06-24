@@ -12,9 +12,11 @@ import CombinedSort from "./CombinedSort/CombinedSort"
 import ByStatusFilter from "./ByStatusFilter/ByStatusFilter"
 import ByUsersFilter from "./ByUsersFilter/ByUsersFilter"
 import ByContentFilter from "./ByContentFilter/ByContentFilter"
-import {Route} from "react-router-dom"
+import {AppStateType} from "../../../redux/store"
+import {connect} from "react-redux"
+import {ROUTE} from "../../../redux/appReducer"
 
-const FilterWrapper: React.FC<any> = () => {
+const FilterWrapper: React.FC<MapStatePropsType> = (props) => {
 
     const [open, setOpen] = React.useState(false)
 
@@ -41,11 +43,13 @@ const FilterWrapper: React.FC<any> = () => {
                             <ByStatusFilter/>
                         </FilterRow>
 
-                        <Route exact path='/'>
-                            <FilterRow rowNumber={2}>
-                                <ByUsersFilter/>
-                            </FilterRow>
-                        </Route>
+                        {
+                            props.route === ROUTE.ROOT && (
+                                <FilterRow rowNumber={2}>
+                                    <ByUsersFilter/>
+                                </FilterRow>
+                            )
+                        }
 
                         <FilterRow rowNumber={3}>
                             <ByContentFilter/>
@@ -57,4 +61,11 @@ const FilterWrapper: React.FC<any> = () => {
     )
 }
 
-export default FilterWrapper
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        route: state.app.route
+    }
+}
+
+export default connect(mapStateToProps)(FilterWrapper)

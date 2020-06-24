@@ -1,7 +1,7 @@
 import React from 'react'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
-import FilterWrapper from "./FilterData/FilterWrapper"
 import TasksList from "./TasksList/TasksList"
+import FilterWrapper from "./FilterData/FilterWrapper"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

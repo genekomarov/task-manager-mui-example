@@ -20,7 +20,7 @@ const projectsReducer = (state = initialState, action: ActionsType): InitialStat
             return {
                 ...state,
                 projects: action.projects,
-                selectedProjectId: action.selectedProjectId
+                /*selectedProjectId: action.selectedProjectId*/
             }
         case "projects/SET_FETCHING":
             return {
@@ -41,10 +41,10 @@ export const actions = {
     setProjects: (projects: Array<ProjectType>) => ({
         type: 'projects/SET_PROJECTS',
         projects,
-        selectedProjectId: projects.length>0 ? projects[0].id : null
+        /*selectedProjectId: projects.length>0 ? projects[0].id : null*/
     } as const),
     setFetching: (isFetching: boolean) => ({type: 'projects/SET_FETCHING', isFetching} as const),
-    setSelectedProjectId: (selectedProjectId: number) => ({type: 'projects/SET_SELECTED_PROJECT_ID', selectedProjectId} as const),
+    setSelectedProjectId: (selectedProjectId: number | null) => ({type: 'projects/SET_SELECTED_PROJECT_ID', selectedProjectId} as const),
 }
 
 /**
@@ -88,7 +88,7 @@ export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) 
  * @param {number} selectedProjectId
  * @return {Promise<void>}
  * */
-export const setSelectedProjectId = (selectedProjectId: number): ThunkType => async (dispatch) => {
+export const setSelectedProjectId = (selectedProjectId: number | null): ThunkType => async (dispatch) => {
     dispatch(actions.setSelectedProjectId(selectedProjectId))
 }
 

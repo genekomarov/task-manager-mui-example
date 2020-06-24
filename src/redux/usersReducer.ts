@@ -49,11 +49,11 @@ export const actions = {
  * */
 export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatch) => {
     try {
+        console.log('getUsers')
         dispatch(actions.setFetching(true))
         let userIds: Array<ProjectToUserIdsMatchType> = await usersAPI.getUserIdsByProjectIds(projectIds)
         let users: Array<UserType> = await usersAPI.getUsersByIds(userIds.map((u) => u.userId))
-        dispatch(actions.setUsers(users))
-        dispatch(actions.setFetching(false))
+        await dispatch(setUsers(users))
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))
     }
@@ -75,6 +75,11 @@ export const setFetching = (isFetching: boolean): ThunkType => async (dispatch) 
  * */
 export const setSelectedUserId = (selectedUserId: number | null): ThunkType => async (dispatch) => {
     dispatch(actions.setSelectedUserId(selectedUserId))
+}
+
+export const setUsers = (users: Array<UserType>): ThunkType => async (dispatch) => {
+    dispatch(actions.setUsers(users))
+    dispatch(actions.setFetching(false))
 }
 
 export default usersReducer

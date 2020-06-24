@@ -13,8 +13,8 @@ import PeopleIconMui from '@material-ui/icons/People';
 import PersonIconMui from '@material-ui/icons/Person';
 import PermIdentityIconMui from '@material-ui/icons/PermIdentity';
 import {AppStateType} from "../../../redux/store"
-import {TaskFilterType} from "../../../types/types"
-import {getUsers, setFetching, setSelectedUserId} from "../../../redux/usersReducer"
+import {TaskFilterType, UserType} from "../../../types/types"
+import {getUsers, setFetching, setSelectedUserId, setUsers} from "../../../redux/usersReducer"
 import {setFilter} from "../../../redux/tasksReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,16 +39,14 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     const [open, setOpen] = React.useState(true)
 
     // Установка флага процесса загрузки при загрузке списка проектов
-    let {projectsIsFetching, setFetching} = props
+    let {projectsIsFetching, setFetching, selectedProjectId, getUsers, setUsers} = props
     useEffect(() => {
-        projectsIsFetching && setFetching(true)
-    }, [projectsIsFetching, setFetching])
-
-    // Запуск процесса получения списка пользователей после установки списка проектов
-    let {selectedProjectId, getUsers} = props
-    useEffect(() => {
-        selectedProjectId!==null && getUsers([selectedProjectId])
-    },[selectedProjectId, getUsers])
+        projectsIsFetching
+            ? setFetching(true)
+            : selectedProjectId!==null
+                ? getUsers([selectedProjectId])
+                : setUsers([])
+    }, [projectsIsFetching, setFetching, selectedProjectId, getUsers, setUsers])
 
     const handleCollapseList = () => {
         setOpen(!open)
@@ -117,12 +115,14 @@ const mapStateToProps = (state: AppStateType) => {
 type MapDispatchPropsType = {
     setFetching: (isFetching: boolean) => void,
     getUsers: (projectIds: Array<number>) => void,
+    setUsers: (users: Array<UserType>) => void
     setSelectedUserId: (selectedUserId: number) => void,
     setFilter: (filter: TaskFilterType, rewrite?: boolean) => void
 }
 const mapDispatchToProps = {
     setFetching,
     getUsers,
+    setUsers,
     setSelectedUserId,
     setFilter
 }

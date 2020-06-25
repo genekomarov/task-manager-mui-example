@@ -222,6 +222,7 @@ export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => as
 
 export const setTasks = (tasks: Array<TaskType>): ThunkType => async (dispatch) => {
     dispatch(actions.setTasks(tasks))
+    await dispatch(filterTasks())
     dispatch(actions.setFetching(false))
 }
 
@@ -306,7 +307,6 @@ export const filterTasks = (): ThunkType => async (dispatch, getState) => {
             ? tasksOnClient.items.filter(item => item.project === selectedProjectId)
             : tasksOnClient.items
     )
-    // todo: Проверять страницу отображения!!
 
     // Фильтрация задач
     let filteredTasks = tasksWithClientSideData.filter((t) => {

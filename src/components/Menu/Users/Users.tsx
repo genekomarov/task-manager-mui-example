@@ -41,11 +41,11 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     // Установка флага процесса загрузки при загрузке списка проектов
     let {projectsIsFetching, setFetching, selectedProjectId, getUsers, setUsers} = props
     useEffect(() => {
-        projectsIsFetching
-            ? setFetching(true)
-            : selectedProjectId!==null
-                ? getUsers([selectedProjectId])
-                : setUsers([])
+        if (selectedProjectId !== null) {
+            setFetching(true)
+            getUsers([selectedProjectId])
+        } else setUsers([])
+
     }, [projectsIsFetching, setFetching, selectedProjectId, getUsers, setUsers])
 
     const handleCollapseList = () => {

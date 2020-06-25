@@ -32,16 +32,20 @@ const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchP
     const classes = useStyles();
 
     // Установка флага процесса загрузки при загрузке списка пользователей
-    let {usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks} = props
+    let {usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks, route, projects} = props
     useEffect(() => {
-        usersIsFetching
-            ? setFetching(true)
-            : selectedProjectId !== null
-                ? getTasks([selectedProjectId], null)
-                : props.route === ROUTE.MY_TASKS
-                    ? props.selectMyTasks()
-                    : setTasks([])
-    }, [usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks])
+        if (usersIsFetching) setFetching(true)
+        else switch (props.history.location.pathname) {
+            case ROUTE.ROOT:
+                selectedProjectId !== null && getTasks([selectedProjectId], null)
+                break
+            case ROUTE.MY_TASKS:
+                projects.length > 0 && props.selectMyTasks()
+                break
+            default:
+                setTasks([])
+        }
+    }, [usersIsFetching, selectedProjectId, route, setFetching, getTasks, setTasks, projects])
     // todo: баг при открытии страницы mytask
 
     return (
@@ -54,7 +58,7 @@ const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchP
                         : props.isAuth && (
                             <div>
                                 {props.filteredTasks.map(item => <Task key={item.id} task={item}/>)}
-                                {props.route === ROUTE.ROOT && <NewTask/>}
+                                {props.route === ROUTE.ROOT && props.selectedProjectId !== null && <NewTask/>}
                             </div>
                         )
                 }
@@ -72,7 +76,8 @@ const mapStateToProps = (state: AppStateType) => {
         selectedProjectId: state.projects.selectedProjectId,
         addNewTaskInProcess: state.tasks.addNewTaskInProcess,
         filteredTasks: state.tasks.filteredTasks,
-        route: state.app.route
+        route: state.app.route,
+        projects: state.projects.projects
     }
 }
 

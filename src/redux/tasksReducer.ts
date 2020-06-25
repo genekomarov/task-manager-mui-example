@@ -105,8 +105,7 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
         case "tasks/NEW_TASK":
             return {
                 ...state,
-                // todo: Почему закомментировано?
-                /*tasks: [
+                tasks: [
                     ...state.tasks,
                     {
                         id: action.task.id,
@@ -116,7 +115,7 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                         title: action.task.title,
                         isDone: action.task.isDone
                     }
-                ],*/
+                ],
                 idCounter: state.idCounter + 1
             }
         case "tasks/SET_ADD_NEW_TASK_IN_PROGRESS":
@@ -164,11 +163,33 @@ export const actions = {
  * @param {Array<number> | null} userIds
  * @return {Promise<void>}
  * */
-export const getTasks = (projectIds: Array<number> | null, userIds: Array<number> | null): ThunkType => async (dispatch) => {
+export const getTasks = (
+    projectIds: Array<number> | null,
+    userIds: Array<number> | null
+): ThunkType => async (dispatch, getState) => {
+
+    const state = getState()
+    const tasksOnClient = state.clientSideDb.clientSideData.tasks
+    const selectedProjectId = state.projects.selectedProjectId
+    const route = state.app.route
+
     try {
         let tasks = await tasksAPI.getTasksByProjectOrUserIds(projectIds, userIds)
-        dispatch(actions.setTasks(tasks))
-        dispatch(actions.setFilter({userIds: [], status: null, content: ""}))
+
+        // Объединение данных, полученных с сервера, с данными на стороне клиента
+        let tasksWithClientSideData = tasks.filter(
+            t => !tasksOnClient.deleted.filter(
+                item => item === t.id
+            ).length
+        ).concat(
+            route === ROUTE.ROOT
+                ? tasksOnClient.items.filter(item => item.project === selectedProjectId)
+                : tasksOnClient.items
+        )
+
+        dispatch(actions.setTasks(tasksWithClientSideData))
+        dispatch(actions.setFilter({userIds: null, status: null, content: ""}))
+        dispatch(actions.setSort({firstNew: null, firstCompleted: null}))
         await dispatch(filterTasks())
         dispatch(actions.setFetching(false))
     } catch (e) {
@@ -276,7 +297,7 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
         await tasksAPI.addNewTask(task)
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
-        dispatch(filterTasks())
+        await dispatch(filterTasks())
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка добавления задачи'))
     } finally {
@@ -291,13 +312,13 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
 export const filterTasks = (): ThunkType => async (dispatch, getState) => {
     const state = getState()
     const tasks = state.tasks.tasks
-    const tasksOnClient = state.clientSideDb.clientSideData.tasks
-    const selectedProjectId = state.projects.selectedProjectId
+    /*const tasksOnClient = state.clientSideDb.clientSideData.tasks
+    const selectedProjectId = state.projects.selectedProjectId*/
     const filter = state.tasks.filter
     const sort = state.tasks.sort
-    const route = state.app.route
+    /*const route = state.app.route*/
 
-    // Объединение данных, полученных с сервера, с данными на стороне клиента
+    /*// Объединение данных, полученных с сервера, с данными на стороне клиента
     let tasksWithClientSideData = tasks.filter(
         t => !tasksOnClient.deleted.filter(
             item => item === t.id
@@ -306,10 +327,10 @@ export const filterTasks = (): ThunkType => async (dispatch, getState) => {
         route === ROUTE.ROOT
             ? tasksOnClient.items.filter(item => item.project === selectedProjectId)
             : tasksOnClient.items
-    )
+    )*/
 
     // Фильтрация задач
-    let filteredTasks = tasksWithClientSideData.filter((t) => {
+    let filteredTasks = tasks.filter((t) => {
         let statusFilter = filter.status !== null ? t.isDone === filter.status : true
         let usersFilter = filter.userIds && filter.userIds.length > 0 ? filter.userIds.filter(id => id === t.author).length > 0 : true
         let contentFilter = filter.content ? t.title.match(new RegExp(filter.content, 'gi')) : true
@@ -329,11 +350,11 @@ export const filterTasks = (): ThunkType => async (dispatch, getState) => {
     dispatch(actions.setFilteredTasks(filteredTasks))
 }
 
-export const selectMyTasks = ():ThunkType => async (dispatch, getState) => {
+export const selectMyTasks = (): ThunkType => async (dispatch, getState) => {
     let myId = getState().auth.id
     dispatch(actions.setFetching(true))
     dispatch(setSelectedProjectId(null))
-    dispatch(setUsers([]))
+    /*dispatch(setUsers([]))*/
     if (myId !== null) await dispatch(getTasks([], [myId]))
     dispatch(actions.setFetching(false))
 }

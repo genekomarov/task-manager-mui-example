@@ -10,7 +10,7 @@ import CheckboxMui from '@material-ui/core/Checkbox'
 import IconButtonMui from '@material-ui/core/IconButton'
 import InputBaseMui from "@material-ui/core/InputBase"
 import DeleteOutlineIconMui from '@material-ui/icons/DeleteOutline'
-import {TaskType, UserType} from "../../../../types/types"
+import {ProjectType, TaskType, UserType} from "../../../../types/types"
 import {AppStateType} from "../../../../redux/store"
 import {changeTask, deleteTask} from "../../../../redux/tasksReducer"
 import {getDateString} from "../../../../utils/dateHelper"
@@ -32,11 +32,16 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
 
     useEffect(() => {
         console.log(task.title)
-    },[task])
+    }, [task])
 
     const userById = (users: Array<UserType>, authorId: number): UserType => {
         let filteredUsers = users.filter(u => u.id === authorId)
         return filteredUsers[0]
+    }
+
+    const projectById = (projects: Array<ProjectType>, projectId: number): ProjectType => {
+        let filteredProjects = projects.filter(u => u.id === projectId)
+        return filteredProjects[0]
     }
 
     const handleChangeStatus = () => {
@@ -53,52 +58,54 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
 
     // Содержание задачи. Если автор авторизованный пользователь, выводим редактируемое поле
     const taskTitle = task.author === props.myId
-            ? <Formik
-                    enableReinitialize={true}
-                    initialTouched={{title: false}}
-                    initialValues={{
-                        title: task.title,
-                    }}
-                    onSubmit={(values, {setSubmitting}) => {
-                        setTimeout(() => {
-                            if (values.title === '') values.title = task.title
-                            else {
-                                handleChangeTitle(values.title)
+        ? <Formik
+            enableReinitialize={true}
+            initialTouched={{title: false}}
+            initialValues={{
+                title: task.title,
+            }}
+            onSubmit={(values, {setSubmitting}) => {
+                setTimeout(() => {
+                    if (values.title === '') values.title = task.title
+                    else {
+                        handleChangeTitle(values.title)
+                    }
+                    setSubmitting(false)
+                }, 0)
+            }}
+        >
+            {({values, handleChange, handleSubmit}) => {
+                return (
+                    <Form onSubmit={handleSubmit}>
+                        <InputBaseMui
+                            name="title"
+                            type="title"
+                            id="title"
+                            fullWidth
+                            multiline
+                            value={values.title}
+                            onChange={handleChange}
+                            onBlur={() => {
+                                handleSubmit()
+                            }}
+                            onKeyDown={
+                                hendleKeyDownOnTextarea(
+                                    handleSubmit, handleChange, navigator.userAgent
+                                )
                             }
-                            setSubmitting(false)
-                        }, 0)
-                    }}
-                >
-                    {({values, handleChange, handleSubmit}) => {
-                        return (
-                            <Form onSubmit={handleSubmit}>
-                                <InputBaseMui
-                                    name="title"
-                                    type="title"
-                                    id="title"
-                                    fullWidth
-                                    multiline
-                                    value={values.title}
-                                    onChange={handleChange}
-                                    onBlur={() => {
-                                        handleSubmit()
-                                    }}
-                                    onKeyDown={
-                                        hendleKeyDownOnTextarea(
-                                            handleSubmit, handleChange, navigator.userAgent
-                                        )
-                                    }
-                                />
-                            </Form>
-                        )
-                    }}
-                </Formik>
-            : task.title
+                        />
+                    </Form>
+                )
+            }}
+        </Formik>
+        : task.title
 
     // Второстепенный текст под задачей
     const taskSecondaryText = `${
-                getDateString(new Date(task.date))} - ${
-                userById(props.users, task.author) && userById(props.users, task.author).nickname}`
+        getDateString(new Date(task.date))} - ${
+        userById(props.users, task.author) ? userById(props.users, task.author).nickname : ''} - ${
+        projectById(props.projects, task.project) ? projectById(props.projects, task.project).projectName : ''
+    }`
 
     return (
         <ListItemMui role={undefined}>
@@ -137,6 +144,7 @@ type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         users: state.users.users,
+        projects: state.projects.projects,
         myId: state.auth.id,
     }
 }

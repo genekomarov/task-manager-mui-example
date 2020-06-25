@@ -45,17 +45,11 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
     const [open, setOpen] = React.useState(true)
 
     // Установка флага процесса загрузки при загрузке списка проектов
-    let {setFetching, setUsers, getUsersByShownTasks} = props
-    let countTasks = props.tasks.length
+    let {getUsersByShownTasks, selectedProjectId, getUsersByProjectIds, setUsers} = props
     useEffect(() => {
-        /*if (selectedProjectId !== null) {*/
-        if (countTasks > 0) {
-            setFetching(true)
-            /*getUsersByProjectIds([selectedProjectId])*/
-            getUsersByShownTasks()
-        } else setUsers([])
-
-    }, [setFetching, setUsers, getUsersByShownTasks, countTasks])
+        if (selectedProjectId !== null) getUsersByProjectIds([selectedProjectId])
+        else setUsers([])
+    }, [getUsersByShownTasks, selectedProjectId, setUsers, getUsersByProjectIds])
 
     const handleCollapseList = () => {
         setOpen(!open)
@@ -72,12 +66,12 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
             {/*Элемент заголовка списка*/}
             <ListItemMui button onClick={handleCollapseList}>
                 <ListItemIconMui>
-                    <PeopleIconMui />
+                    <PeopleIconMui/>
                 </ListItemIconMui>
                 <ListItemTextMui
                     primary="Команда"
                     primaryTypographyProps={{variant: "body1"}}/>
-                {open ? <ExpandLessMui /> : <ExpandMoreMui />}
+                {open ? <ExpandLessMui/> : <ExpandMoreMui/>}
             </ListItemMui>
 
             {/*Список*/}
@@ -87,7 +81,8 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
                     {props.isAuth && props.users.map((item) => {
                         return (
                             <ListMui component="div" disablePadding key={item.id}>
-                                <ListItemMui button className={classes.nested} onClick={() => handleSelectItem(item.id)}>
+                                <ListItemMui button className={classes.nested}
+                                             onClick={() => handleSelectItem(item.id)}>
                                     <ListItemIconMui>
                                         {
                                             item.id === props.selectedUserId
@@ -96,7 +91,7 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
                                         }
                                     </ListItemIconMui>
                                     <ListItemTextMui primary={
-                                        `${item.nickname} (${props.tasks.filter(t => t.author === item.id).length})`
+                                        `${item.nickname}`
                                     }/>
                                 </ListItemMui>
                             </ListMui>
@@ -117,6 +112,7 @@ const mapStateToProps = (state: AppStateType) => {
         selectedProjectId: state.projects.selectedProjectId,
         users: state.users.users,
         selectedUserId: state.users.selectedUserId,
+        filteredTasks: state.tasks.filteredTasks,
         tasks: state.tasks.tasks
     }
 }

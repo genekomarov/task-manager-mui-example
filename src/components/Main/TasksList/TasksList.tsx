@@ -34,8 +34,8 @@ const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchP
     // Установка флага процесса загрузки при загрузке списка пользователей
     let {usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks, route, projects} = props
     useEffect(() => {
-        if (usersIsFetching) setFetching(true)
-        else switch (props.history.location.pathname) {
+        /*if (usersIsFetching) setFetching(true)
+        else */switch (props.history.location.pathname) {
             case ROUTE.ROOT:
                 selectedProjectId !== null && getTasks([selectedProjectId], null)
                 break
@@ -45,7 +45,7 @@ const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchP
             default:
                 setTasks([])
         }
-    }, [usersIsFetching, selectedProjectId, route, setFetching, getTasks, setTasks, projects])
+    }, [/*usersIsFetching, */selectedProjectId, route, setFetching, getTasks, setTasks, projects])
     // todo: баг при открытии страницы mytask
 
     return (

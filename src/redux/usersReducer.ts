@@ -70,7 +70,7 @@ export const getUsersByIds = (userIds: Array<number>): ThunkType => async (dispa
 }
 
 export const getUsersByShownTasks = (): ThunkType => async (dispatch, getState) => {
-    let usersIds = getState().tasks.tasks.map(t => t.author)
+    let usersIds = getState().tasks.filteredTasks.map(t => t.author)
     let uniqueUserIds = Array.from(new Set(usersIds))
     try {
         dispatch(actions.setFetching(true))

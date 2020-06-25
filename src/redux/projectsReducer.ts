@@ -58,6 +58,7 @@ export const getProjects = (userIds: Array<number>): ThunkType => async (dispatc
         let projectIds: Array<ProjectToUserIdsMatchType> = await projectsAPI.getProjectIdsByUserIds(userIds)
         let projects: Array<ProjectType> = await projectsAPI.getProjectsByIds(projectIds.map((p) => p.projectId))
         dispatch(actions.setProjects(projects))
+        dispatch(actions.setSelectedProjectId(projects[0].id))
         dispatch(actions.setFetching(false))
     }
     catch (e) {

@@ -61,20 +61,7 @@ export const getUsersByProjectIds = (projectIds: Array<number>): ThunkType => as
 export const getUsersByIds = (userIds: Array<number>): ThunkType => async (dispatch) => {
     try {
         dispatch(actions.setFetching(true))
-        /*let userIds: Array<ProjectToUserIdsMatchType> = await usersAPI.getUserIdsByProjectIds(projectIds)*/
         let users: Array<UserType> = await usersAPI.getUsersByIds(userIds)
-        await dispatch(setUsers(users))
-    } catch (e) {
-        dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))
-    }
-}
-
-export const getUsersByShownTasks = (): ThunkType => async (dispatch, getState) => {
-    let usersIds = getState().tasks.filteredTasks.map(t => t.author)
-    let uniqueUserIds = Array.from(new Set(usersIds))
-    try {
-        dispatch(actions.setFetching(true))
-        let users: Array<UserType> = await usersAPI.getUsersByIds(uniqueUserIds)
         await dispatch(setUsers(users))
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))

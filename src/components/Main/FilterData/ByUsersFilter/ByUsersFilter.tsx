@@ -45,7 +45,9 @@ const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
                 disableClearable
                 multiple
                 id="tags-outlined"
-                options={props.users}
+                options={
+                    props.users.filter(u => props.tasks.filter(t => t.author === u.id).length > 0)
+                }
                 getOptionLabel={(option) => option.nickname}
                 value={filteredUsers}
                 filterSelectedOptions
@@ -66,7 +68,8 @@ type MapStatePropsType = ReturnType<typeof mapStateToProps>
 const mapStateToProps = (state: AppStateType) => {
     return {
         users: state.users.users,
-        filter: state.tasks.filter
+        filter: state.tasks.filter,
+        tasks: state.tasks.tasks
     }
 }
 

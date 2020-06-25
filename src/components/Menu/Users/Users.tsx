@@ -16,12 +16,14 @@ import {AppStateType} from "../../../redux/store"
 import {TaskFilterType, UserType} from "../../../types/types"
 import {
     getUsersByIds,
-    getUsersByProjectIds, getUsersByShownTasks,
+    getUsersByProjectIds,
     setFetching,
     setSelectedUserId,
     setUsers
 } from "../../../redux/usersReducer"
 import {setFilter} from "../../../redux/tasksReducer"
+import {RouteComponentProps, withRouter} from "react-router"
+import {ROUTE} from "../../../redux/appReducer"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -39,17 +41,28 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
+const Users: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsType> = (props) => {
 
     const classes = useStyles()
     const [open, setOpen] = React.useState(true)
 
     // Установка флага процесса загрузки при загрузке списка проектов
-    let {getUsersByShownTasks, selectedProjectId, getUsersByProjectIds, setUsers} = props
+    let {selectedProjectId, getUsersByProjectIds, setUsers, myId, getUsersByIds} = props
+    let  locationPathName = props.history.location.pathname
     useEffect(() => {
-        if (selectedProjectId !== null) getUsersByProjectIds([selectedProjectId])
-        else setUsers([])
-    }, [getUsersByShownTasks, selectedProjectId, setUsers, getUsersByProjectIds])
+        switch (locationPathName) {
+            case ROUTE.ROOT:
+                if (selectedProjectId !== null) getUsersByProjectIds([selectedProjectId])
+                else setUsers([])
+                break
+            case ROUTE.MY_TASKS:
+                if (myId !== null) getUsersByIds([myId])
+                else setUsers([])
+                break
+            default:
+                setUsers([])
+        }
+    }, [selectedProjectId, setUsers, getUsersByProjectIds, locationPathName, myId, getUsersByIds])
 
     const handleCollapseList = () => {
         setOpen(!open)
@@ -91,7 +104,7 @@ const Users: React.FC<MapStatePropsType & MapDispatchPropsType> = (props) => {
                                         }
                                     </ListItemIconMui>
                                     <ListItemTextMui primary={
-                                        `${item.nickname}`
+                                        `${item.nickname} (${props.tasks.filter(t => t.author === item.id).length})`
                                     }/>
                                 </ListItemMui>
                             </ListMui>
@@ -113,7 +126,8 @@ const mapStateToProps = (state: AppStateType) => {
         users: state.users.users,
         selectedUserId: state.users.selectedUserId,
         filteredTasks: state.tasks.filteredTasks,
-        tasks: state.tasks.tasks
+        tasks: state.tasks.tasks,
+        myId: state.auth.id
     }
 }
 
@@ -121,7 +135,6 @@ type MapDispatchPropsType = {
     setFetching: (isFetching: boolean) => void,
     getUsersByProjectIds: (projectIds: Array<number>) => void,
     getUsersByIds: (userIds: Array<number>) => void,
-    getUsersByShownTasks: () => void,
     setUsers: (users: Array<UserType>) => void
     setSelectedUserId: (selectedUserId: number) => void,
     setFilter: (filter: TaskFilterType, rewrite?: boolean) => void
@@ -130,10 +143,9 @@ const mapDispatchToProps = {
     setFetching,
     getUsersByProjectIds,
     getUsersByIds,
-    getUsersByShownTasks,
     setUsers,
     setSelectedUserId,
     setFilter
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Users)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Users))

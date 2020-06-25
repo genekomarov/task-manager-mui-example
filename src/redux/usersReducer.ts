@@ -47,12 +47,34 @@ export const actions = {
  * @param {Array<number>} projectIds
  * @return {Promise<void>}
  * */
-export const getUsers = (projectIds: Array<number>): ThunkType => async (dispatch) => {
+export const getUsersByProjectIds = (projectIds: Array<number>): ThunkType => async (dispatch) => {
     try {
-        console.log('getUsers')
         dispatch(actions.setFetching(true))
         let userIds: Array<ProjectToUserIdsMatchType> = await usersAPI.getUserIdsByProjectIds(projectIds)
         let users: Array<UserType> = await usersAPI.getUsersByIds(userIds.map((u) => u.userId))
+        await dispatch(setUsers(users))
+    } catch (e) {
+        dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))
+    }
+}
+
+export const getUsersByIds = (userIds: Array<number>): ThunkType => async (dispatch) => {
+    try {
+        dispatch(actions.setFetching(true))
+        /*let userIds: Array<ProjectToUserIdsMatchType> = await usersAPI.getUserIdsByProjectIds(projectIds)*/
+        let users: Array<UserType> = await usersAPI.getUsersByIds(userIds)
+        await dispatch(setUsers(users))
+    } catch (e) {
+        dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))
+    }
+}
+
+export const getUsersByShownTasks = (): ThunkType => async (dispatch, getState) => {
+    let usersIds = getState().tasks.tasks.map(t => t.author)
+    let uniqueUserIds = Array.from(new Set(usersIds))
+    try {
+        dispatch(actions.setFetching(true))
+        let users: Array<UserType> = await usersAPI.getUsersByIds(uniqueUserIds)
         await dispatch(setUsers(users))
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка загрузки команды пользователей'))

@@ -102,7 +102,7 @@ const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsTy
             <CssBaselineMui/>
 
             {/*Верхняя панель*/}
-            <AppTopBar/>
+            <AppTopBar handleDrawerToggle={handleDrawerToggle}/>
 
             {/*Обертка над боковой панелью для управления режимом отображения*/}
             <nav className={classes.drawer}>

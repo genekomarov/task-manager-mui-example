@@ -28,14 +28,9 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const AppTopBar: React.FC<MapStatePropsType> = (props) => {
+const AppTopBar: React.FC<OwnPropsType & MapStatePropsType> = (props) => {
 
     const classes = useStyles()
-    const [mobileOpen, setMobileOpen] = React.useState(false)
-
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen)
-    }
 
     return (
         <HideOnScroll>
@@ -45,7 +40,7 @@ const AppTopBar: React.FC<MapStatePropsType> = (props) => {
                         color='inherit'
                         aria-label='open drawer'
                         edge='start'
-                        onClick={handleDrawerToggle}
+                        onClick={props.handleDrawerToggle}
                         className={classes.menuButton}
                     >
                         <MenuIconMui/>
@@ -60,6 +55,10 @@ const AppTopBar: React.FC<MapStatePropsType> = (props) => {
             </AppBarMui>
         </HideOnScroll>
     )
+}
+
+type OwnPropsType = {
+    handleDrawerToggle: () => void
 }
 
 type MapStatePropsType = ReturnType<typeof mapStateToProps>

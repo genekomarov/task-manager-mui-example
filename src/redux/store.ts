@@ -7,9 +7,6 @@ import usersReducer from "./usersReducer"
 import tasksReducer from "./tasksReducer"
 import appReducer from "./appReducer"
 
-/**
- * Создание корневого редьюсера
- * */
 let rootReducer = combineReducers({
     api: clientSideApiReducer,
     auth: authReducer,
@@ -20,24 +17,16 @@ let rootReducer = combineReducers({
     clientSideDb: clientSideApiReducer
 });
 
-// Получение типа общего Redux state
-type RootReducerType = typeof rootReducer
-export type AppStateType = ReturnType<RootReducerType>
+// Выведение типа глобального redux state
+export type AppStateType = ReturnType<typeof rootReducer>
 
-/**
- * Generic.
- * Получение типа объединения из подобъектов.
- * */
-type UnionTypeFromObj<T> = T extends {[key: string]: infer R} ? R : never
-/**
- * Generic.
- * Получение типа объединения из возвращаемых значений функций другого типа объединения.
- * */
-export type ActionsTypes<T extends {[key: string]: (...args: any[]) => any}> = ReturnType<UnionTypeFromObj<T>>
+// Выведение типа для объектов action
+export type InferActionsType<T> = T extends { [key: string]: (...args: any[]) => infer R} ? R : never
 
 // Подключение React DevTools
 // @ts-ignore
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 // Создание Redux store
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunkMiddleware)));
 

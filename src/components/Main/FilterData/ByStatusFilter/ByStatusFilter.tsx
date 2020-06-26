@@ -1,14 +1,14 @@
 import React from 'react'
-import {connect} from "react-redux"
+import {connect} from 'react-redux'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MenuItemMui from '@material-ui/core/MenuItem'
 import FormControlMui from '@material-ui/core/FormControl'
 import SelectMui from '@material-ui/core/Select'
 import InputAdornmentMui from '@material-ui/core/InputAdornment'
 import SortIconMui from '@material-ui/icons/Sort'
-import {AppStateType} from "../../../../redux/store"
-import {TaskFilterType} from "../../../../types/types"
-import {setFilter} from "../../../../redux/tasksReducer"
+import {AppStateType} from '../../../../redux/store'
+import {TaskFilterType} from '../../../../types/types'
+import {setFilter} from '../../../../redux/tasksReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,12 +52,12 @@ const ByStatusFilter: React.FC<MapStatePropsType & MapDispatchPropsType> = (prop
                     displayEmpty
                     className={classes.selectEmpty}
                     startAdornment={
-                        <InputAdornmentMui position="start">
+                        <InputAdornmentMui position='start'>
                             <SortIconMui />
                         </InputAdornmentMui>
                     }
                 >
-                    <MenuItemMui value="">
+                    <MenuItemMui value=''>
                         <em>По статусу</em>
                     </MenuItemMui>
                     <MenuItemMui value={OPEN}>Незавершенные</MenuItemMui>

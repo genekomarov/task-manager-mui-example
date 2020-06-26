@@ -1,20 +1,20 @@
-import React, {useEffect} from 'react'
-import {connect} from "react-redux"
-import {Form, Formik} from "formik"
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles"
+import React from 'react'
+import {connect} from 'react-redux'
+import {Form, Formik} from 'formik'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import ListItemMui from '@material-ui/core/ListItem'
 import ListItemIconMui from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryActionMui from '@material-ui/core/ListItemSecondaryAction'
 import ListItemTextMui from '@material-ui/core/ListItemText'
 import CheckboxMui from '@material-ui/core/Checkbox'
 import IconButtonMui from '@material-ui/core/IconButton'
-import InputBaseMui from "@material-ui/core/InputBase"
+import InputBaseMui from '@material-ui/core/InputBase'
 import DeleteOutlineIconMui from '@material-ui/icons/DeleteOutline'
-import {ProjectType, TaskType, UserType} from "../../../../types/types"
-import {AppStateType} from "../../../../redux/store"
-import {changeTask, deleteTask} from "../../../../redux/tasksReducer"
-import {getDateString} from "../../../../utils/dateHelper"
-import {hendleKeyDownOnTextarea} from "../../../../utils/wrapStringForTextarea"
+import {AppStateType} from '../../../../redux/store'
+import {ProjectType, TaskType, UserType} from '../../../../types/types'
+import {changeTask, deleteTask} from '../../../../redux/tasksReducer'
+import {getDateString} from '../../../../utils/dateHelper'
+import {hendleKeyDownOnTextarea} from '../../../../utils/wrapStringForTextarea'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,13 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (props) => {
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     const task: TaskType = props.task
-
-    useEffect(() => {
-        console.log(task.title)
-    }, [task])
 
     const userById = (users: Array<UserType>, authorId: number): UserType => {
         let filteredUsers = users.filter(u => u.id === authorId)
@@ -52,9 +48,7 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
         task.author === props.myId && props.changeTask({...task, isDone: task.isDone, title})
     }
 
-    const handleDelete = () => {
-        props.deleteTask(task.id)
-    }
+    const handleDelete = () => {props.deleteTask(task.id)}
 
     // Содержание задачи. Если автор авторизованный пользователь, выводим редактируемое поле
     const taskTitle = task.author === props.myId
@@ -78,9 +72,8 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
                 return (
                     <Form onSubmit={handleSubmit}>
                         <InputBaseMui
-                            name="title"
-                            type="title"
-                            id="title"
+                            name='title'
+                            type='text'
                             fullWidth
                             multiline
                             value={values.title}
@@ -113,7 +106,7 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
                 <CheckboxMui
                     className={task.author !== props.myId ? classes.checkbox_cursor_default : ''}
                     color='secondary'
-                    edge="start"
+                    edge='start'
                     checked={task.isDone}
                     tabIndex={-1}
                     disableRipple
@@ -128,13 +121,13 @@ const Task: React.FC<MapStatePropsType & MapDispatchPropsType & OwnType> = (prop
                 <ListItemSecondaryActionMui>
                     <IconButtonMui
                         onClick={handleDelete}
-                        edge="end">
+                        edge='end'>
                         <DeleteOutlineIconMui/>
                     </IconButtonMui>
                 </ListItemSecondaryActionMui>
             )}
         </ListItemMui>
-    );
+    )
 }
 
 type OwnType = {

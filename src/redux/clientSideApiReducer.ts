@@ -1,12 +1,12 @@
 import {ThunkAction} from "redux-thunk"
 import {ProjectToUserIdsMatchType, ProjectType, TaskType, UserType} from "../types/types"
-import {ActionsTypes, AppStateType} from "./store"
+import {InferActionsType, AppStateType} from "./store"
 
 type InitialStateType = typeof initialState
-type ActionsType = ActionsTypes<typeof actions>
+type ActionsType = InferActionsType<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
-/** Объединенный тип из литералов имен подобъектов initialState.clientSideData*/
+/** Объединенный тип из имен подобъектов initialState.clientSideData*/
 type TableNamesTypes = keyof typeof initialState.clientSideData
 /** Универсальный тип для объектов items*/
 type ItemType = { id: number, [key: string]: any }

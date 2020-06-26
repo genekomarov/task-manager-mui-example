@@ -1,3 +1,8 @@
+/**
+ * Преобразует переданный объект даты в строку формата "dd.mm.yyyy hh:mm".
+ * @param {Date} date - Объект даты.
+ * @return {string} Дата в формате строки.
+ */
 export const getDateString = (date: Date) =>
     `${
         date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()

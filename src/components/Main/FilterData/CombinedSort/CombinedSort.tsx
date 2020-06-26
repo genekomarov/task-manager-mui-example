@@ -1,15 +1,15 @@
 import React from 'react'
-import {connect} from "react-redux"
+import {connect} from 'react-redux'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MenuItemMui from '@material-ui/core/MenuItem'
 import FormControlMui from '@material-ui/core/FormControl'
 import SelectMui from '@material-ui/core/Select'
 import InputAdornmentMui from '@material-ui/core/InputAdornment'
-import Divider from "@material-ui/core/Divider"
+import Divider from '@material-ui/core/Divider'
 import FilterListIconMui from '@material-ui/icons/FilterList'
-import {AppStateType} from "../../../../redux/store"
-import {setSort} from "../../../../redux/tasksReducer"
-import {TaskSortType} from "../../../../types/types"
+import {AppStateType} from '../../../../redux/store'
+import {TaskSortType} from '../../../../types/types'
+import {setSort} from '../../../../redux/tasksReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

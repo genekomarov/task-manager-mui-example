@@ -1,10 +1,10 @@
 import React, {ChangeEvent} from 'react'
-import {connect} from "react-redux"
+import {connect} from 'react-redux'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import TextFieldMui from '@material-ui/core/TextField'
-import {AppStateType} from "../../../../redux/store"
-import {TaskFilterType} from "../../../../types/types"
-import {setFilter} from "../../../../redux/tasksReducer"
+import {AppStateType} from '../../../../redux/store'
+import {TaskFilterType} from '../../../../types/types'
+import {setFilter} from '../../../../redux/tasksReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,20 +18,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ByContentFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     const handleContentChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         props.setFilter({userIds: undefined, status: undefined, content: e.currentTarget.value})
     }
 
     return (
-        <form style={{width: '100%'}} className={classes.root} noValidate autoComplete="off"
+        <form style={{width: '100%'}} className={classes.root} noValidate autoComplete='off'
         >
             <TextFieldMui
                 value={props.filter.content}
                 onChange={handleContentChange}
-                id="standard-basic"
-                label="Искать по содержимому: "
+                id='standard-basic'
+                label='Искать по содержимому: '
                 fullWidth
             />
         </form>

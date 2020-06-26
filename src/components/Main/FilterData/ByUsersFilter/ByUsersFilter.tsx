@@ -1,16 +1,16 @@
 import React, {ChangeEvent} from 'react'
-import {connect} from "react-redux"
+import {connect} from 'react-redux'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
-import AutocompleteMui from '@material-ui/lab/Autocomplete'
 import TextFieldMui from '@material-ui/core/TextField'
-import {AppStateType} from "../../../../redux/store"
-import {TaskFilterType, UserType} from "../../../../types/types"
-import {setFilter} from "../../../../redux/tasksReducer"
+import AutocompleteMui from '@material-ui/lab/Autocomplete'
+import {AppStateType} from '../../../../redux/store'
+import {TaskFilterType, UserType} from '../../../../types/types'
+import {setFilter} from '../../../../redux/tasksReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            width: "100%",
+            width: '100%',
             '& > * + *': {
                 marginTop: theme.spacing(3),
             },
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) => {
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     // Получение имен пользователей по их ID
     let filteredUsers = (() =>
@@ -44,7 +44,7 @@ const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
                 onChange={handleUsersChanged}
                 disableClearable
                 multiple
-                id="tags-outlined"
+                id='tags-outlined'
                 options={
                     props.users.filter(u => props.tasks.filter(t => t.author === u.id).length > 0)
                 }
@@ -54,9 +54,9 @@ const ByUsersFilter: React.FC<MapStatePropsType & MapDispatchProps> = (props) =>
                 renderInput={(params) => (
                     <TextFieldMui
                         {...params}
-                        variant="standard"
-                        label=""
-                        placeholder="Авторы"
+                        variant='standard'
+                        label=''
+                        placeholder='Авторы'
                     />
                 )}
             />

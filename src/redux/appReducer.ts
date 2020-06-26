@@ -1,9 +1,9 @@
 import {ThunkAction} from "redux-thunk"
-import {ActionsTypes, AppStateType} from "./store"
+import {InferActionsType, AppStateType} from "./store"
 import {login, showLoginForm} from "./authReducer"
 import Cookies from 'js-cookie'
 
-// Пути адресной строки
+// Пути адреса страницы
 export type RouteType = keyof typeof ROUTE
 export const ROUTE = {
     ROOT: '/',
@@ -13,7 +13,7 @@ export const ROUTE = {
 }
 
 type InitialStateType = typeof initialState
-type ActionsType = ActionsTypes<typeof actions>
+type ActionsType = InferActionsType<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
@@ -81,6 +81,11 @@ export const newError = (message: string): ThunkType => async (dispatch) => {
     dispatch(actions.newError(message))
 }
 
+/**
+ * Установка текущего адреса
+ * @param {string} route - Адрес страницы
+ * @return {Promise<void>}
+ * */
 export const setRoute = (route: string): ThunkType => async (dispatch) => {
     let key: keyof typeof ROUTE
     for (key in ROUTE)

@@ -1,5 +1,5 @@
 /**
- * Исключение ошибки авторизации
+ * Исключение ошибки авторизации.
  * */
 export class AuthorizationFailedException {
     message: string;

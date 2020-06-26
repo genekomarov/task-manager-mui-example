@@ -1,4 +1,5 @@
 import React from 'react'
+import {connect} from 'react-redux'
 import ListMui from '@material-ui/core/List'
 import ListItemMui from '@material-ui/core/ListItem'
 import ListItemIconMui from '@material-ui/core/ListItemIcon'
@@ -7,14 +8,13 @@ import CollapseMui from '@material-ui/core/Collapse'
 import ExpandLessMui from '@material-ui/icons/ExpandLess'
 import ExpandMoreMui from '@material-ui/icons/ExpandMore'
 import SearchIconMui from '@material-ui/icons/Search'
-import FilterRow from "./FilterRow/FilterRow"
-import CombinedSort from "./CombinedSort/CombinedSort"
-import ByStatusFilter from "./ByStatusFilter/ByStatusFilter"
-import ByUsersFilter from "./ByUsersFilter/ByUsersFilter"
-import ByContentFilter from "./ByContentFilter/ByContentFilter"
-import {AppStateType} from "../../../redux/store"
-import {connect} from "react-redux"
-import {ROUTE} from "../../../redux/appReducer"
+import FilterRow from './FilterRow/FilterRow'
+import CombinedSort from './CombinedSort/CombinedSort'
+import ByStatusFilter from './ByStatusFilter/ByStatusFilter'
+import ByUsersFilter from './ByUsersFilter/ByUsersFilter'
+import ByContentFilter from './ByContentFilter/ByContentFilter'
+import {AppStateType} from '../../../redux/store'
+import {ROUTE} from '../../../redux/appReducer'
 
 const FilterWrapper: React.FC<MapStatePropsType> = (props) => {
 
@@ -31,26 +31,28 @@ const FilterWrapper: React.FC<MapStatePropsType> = (props) => {
                     <SearchIconMui/>
                 </ListItemIconMui>
                 <ListItemTextMui
-                    primary="Поиск задач"
-                    primaryTypographyProps={{variant: "body1"}}/>
+                    primary='Поиск задач'
+                    primaryTypographyProps={{variant: 'body1'}}/>
                 {open ? <ExpandLessMui/> : <ExpandMoreMui/>}
             </ListItemMui>
-            <CollapseMui in={open} timeout="auto" unmountOnExit>
-                <ListMui component="div" disablePadding>
+            <CollapseMui in={open} timeout='auto' unmountOnExit>
+                <ListMui component='div' disablePadding>
                     <ListMui disablePadding>
+
+                        {/*Строка 1. Сортировка и фильтр по статусу*/}
                         <FilterRow rowNumber={1}>
                             <CombinedSort/>
                             <ByStatusFilter/>
                         </FilterRow>
 
-                        {
-                            props.route === ROUTE.ROOT && (
-                                <FilterRow rowNumber={2}>
-                                    <ByUsersFilter/>
-                                </FilterRow>
-                            )
-                        }
+                        {/*Строка 2. Фильтр по пользователям*/}
+                        {props.route === ROUTE.ROOT && (
+                            <FilterRow rowNumber={2}>
+                                <ByUsersFilter/>
+                            </FilterRow>
+                        )}
 
+                        {/*Строка 3. Фильтр по содержимому*/}
                         <FilterRow rowNumber={3}>
                             <ByContentFilter/>
                         </FilterRow>

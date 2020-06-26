@@ -1,29 +1,23 @@
-import React, {useEffect} from 'react';
-import {connect} from "react-redux"
-import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
-import ListMui from '@material-ui/core/List';
-import ListItemMui from '@material-ui/core/ListItem';
-import ListItemIconMui from '@material-ui/core/ListItemIcon';
-import ListItemTextMui from '@material-ui/core/ListItemText';
-import CollapseMui from '@material-ui/core/Collapse';
-import CircularProgressMui from "@material-ui/core/CircularProgress/CircularProgress"
-import ExpandLessMui from '@material-ui/icons/ExpandLess';
-import ExpandMoreMui from '@material-ui/icons/ExpandMore';
-import PeopleIconMui from '@material-ui/icons/People';
-import PersonIconMui from '@material-ui/icons/Person';
-import PermIdentityIconMui from '@material-ui/icons/PermIdentity';
-import {AppStateType} from "../../../redux/store"
-import {TaskFilterType, UserType} from "../../../types/types"
-import {
-    getUsersByIds,
-    getUsersByProjectIds,
-    setFetching,
-    setSelectedUserId,
-    setUsers
-} from "../../../redux/usersReducer"
-import {setFilter} from "../../../redux/tasksReducer"
-import {RouteComponentProps, withRouter} from "react-router"
-import {ROUTE} from "../../../redux/appReducer"
+import React, {useEffect} from 'react'
+import {connect} from 'react-redux'
+import {RouteComponentProps, withRouter} from 'react-router'
+import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
+import ListMui from '@material-ui/core/List'
+import ListItemMui from '@material-ui/core/ListItem'
+import ListItemIconMui from '@material-ui/core/ListItemIcon'
+import ListItemTextMui from '@material-ui/core/ListItemText'
+import CollapseMui from '@material-ui/core/Collapse'
+import CircularProgressMui from '@material-ui/core/CircularProgress/CircularProgress'
+import ExpandLessMui from '@material-ui/icons/ExpandLess'
+import ExpandMoreMui from '@material-ui/icons/ExpandMore'
+import PeopleIconMui from '@material-ui/icons/People'
+import PersonIconMui from '@material-ui/icons/Person'
+import PermIdentityIconMui from '@material-ui/icons/PermIdentity'
+import {AppStateType} from '../../../redux/store'
+import {TaskFilterType, UserType} from '../../../types/types'
+import {getUsersByIds, getUsersByProjectIds, setSelectedUserId, setUsers} from '../../../redux/usersReducer'
+import {setFilter} from '../../../redux/tasksReducer'
+import {ROUTE} from '../../../redux/appReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -64,9 +58,7 @@ const Users: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchProps
         }
     }, [selectedProjectId, setUsers, getUsersByProjectIds, locationPathName, myId, getUsersByIds])
 
-    const handleCollapseList = () => {
-        setOpen(!open)
-    }
+    const handleCollapseList = () => {setOpen(!open)}
 
     const handleSelectItem = (selectedUserId: number) => {
         props.setSelectedUserId(selectedUserId)
@@ -82,18 +74,18 @@ const Users: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchProps
                     <PeopleIconMui/>
                 </ListItemIconMui>
                 <ListItemTextMui
-                    primary="Команда"
-                    primaryTypographyProps={{variant: "body1"}}/>
+                    primary='Команда'
+                    primaryTypographyProps={{variant: 'body1'}}/>
                 {open ? <ExpandLessMui/> : <ExpandMoreMui/>}
             </ListItemMui>
 
             {/*Список*/}
             {props.isFetching && props.isAuth
                 ? <CircularProgressMui className={classes.progress}/>
-                : <CollapseMui in={open} timeout="auto" unmountOnExit>
+                : <CollapseMui in={open} timeout='auto' unmountOnExit>
                     {props.isAuth && props.users.map((item) => {
                         return (
-                            <ListMui component="div" disablePadding key={item.id}>
+                            <ListMui component='div' disablePadding key={item.id}>
                                 <ListItemMui button className={classes.nested}
                                              onClick={() => handleSelectItem(item.id)}>
                                     <ListItemIconMui>
@@ -121,18 +113,15 @@ const mapStateToProps = (state: AppStateType) => {
     return {
         isFetching: state.users.isFetching,
         isAuth: state.auth.isAuth,
-        projectsIsFetching: state.projects.isFetching,
         selectedProjectId: state.projects.selectedProjectId,
         users: state.users.users,
         selectedUserId: state.users.selectedUserId,
-        filteredTasks: state.tasks.filteredTasks,
         tasks: state.tasks.tasks,
         myId: state.auth.id
     }
 }
 
 type MapDispatchPropsType = {
-    setFetching: (isFetching: boolean) => void,
     getUsersByProjectIds: (projectIds: Array<number>) => void,
     getUsersByIds: (userIds: Array<number>) => void,
     setUsers: (users: Array<UserType>) => void
@@ -140,7 +129,6 @@ type MapDispatchPropsType = {
     setFilter: (filter: TaskFilterType, rewrite?: boolean) => void
 }
 const mapDispatchToProps = {
-    setFetching,
     getUsersByProjectIds,
     getUsersByIds,
     setUsers,

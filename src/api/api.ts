@@ -3,7 +3,7 @@ import {AuthDataType, ProjectToUserIdsMatchType, ProjectType, TaskType, UserType
 import {arrayToStringArguments} from "../utils/arrayToStringArguments"
 
 /**
- * Преднастроенный экземпляр axios
+ * Преднастроенный экземпляр axios.
  * */
 const instance = axios.create({
     withCredentials: true,
@@ -12,7 +12,7 @@ const instance = axios.create({
 })
 
 /**
- * Объект с методами для осуществления авторизационных запросов
+ * Авторизация.
  * */
 export const authAPI = {
     auth: (email: string, password: string) => {
@@ -22,13 +22,12 @@ export const authAPI = {
 }
 
 /**
- * Объект с методами для осуществления запросов для работы с пользователями
+ * Работа с пользователями.
  * */
 export const usersAPI = {
 
     /**
-     * Получение набора пользователей по их ID
-     *
+     * Получение набора пользователей по их ID.
      * @param {Array<number>} setOfUserIds - Набор ID пользователей.
      * @return {Promise<Array<UserType>> | []} Набор пользователей.
      * */
@@ -39,8 +38,7 @@ export const usersAPI = {
             : [],
 
     /**
-     * Получение набора соответствий записей таблиц "projects" и "users" по набору ID проектов
-     *
+     * Получение набора соответствий записей из таблиц "projects" и "users" по набору ID проектов.
      * @param {Array<number>} setOfProjectIds - Набор ID проектов.
      * @return {Promise<Array<ProjectToUserIdsMatchType>> | []} - Набор соответствий.
      * */
@@ -52,32 +50,31 @@ export const usersAPI = {
             : [],
 
     /**
-     * Добавление пользователя
-     * Метод не реализован
+     * Добавление пользователя.
+     * Метод не реализован.
      * */
     addNewUser: () => console.error("method 'addNewUser' is not implemented"),
 
     /**
-     * Изменение пользователя
-     * Метод не реализован
+     * Изменение пользователя.
+     * Метод не реализован.
      * */
     changeUser: () => console.error("method 'changeUser' is not implemented"),
 
     /**
-     * Удаление пользователя
-     * Метод не реализован
+     * Удаление пользователя.
+     * Метод не реализован.
      * */
     deleteUser: () => console.error("method 'deleteUser' is not implemented")
 }
 
 /**
- * Объект с методами для осуществления запросов для работы с проектами
+ * Работа с проектами.
  * */
 export const projectsAPI = {
 
     /**
-     * Получение набора проектов по их ID
-     *
+     * Получение набора проектов по их ID.
      * @param {Array<number>} setOfProjectIds - Набор ID проектов.
      * @return {Promise<Array<ProjectType>> | []} Набор проектов.
      * */
@@ -88,8 +85,7 @@ export const projectsAPI = {
             : [],
 
     /**
-     * Получение набора соответствий записей таблиц "projects" и "users" по набору ID пользователей
-     *
+     * Получение набора соответствий записей таблиц "projects" и "users" по набору ID пользователей.
      * @param {Array<number>} setOfUserIds - Набор ID пользователей.
      * @return {Promise<Array<ProjectToUserIdsMatchType>> | []} - Набор соответствий.
      * */
@@ -101,32 +97,31 @@ export const projectsAPI = {
             : [],
 
     /**
-     * Добавление проекта
-     * Метод не реализован
+     * Добавление проекта.
+     * Метод не реализован.
      * */
     addNewProject: () => console.error("method 'addNewProject' is not implemented"),
 
     /**
-     * Изменение проекта
-     * Метод не реализован
+     * Изменение проекта.
+     * Метод не реализован.
      * */
     changeProject: () => console.error("method 'changeProject' is not implemented"),
 
     /**
-     * Удаление проекта
-     * Метод не реализован
+     * Удаление проекта.
+     * Метод не реализован.
      * */
     deleteProject: () => console.error("method 'deleteProject' is not implemented")
 }
 
 /**
- * Объект с методами для осуществления запросов для работы с задачами
+ * Работа с задачами.
  * */
 export const tasksAPI = {
 
     /**
-     * Получение набора задач по ID проектов или пользователей
-     *
+     * Получение набора задач по ID проектов и/или пользователей.
      * @param {Array<number> | null} setOfProjectIds - Набор ID проектов.
      * @param {Array<number> | null} setOfUserIds - Набор ID пользователей.
      * @return {Promise<Array<TaskType>> | []} Набор задач.
@@ -139,8 +134,7 @@ export const tasksAPI = {
             : [],
 
     /**
-     * Добавление задами
-     *
+     * Добавление задами.
      * @param {TaskType} task - Объект задачи.
      * @return {Promise<any>} Ответ сервера. Не имеет значения, так как пока не используется в проекте.
      * */
@@ -149,8 +143,7 @@ export const tasksAPI = {
             .then(response => response.data),
 
     /**
-     * Изменение задами
-     *
+     * Изменение задами.
      * @param {number} taskId - ID задачи.
      * @param {string} title - Заголовок задачи.
      * @param {boolean} isDone - Статус задачи.
@@ -161,8 +154,7 @@ export const tasksAPI = {
             .then(response => response.data),
 
     /**
-     * Удаление задами
-     *
+     * Удаление задами.
      * @param {number} taskId - ID задачи.
      * @return {Promise<any>} Ответ сервера. Не имеет значения, так как пока не используется в проекте.
      * */

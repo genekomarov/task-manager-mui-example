@@ -1,16 +1,16 @@
 import React, {useEffect} from 'react'
-import {connect} from "react-redux"
+import {RouteComponentProps, withRouter} from 'react-router'
+import {connect} from 'react-redux'
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import ListMui from '@material-ui/core/List'
-import ContainerMui from "@material-ui/core/Container"
-import CircularProgressMui from "@material-ui/core/CircularProgress/CircularProgress"
-import Task from "./Task/Task"
-import NewTask from "./NewTask/NewTask"
-import {Route, RouteComponentProps, withRouter} from "react-router"
-import {AppStateType} from "../../../redux/store"
-import {getTasks, selectMyTasks, setFetching, setTasks} from "../../../redux/tasksReducer"
-import {TaskType} from "../../../types/types"
-import {ROUTE} from "../../../redux/appReducer"
+import ContainerMui from '@material-ui/core/Container'
+import CircularProgressMui from '@material-ui/core/CircularProgress/CircularProgress'
+import Task from './Task/Task'
+import NewTask from './NewTask/NewTask'
+import {AppStateType} from '../../../redux/store'
+import {TaskType} from '../../../types/types'
+import {getTasks, selectMyTasks, setFetching, setTasks} from '../../../redux/tasksReducer'
+import {ROUTE} from '../../../redux/appReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,28 +29,26 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsType> = (props) => {
 
-    const classes = useStyles();
+    const classes = useStyles()
 
-    // Установка флага процесса загрузки при загрузке списка пользователей
-    let {usersIsFetching, setFetching, selectedProjectId, getTasks, setTasks, route, projects} = props
+    // Положение списка задач
+    let {setFetching, selectedProjectId, getTasks, setTasks, route, projects, selectMyTasks} = props
+    let locationPath = props.history.location.pathname
     useEffect(() => {
-        /*if (usersIsFetching) setFetching(true)
-        else */switch (props.history.location.pathname) {
+        switch (locationPath) {
             case ROUTE.ROOT:
                 selectedProjectId !== null && getTasks([selectedProjectId], null)
                 break
             case ROUTE.MY_TASKS:
-                projects.length > 0 && props.selectMyTasks()
+                projects.length > 0 && selectMyTasks()
                 break
             default:
                 setTasks([])
         }
-    }, [/*usersIsFetching, */selectedProjectId, route, setFetching, getTasks, setTasks, projects])
-    // todo: баг при открытии страницы mytask
+    }, [selectedProjectId, route, setFetching, getTasks, setTasks, projects, locationPath, selectMyTasks])
 
     return (
-        /*Установка положения области задач по середине блока и ширины*/
-        <ContainerMui maxWidth={"sm"}>
+        <ContainerMui maxWidth={'sm'}>
             <ListMui className={classes.root}>
                 {
                     props.isFetching && props.isAuth
@@ -64,7 +62,7 @@ const TasksList: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchP
                 }
             </ListMui>
         </ContainerMui>
-    );
+    )
 }
 
 type MapStatePropsType = ReturnType<typeof mapStateToProps>
@@ -72,9 +70,7 @@ const mapStateToProps = (state: AppStateType) => {
     return {
         isFetching: state.tasks.isFetching,
         isAuth: state.auth.isAuth,
-        usersIsFetching: state.users.isFetching,
         selectedProjectId: state.projects.selectedProjectId,
-        addNewTaskInProcess: state.tasks.addNewTaskInProcess,
         filteredTasks: state.tasks.filteredTasks,
         route: state.app.route,
         projects: state.projects.projects

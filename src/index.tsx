@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {Provider} from "react-redux"
-import store from "./redux/store"
-import * as serviceWorker from './serviceWorker';
-import {SnackbarProvider} from "notistack"
-import App from './App';
-import {BrowserRouter, HashRouter} from "react-router-dom"
+import React from 'react'
+import ReactDOM from 'react-dom'
+import {Provider} from 'react-redux'
+import store from './redux/store'
+import * as serviceWorker from './serviceWorker'
+import {SnackbarProvider} from 'notistack'
+import App from './App'
+import {HashRouter} from 'react-router-dom'
 
 ReactDOM.render(
     <React.StrictMode>
@@ -18,6 +18,6 @@ ReactDOM.render(
         </Provider>
     </React.StrictMode>,
     document.getElementById('root')
-);
+)
 
-serviceWorker.unregister();
+serviceWorker.unregister()

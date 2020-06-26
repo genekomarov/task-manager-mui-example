@@ -4,13 +4,12 @@ import AppBarMui from '@material-ui/core/AppBar'
 import IconButtonMui from '@material-ui/core/IconButton'
 import ToolbarMui from '@material-ui/core/Toolbar'
 import MenuIconMui from '@material-ui/icons/Menu'
-import AppBarContent from "./AppBarContent/AppBarContent"
-import TabsPanel from "./Tabs/Tabs"
-import HideOnScroll from "../common/HideOnScroll/HideOnScroll"
+import AppBarContent from './AppBarContent/AppBarContent'
+import TabsPanel from './Tabs/Tabs'
+import HideOnScroll from '../common/HideOnScroll/HideOnScroll'
 
 
 const drawerWidth = 240
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         appBar: {
@@ -26,32 +25,36 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
 const AppTopBar: React.FC = () => {
 
-    const classes = useStyles();
+    const classes = useStyles()
     const [mobileOpen, setMobileOpen] = React.useState(false)
 
     const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+        setMobileOpen(!mobileOpen)
+    }
 
     return (
         <HideOnScroll>
-            <AppBarMui position="fixed" className={classes.appBar}>
+            <AppBarMui position='fixed' className={classes.appBar}>
                 <ToolbarMui>
                     <IconButtonMui
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
+                        color='inherit'
+                        aria-label='open drawer'
+                        edge='start'
                         onClick={handleDrawerToggle}
                         className={classes.menuButton}
                     >
                         <MenuIconMui/>
                     </IconButtonMui>
+
+                    {/*Основное содержимое верхней панели*/}
                     <AppBarContent/>
                 </ToolbarMui>
+
+                {/*Вкладки*/}
                 <TabsPanel/>
             </AppBarMui>
         </HideOnScroll>

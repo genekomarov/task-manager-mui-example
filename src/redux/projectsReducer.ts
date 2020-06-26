@@ -1,11 +1,11 @@
 import {ThunkAction} from "redux-thunk"
-import {ActionsTypes, AppStateType} from "./store"
+import {InferActionsType, AppStateType} from "./store"
 import {projectsAPI} from "../api/api"
 import {ProjectToUserIdsMatchType, ProjectType} from "../types/types"
 import {newError} from "./appReducer"
 
 type InitialStateType = typeof initialState
-type ActionsType = ActionsTypes<typeof actions>
+type ActionsType = InferActionsType<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
@@ -20,7 +20,6 @@ const projectsReducer = (state = initialState, action: ActionsType): InitialStat
             return {
                 ...state,
                 projects: action.projects,
-                /*selectedProjectId: action.selectedProjectId*/
             }
         case "projects/SET_FETCHING":
             return {
@@ -38,11 +37,7 @@ const projectsReducer = (state = initialState, action: ActionsType): InitialStat
 }
 
 export const actions = {
-    setProjects: (projects: Array<ProjectType>) => ({
-        type: 'projects/SET_PROJECTS',
-        projects,
-        /*selectedProjectId: projects.length>0 ? projects[0].id : null*/
-    } as const),
+    setProjects: (projects: Array<ProjectType>) => ({type: 'projects/SET_PROJECTS', projects} as const),
     setFetching: (isFetching: boolean) => ({type: 'projects/SET_FETCHING', isFetching} as const),
     setSelectedProjectId: (selectedProjectId: number | null) => ({type: 'projects/SET_SELECTED_PROJECT_ID', selectedProjectId} as const),
 }

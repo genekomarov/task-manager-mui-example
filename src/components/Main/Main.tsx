@@ -1,7 +1,7 @@
 import React from 'react'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
-import TasksList from "./TasksList/TasksList"
-import FilterWrapper from "./FilterData/FilterWrapper"
+import TasksList from './TasksList/TasksList'
+import FilterWrapper from './FilterData/FilterWrapper'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,11 +12,11 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(3),
         },
     }),
-);
+)
 
 const Main: React.FC = () => {
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     return (
         <main className={classes.content}>

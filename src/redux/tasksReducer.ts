@@ -1,15 +1,14 @@
 import {ThunkAction} from "redux-thunk"
-import {ActionsTypes, AppStateType} from "./store"
+import {InferActionsType, AppStateType} from "./store"
 import {tasksAPI} from "../api/api"
 import {TaskFilterType, TaskSortType, TaskType} from "../types/types"
 import {addIdToDeleted, addNewItem, deleteItem} from "./clientSideApiReducer"
 import {newError, ROUTE} from "./appReducer"
 import {sortByDate, sortByStatus} from "../utils/tasksFilters"
 import {setSelectedProjectId} from "./projectsReducer"
-import {setUsers} from "./usersReducer"
 
 type InitialStateType = typeof initialState
-type ActionsType = ActionsTypes<typeof actions>
+type ActionsType = InferActionsType<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
@@ -118,7 +117,7 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
                 ],
                 idCounter: state.idCounter + 1
             }
-        case "tasks/SET_ADD_NEW_TASK_IN_PROGRESS":
+        case "tasks/SET_ADDING_NEW_TASK_IN_PROGRESS":
             return {
                 ...state,
                 addNewTaskInProcess: action.inProgress
@@ -131,29 +130,18 @@ const tasksReducer = (state = initialState, action: ActionsType): InitialStateTy
         default:
             return state
     }
-};
+}
 
 export const actions = {
     setTasks: (tasks: Array<TaskType>) => ({type: 'tasks/SET_TASKS', tasks} as const),
     setFetching: (isFetching: boolean) => ({type: 'tasks/SET_FETCHING', isFetching} as const),
     setFilter: (filter: TaskFilterType) => ({type: 'tasks/SET_FILTER', filter} as const),
     setSort: (sort: TaskSortType) => ({type: 'tasks/SET_SORT', sort} as const),
-    setCountOfShownTasks: (countOfShownTasks: number) => ({
-        type: 'tasks/SET_COUNT_OF_SHOWN_TASKS',
-        countOfShownTasks
-    } as const),
-    changeTask: (taskId: number, status: boolean, title: string) => ({
-        type: 'tasks/CHANGE_TASK',
-        taskId,
-        status,
-        title
-    } as const),
+    setCountOfShownTasks: (countOfShownTasks: number) => ({type: 'tasks/SET_COUNT_OF_SHOWN_TASKS', countOfShownTasks} as const),
+    changeTask: (taskId: number, status: boolean, title: string) => ({type: 'tasks/CHANGE_TASK', taskId, status, title} as const),
     deleteTask: (taskId: number) => ({type: 'tasks/DELETE_TASK', taskId} as const),
     newTask: (task: TaskType) => ({type: 'tasks/NEW_TASK', task} as const),
-    setAddNewTaskInProgress: (inProgress: boolean) => ({
-        type: 'tasks/SET_ADD_NEW_TASK_IN_PROGRESS',
-        inProgress
-    } as const),
+    setAddingNewTaskInProgress: (inProgress: boolean) => ({type: 'tasks/SET_ADDING_NEW_TASK_IN_PROGRESS', inProgress} as const),
     setFilteredTasks: (tasks: Array<TaskType>) => ({type: 'tasks/SET_FILTERED_TASKS', tasks} as const)
 }
 
@@ -163,10 +151,7 @@ export const actions = {
  * @param {Array<number> | null} userIds
  * @return {Promise<void>}
  * */
-export const getTasks = (
-    projectIds: Array<number> | null,
-    userIds: Array<number> | null
-): ThunkType => async (dispatch, getState) => {
+export const getTasks = (projectIds: Array<number> | null, userIds: Array<number> | null): ThunkType => async (dispatch, getState) => {
 
     const state = getState()
     const tasksOnClient = state.clientSideDb.clientSideData.tasks
@@ -233,14 +218,10 @@ export const setSort = (sort: TaskSortType): ThunkType => async (dispatch) => {
 }
 
 /**
- * Установка количества показанных задач
- * @param {number} countOfShownTasks
+ * Установка списка задач
+ * @param {Array<TaskType>} tasks
  * @return {Promise<void>}
  * */
-export const setCountOfShownTasks = (countOfShownTasks: number): ThunkType => async (dispatch) => {
-    dispatch(actions.setCountOfShownTasks(countOfShownTasks))
-}
-
 export const setTasks = (tasks: Array<TaskType>): ThunkType => async (dispatch) => {
     dispatch(actions.setTasks(tasks))
     await dispatch(filterTasks())
@@ -293,7 +274,7 @@ export const changeTask = (task: TaskType): ThunkType => async (dispatch) => {
  * */
 export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
     try {
-        dispatch(actions.setAddNewTaskInProgress(true))
+        dispatch(actions.setAddingNewTaskInProgress(true))
         await tasksAPI.addNewTask(task)
         dispatch(actions.newTask(task))
         await dispatch(addNewItem('tasks', task))
@@ -301,7 +282,7 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
     } catch (e) {
         dispatch(newError(e.message + ' Ошибка добавления задачи'))
     } finally {
-        dispatch(actions.setAddNewTaskInProgress(false))
+        dispatch(actions.setAddingNewTaskInProgress(false))
     }
 }
 
@@ -312,22 +293,8 @@ export const newTask = (task: TaskType): ThunkType => async (dispatch) => {
 export const filterTasks = (): ThunkType => async (dispatch, getState) => {
     const state = getState()
     const tasks = state.tasks.tasks
-    /*const tasksOnClient = state.clientSideDb.clientSideData.tasks
-    const selectedProjectId = state.projects.selectedProjectId*/
     const filter = state.tasks.filter
     const sort = state.tasks.sort
-    /*const route = state.app.route*/
-
-    /*// Объединение данных, полученных с сервера, с данными на стороне клиента
-    let tasksWithClientSideData = tasks.filter(
-        t => !tasksOnClient.deleted.filter(
-            item => item === t.id
-        ).length
-    ).concat(
-        route === ROUTE.ROOT
-            ? tasksOnClient.items.filter(item => item.project === selectedProjectId)
-            : tasksOnClient.items
-    )*/
 
     // Фильтрация задач
     let filteredTasks = tasks.filter((t) => {
@@ -350,11 +317,14 @@ export const filterTasks = (): ThunkType => async (dispatch, getState) => {
     dispatch(actions.setFilteredTasks(filteredTasks))
 }
 
+/**
+ * Получение всех задачь для авторизованного пользователя
+ * @return {Promise<void>}
+ * */
 export const selectMyTasks = (): ThunkType => async (dispatch, getState) => {
     let myId = getState().auth.id
     dispatch(actions.setFetching(true))
     dispatch(setSelectedProjectId(null))
-    /*dispatch(setUsers([]))*/
     if (myId !== null) await dispatch(getTasks([], [myId]))
     dispatch(actions.setFetching(false))
 }

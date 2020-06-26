@@ -2,9 +2,9 @@ import React from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import ListSubheaderMui from '@material-ui/core/ListSubheader'
 import ListMui from '@material-ui/core/List'
-import DividerMui from "@material-ui/core/Divider/Divider"
-import Projects from "./Projects/Projects"
-import Team from "./Users/Users"
+import DividerMui from '@material-ui/core/Divider/Divider'
+import Projects from './Projects/Projects'
+import Team from './Users/Users'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,21 +29,22 @@ const Menu: React.FC<any> = () => {
 
     return (
         <ListMui
-            component="nav"
-            aria-labelledby="nested-list-subheader"
+            component='nav'
             subheader={
-                <ListSubheaderMui component="div" id="nested-list-subheader">
+                <ListSubheaderMui component='div'>
                     Меню
                 </ListSubheaderMui>
             }
             className={classes.root}
         >
             <DividerMui />
+
+            {/*Список проектов*/}
             <Projects/>
-
             <div className={classes.verticalSpacing} />
-            <Team/>
 
+            {/*Список пользователей*/}
+            <Team/>
             <DividerMui />
         </ListMui>
     )

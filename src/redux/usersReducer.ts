@@ -1,11 +1,11 @@
 import {ThunkAction} from "redux-thunk"
-import {ActionsTypes, AppStateType} from "./store"
+import {InferActionsType, AppStateType} from "./store"
 import {usersAPI} from "../api/api"
 import {ProjectToUserIdsMatchType, UserType} from "../types/types"
 import {newError} from "./appReducer"
 
 type InitialStateType = typeof initialState
-type ActionsType = ActionsTypes<typeof actions>
+type ActionsType = InferActionsType<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {
@@ -58,6 +58,11 @@ export const getUsersByProjectIds = (projectIds: Array<number>): ThunkType => as
     }
 }
 
+/**
+ * Получение пользователей по их ID
+ * @param {Array<number>} userIds
+ * @return {Promise<void>}
+ * */
 export const getUsersByIds = (userIds: Array<number>): ThunkType => async (dispatch) => {
     try {
         dispatch(actions.setFetching(true))
@@ -86,6 +91,11 @@ export const setSelectedUserId = (selectedUserId: number | null): ThunkType => a
     dispatch(actions.setSelectedUserId(selectedUserId))
 }
 
+/**
+ * Установка списка пользователей
+ * @param {Array<UserType>} users
+ * @return {Promise<void>}
+ * */
 export const setUsers = (users: Array<UserType>): ThunkType => async (dispatch) => {
     dispatch(actions.setUsers(users))
     dispatch(actions.setFetching(false))

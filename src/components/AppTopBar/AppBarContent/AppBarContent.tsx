@@ -1,15 +1,15 @@
 import React, {useEffect} from 'react'
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles'
-import {connect} from "react-redux"
+import {connect} from 'react-redux'
 import IconButtonMui from '@material-ui/core/IconButton'
 import TypographyMui from '@material-ui/core/Typography'
 import MenuItemMui from '@material-ui/core/MenuItem'
 import MenuMui from '@material-ui/core/Menu'
-import ButtonMui from "@material-ui/core/Button"
+import ButtonMui from '@material-ui/core/Button'
 import AccountCircleIconMui from '@material-ui/icons/AccountCircle'
 import MoreIconMui from '@material-ui/icons/MoreVert'
-import {AppStateType} from "../../../redux/store"
-import {logout, showLoginForm} from "../../../redux/authReducer"
+import {AppStateType} from '../../../redux/store'
+import {logout, showLoginForm} from '../../../redux/authReducer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,42 +51,33 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
 
     const countOfShownTasks = props.isAuth ? props.countOfShownTasks : 0
 
+    // Изменение заголовка страницы
     useEffect(()=>{
         document.title = `(${countOfShownTasks}) Менеджер задач`
     },[countOfShownTasks])
 
-    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
+    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {setAnchorEl(event.currentTarget)}
 
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null)
-    }
+    const handleMobileMenuClose = () => {setMobileMoreAnchorEl(null)}
 
-    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setMobileMoreAnchorEl(event.currentTarget)
-    }
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {setMobileMoreAnchorEl(event.currentTarget)}
 
     const handleMenuClose = () => {
         setAnchorEl(null)
         handleMobileMenuClose()
     }
 
-    const handleLogin = () => {
-        props.showLoginForm(true)
-    }
+    const handleLogin = () => {props.showLoginForm(true)}
 
     const handleExit = () => {
         handleMenuClose()
         props.logout()
     }
 
-    const menuId = 'primary-search-account-menu'
     const renderMenu = (
         <MenuMui
             anchorEl={anchorEl}
             anchorOrigin={{vertical: 'top', horizontal: 'right'}}
-            id={menuId}
             keepMounted
             transformOrigin={{vertical: 'top', horizontal: 'right'}}
             open={isMenuOpen}
@@ -96,7 +87,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
         </MenuMui>
     )
 
-    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const mobileMenuId = 'primary-search-account-menu-mobile'
     const renderMobileMenu = (
         <MenuMui
             anchorEl={mobileMoreAnchorEl}
@@ -111,7 +102,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
                 !props.isAuth ? <MenuItemMui onClick={handleLogin}>Войти</MenuItemMui>
                     : <MenuItemMui onClick={handleProfileMenuOpen}>
                         <IconButtonMui
-                            color="inherit"
+                            color='inherit'
                         >
                             <AccountCircleIconMui/>
                         </IconButtonMui>
@@ -125,7 +116,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
         <>
 
             {/*Заголовок приложениия*/}
-            <TypographyMui className={classes.title} variant="h6" noWrap>
+            <TypographyMui className={classes.title} variant='h6' noWrap>
                 {`Менеджер задач (${countOfShownTasks})`}
 
                 {/*Установка текста заголовка в название вкладки браузера*/}
@@ -139,16 +130,16 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
                 !props.isAuth
                     ?
                     <div className={classes.sectionDesktop}>
-                        <ButtonMui color="inherit" onClick={handleLogin}>Войти</ButtonMui>
+                        <ButtonMui color='inherit' onClick={handleLogin}>Войти</ButtonMui>
                     </div>
                     :
                     <div className={classes.sectionDesktop}>
                         <TypographyMui className={classes.authorizedUserNickname__typography}
                                        variant='body1'>{props.myNickname}</TypographyMui>
                         <IconButtonMui
-                            edge="end"
+                            edge='end'
                             onClick={handleProfileMenuOpen}
-                            color="inherit"
+                            color='inherit'
                         >
                             <AccountCircleIconMui/>
                         </IconButtonMui>
@@ -159,7 +150,7 @@ const AppBarContent: React.FC<MapStatePropsType & MapDispatchPropsType> = (props
             <div className={classes.sectionMobile}>
                 <IconButtonMui
                     onClick={handleMobileMenuOpen}
-                    color="inherit"
+                    color='inherit'
                 >
                     <MoreIconMui/>
                 </IconButtonMui>

@@ -1,22 +1,22 @@
 import './App.css'
 import React, {useEffect} from 'react'
-import {AppStateType} from "./redux/store"
-import {connect} from "react-redux"
-import {useSnackbar, VariantType} from "notistack"
+import {AppStateType} from './redux/store'
+import {connect} from 'react-redux'
+import {withRouter, RouteComponentProps} from 'react-router'
+import {useSnackbar, VariantType} from 'notistack'
 import {makeStyles, useTheme, Theme, createStyles} from '@material-ui/core/styles'
 import CssBaselineMui from '@material-ui/core/CssBaseline'
 import DividerMui from '@material-ui/core/Divider'
 import DrawerMui from '@material-ui/core/Drawer'
 import HiddenMui from '@material-ui/core/Hidden'
-import Menu from "./components/Menu/Menu"
-import LoginForm from "./components/LoginForm/LoginForm"
-import {actions, appInitializing, ROUTE, setRoute, RouteType} from "./redux/appReducer"
-import BackdropPreloader from "./components/BackdropPreloader/BackdropPreloader"
-import AppTopBar from "./components/AppTopBar/AppTopBar"
-import Main from "./components/Main/Main"
-import { withRouter, RouteComponentProps } from "react-router";
+import Menu from './components/Menu/Menu'
+import LoginForm from './components/LoginForm/LoginForm'
+import BackdropPreloader from './components/BackdropPreloader/BackdropPreloader'
+import AppTopBar from './components/AppTopBar/AppTopBar'
+import Main from './components/Main/Main'
+import {appInitializing, ROUTE, setRoute, RouteType} from './redux/appReducer'
 
-const drawerWidth = 240; //Ширина бокового меню
+const drawerWidth = 240 //Ширина бокового меню
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -34,18 +34,17 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginLeft: drawerWidth,
             },
         },
-
         toolbar: theme.mixins.toolbar,
         drawerPaper: {
             width: drawerWidth,
         },
     }),
-);
+)
 
 const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsType> = (props) => {
 
-    const classes = useStyles();
-    const theme = useTheme();
+    const classes = useStyles()
+    const theme = useTheme()
 
     //Управление показом боковой панели в мобильном режиме
     const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -77,7 +76,7 @@ const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsTy
     const {enqueueSnackbar} = useSnackbar()
     let {errors} = props
     useEffect(() => {
-        let variant: VariantType = "error"
+        let variant: VariantType = 'error'
         errors.length > 0 && enqueueSnackbar(errors[errors.length - 1], {variant})
     }, [errors, enqueueSnackbar])
 
@@ -88,7 +87,7 @@ const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsTy
             <DividerMui/>
             <Menu/>
         </div>
-    );
+    )
 
     return (
         <div className={classes.root}>
@@ -106,9 +105,9 @@ const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsTy
 
             {/*Обертка над боковой панелью для управления режимом отображения*/}
             <nav className={classes.drawer}>
-                <HiddenMui smUp implementation="css">
+                <HiddenMui smUp implementation='css'>
                     <DrawerMui
-                        variant="temporary"
+                        variant='temporary'
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
@@ -118,10 +117,10 @@ const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsTy
                         {drawer}
                     </DrawerMui>
                 </HiddenMui>
-                <HiddenMui xsDown implementation="css">
+                <HiddenMui xsDown implementation='css'>
                     <DrawerMui
                         classes={{paper: classes.drawerPaper,}}
-                        variant="permanent"
+                        variant='permanent'
                         open
                     >
                         {drawer}

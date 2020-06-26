@@ -1,11 +1,11 @@
 import {ThunkAction} from "redux-thunk"
-import {ActionsTypes, AppStateType} from "./store"
+import {InferActionsType, AppStateType} from "./store"
 import {authAPI, usersAPI} from "../api/api"
 import {AuthorizationFailedException} from "../exceptions/exceptions"
 import Cookies from 'js-cookie'
 
 type InitialStateType = typeof initialState
-type ActionsType = ActionsTypes<typeof actions>
+type ActionsType = InferActionsType<typeof actions>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsType>
 
 let initialState = {

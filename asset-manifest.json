@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/task-manager-mui-example/static/css/main.050523cc.chunk.css",
-    "main.js": "/task-manager-mui-example/static/js/main.89c24d19.chunk.js",
-    "main.js.map": "/task-manager-mui-example/static/js/main.89c24d19.chunk.js.map",
+    "main.js": "/task-manager-mui-example/static/js/main.2c5035e2.chunk.js",
+    "main.js.map": "/task-manager-mui-example/static/js/main.2c5035e2.chunk.js.map",
     "runtime-main.js": "/task-manager-mui-example/static/js/runtime-main.39c578b6.js",
     "runtime-main.js.map": "/task-manager-mui-example/static/js/runtime-main.39c578b6.js.map",
-    "static/js/2.88a42ec8.chunk.js": "/task-manager-mui-example/static/js/2.88a42ec8.chunk.js",
-    "static/js/2.88a42ec8.chunk.js.map": "/task-manager-mui-example/static/js/2.88a42ec8.chunk.js.map",
+    "static/js/2.d668e12c.chunk.js": "/task-manager-mui-example/static/js/2.d668e12c.chunk.js",
+    "static/js/2.d668e12c.chunk.js.map": "/task-manager-mui-example/static/js/2.d668e12c.chunk.js.map",
     "index.html": "/task-manager-mui-example/index.html",
-    "precache-manifest.100a88898dbf881c7c68fe02d28117d4.js": "/task-manager-mui-example/precache-manifest.100a88898dbf881c7c68fe02d28117d4.js",
+    "precache-manifest.ba1b5b4e8e110be80ca34ca65a84e031.js": "/task-manager-mui-example/precache-manifest.ba1b5b4e8e110be80ca34ca65a84e031.js",
     "service-worker.js": "/task-manager-mui-example/service-worker.js",
     "static/css/main.050523cc.chunk.css.map": "/task-manager-mui-example/static/css/main.050523cc.chunk.css.map",
-    "static/js/2.88a42ec8.chunk.js.LICENSE.txt": "/task-manager-mui-example/static/js/2.88a42ec8.chunk.js.LICENSE.txt"
+    "static/js/2.d668e12c.chunk.js.LICENSE.txt": "/task-manager-mui-example/static/js/2.d668e12c.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.39c578b6.js",
-    "static/js/2.88a42ec8.chunk.js",
+    "static/js/2.d668e12c.chunk.js",
     "static/css/main.050523cc.chunk.css",
-    "static/js/main.89c24d19.chunk.js"
+    "static/js/main.2c5035e2.chunk.js"
   ]
 }

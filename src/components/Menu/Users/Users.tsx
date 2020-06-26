@@ -18,6 +18,7 @@ import {TaskFilterType, UserType} from '../../../types/types'
 import {getUsersByIds, getUsersByProjectIds, setSelectedUserId, setUsers} from '../../../redux/usersReducer'
 import {setFilter} from '../../../redux/tasksReducer'
 import {ROUTE} from '../../../redux/appReducer'
+import {compose} from "redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,7 +43,7 @@ const Users: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchProps
 
     // Установка флага процесса загрузки при загрузке списка проектов
     let {selectedProjectId, getUsersByProjectIds, setUsers, myId, getUsersByIds} = props
-    let  locationPathName = props.history.location.pathname
+    let locationPathName = props.history.location.pathname
     useEffect(() => {
         switch (locationPathName) {
             case ROUTE.ROOT:
@@ -58,7 +59,9 @@ const Users: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchProps
         }
     }, [selectedProjectId, setUsers, getUsersByProjectIds, locationPathName, myId, getUsersByIds])
 
-    const handleCollapseList = () => {setOpen(!open)}
+    const handleCollapseList = () => {
+        setOpen(!open)
+    }
 
     const handleSelectItem = (selectedUserId: number) => {
         props.setSelectedUserId(selectedUserId)
@@ -136,4 +139,8 @@ const mapDispatchToProps = {
     setFilter
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Users))
+
+export default compose<React.ComponentType>(
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps)
+)(Users)

@@ -11,6 +11,7 @@ import {AppStateType} from '../../../redux/store'
 import {TaskType} from '../../../types/types'
 import {getTasks, selectMyTasks, setFetching, setTasks} from '../../../redux/tasksReducer'
 import {ROUTE} from '../../../redux/appReducer'
+import {compose} from "redux"
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -90,4 +91,7 @@ const mapDispatchToProps = {
     selectMyTasks
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(TasksList))
+export default compose<React.ComponentType>(
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps)
+)(TasksList)

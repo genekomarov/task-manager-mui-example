@@ -15,6 +15,7 @@ import BackdropPreloader from './components/BackdropPreloader/BackdropPreloader'
 import AppTopBar from './components/AppTopBar/AppTopBar'
 import Main from './components/Main/Main'
 import {appInitializing, ROUTE, setRoute, RouteType} from './redux/appReducer'
+import {compose} from "redux"
 
 const drawerWidth = 240 //Ширина бокового меню
 const useStyles = makeStyles((theme: Theme) =>
@@ -153,4 +154,7 @@ const mapDispatchToProps = {
     setRoute
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
+export default compose<React.ComponentType>(
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps)
+)(App)

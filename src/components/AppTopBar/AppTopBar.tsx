@@ -4,10 +4,11 @@ import AppBarMui from '@material-ui/core/AppBar'
 import IconButtonMui from '@material-ui/core/IconButton'
 import ToolbarMui from '@material-ui/core/Toolbar'
 import MenuIconMui from '@material-ui/icons/Menu'
-import AppBarContent from './AppBarContent/AppBarContent'
+import AppBarContent from "./AppBarContent/AppBarContent"
 import TabsPanel from './Tabs/Tabs'
 import HideOnScroll from '../common/HideOnScroll/HideOnScroll'
-
+import {AppStateType} from "../../redux/store"
+import {connect} from "react-redux"
 
 const drawerWidth = 240
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const AppTopBar: React.FC = () => {
+const AppTopBar: React.FC<MapStatePropsType> = (props) => {
 
     const classes = useStyles()
     const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -55,10 +56,17 @@ const AppTopBar: React.FC = () => {
                 </ToolbarMui>
 
                 {/*Вкладки*/}
-                <TabsPanel/>
+                {props.isAuth && <TabsPanel/>}
             </AppBarMui>
         </HideOnScroll>
     )
 }
 
-export default AppTopBar
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+let mapStateToProps = (state: AppStateType) => {
+    return {
+        isAuth: state.auth.isAuth
+    }
+}
+
+export default connect(mapStateToProps)(AppTopBar)

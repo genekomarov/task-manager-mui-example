@@ -18,6 +18,7 @@ import {appInitializing, ROUTE, setRoute, RouteType} from './redux/appReducer'
 import {compose} from "redux"
 
 const drawerWidth = 240 //Ширина бокового меню
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {

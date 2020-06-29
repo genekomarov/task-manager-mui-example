@@ -162,4 +162,3 @@ export const tasksAPI = {
         instance.delete<TaskType>(`/tasks/${taskId}`)
             .then(response => response.data),
 }
-

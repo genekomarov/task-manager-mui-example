@@ -1,11 +1,10 @@
-import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import ListSubheaderMui from '@material-ui/core/ListSubheader';
-import ListMui from '@material-ui/core/List';
-import Projects from "./Projects/Projects"
-import Filter from "./_Filter/Filter"
-import DividerMui from "@material-ui/core/Divider/Divider"
-import Team from "./Team/Team"
+import React from 'react'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import ListSubheaderMui from '@material-ui/core/ListSubheader'
+import ListMui from '@material-ui/core/List'
+import DividerMui from '@material-ui/core/Divider/Divider'
+import Projects from './Projects/Projects'
+import Team from './Users/Users'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,22 +18,20 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             alignItems: 'center',
             padding: theme.spacing(2, 1),
-            // necessary for content to be below app bar
-            /*...theme.mixins.toolbar,*/
             justifyContent: 'flex-end',
         },
     }),
-);
+)
 
-export default function Menu() {
-    const classes = useStyles();
+const Menu: React.FC<any> = () => {    
+
+    const classes = useStyles()
 
     return (
         <ListMui
-            component="nav"
-            aria-labelledby="nested-list-subheader"
+            component='nav'
             subheader={
-                <ListSubheaderMui component="div" id="nested-list-subheader">
+                <ListSubheaderMui component='div'>
                     Меню
                 </ListSubheaderMui>
             }
@@ -42,14 +39,15 @@ export default function Menu() {
         >
             <DividerMui />
 
+            {/*Список проектов*/}
             <Projects/>
-
             <div className={classes.verticalSpacing} />
 
+            {/*Список пользователей*/}
             <Team/>
-
             <DividerMui />
-
         </ListMui>
-    );
+    )
 }
+
+export default Menu

@@ -1,22 +1,23 @@
-import './App.css';
-import React from 'react';
-import AppBarMui from '@material-ui/core/AppBar';
-import CssBaselineMui from '@material-ui/core/CssBaseline';
-import DividerMui from '@material-ui/core/Divider';
-import DrawerMui from '@material-ui/core/Drawer';
-import HiddenMui from '@material-ui/core/Hidden';
-import IconButtonMui from '@material-ui/core/IconButton';
-import MenuIconMui from '@material-ui/icons/Menu';
-import ToolbarMui from '@material-ui/core/Toolbar';
-import TypographyMui from '@material-ui/core/Typography';
-import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
-import Menu from "./components/Menu/Menu"
-import AppBarContent from "./components/AppBarContent/AppBarContent"
-import Filter from "./components/FilterData/Filter"
-import FilterWrapper from "./components/FilterData/FilterWrapper"
-import TasksList from "./components/TasksList/TasksList"
+import './App.css'
+import React, {useEffect} from 'react'
+import {AppStateType} from './redux/store'
+import {connect} from 'react-redux'
+import {withRouter, RouteComponentProps} from 'react-router'
+import {useSnackbar, VariantType} from 'notistack'
+import {makeStyles, useTheme, Theme, createStyles} from '@material-ui/core/styles'
+import CssBaselineMui from '@material-ui/core/CssBaseline'
+import DividerMui from '@material-ui/core/Divider'
+import DrawerMui from '@material-ui/core/Drawer'
+import HiddenMui from '@material-ui/core/Hidden'
+import Menu from './components/Menu/Menu'
+import LoginForm from './components/LoginForm/LoginForm'
+import BackdropPreloader from './components/BackdropPreloader/BackdropPreloader'
+import AppTopBar from './components/AppTopBar/AppTopBar'
+import Main from './components/Main/Main'
+import {appInitializing, ROUTE, setRoute, RouteType} from './redux/appReducer'
+import {compose} from "redux"
 
-const drawerWidth = 240;
+const drawerWidth = 240 //Ширина бокового меню
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,109 +36,126 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginLeft: drawerWidth,
             },
         },
-        menuButton: {
-            marginRight: theme.spacing(2),
-            [theme.breakpoints.up('sm')]: {
-                display: 'none',
-            },
-        },
-        // necessary for content to be below app bar
         toolbar: theme.mixins.toolbar,
         drawerPaper: {
             width: drawerWidth,
         },
-        content: {
-            flexGrow: 1,
-            padding: theme.spacing(3),
-        },
     }),
-);
+)
 
-interface Props {
-    /**
-     * Injected by the documentation to work in an iframe.
-     * You won't need it on your project.
-     */
-    window?: () => Window;
-}
+const App: React.FC<RouteComponentProps & MapStatePropsType & MapDispatchPropsType> = (props) => {
 
-export default function App(props: Props) {
-    const { window } = props;
-    const classes = useStyles();
-    const theme = useTheme();
-    const [mobileOpen, setMobileOpen] = React.useState(false);
+    const classes = useStyles()
+    const theme = useTheme()
 
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
+    //Управление показом боковой панели в мобильном режиме
+    const [mobileOpen, setMobileOpen] = React.useState(false)
+    const handleDrawerToggle = () => {setMobileOpen(!mobileOpen)}
 
+    // Запуск инициализации приложения
+    let {appInitializing} = props
+    useEffect(() => {
+        appInitializing()
+    }, [appInitializing])
+
+    // Настраиваем текущее значение роутинга
+    let locationPath = props.history.location.pathname
+    let pushIntoHistory = props.history.push
+    let {setRoute} = props
+    useEffect(() => {
+        let isRouteSet = false
+        let key: RouteType
+        for (key in ROUTE)
+            if (ROUTE[key] === locationPath) {
+                setRoute(locationPath)
+                isRouteSet = true
+                break
+            }
+        !isRouteSet && pushIntoHistory('/404')
+    }, [locationPath, setRoute, pushIntoHistory])
+
+    // Добавление ошибки в Snackbar
+    const {enqueueSnackbar} = useSnackbar()
+    let {errors} = props
+    useEffect(() => {
+        let variant: VariantType = 'error'
+        errors.length > 0 && enqueueSnackbar(errors[errors.length - 1], {variant})
+    }, [errors, enqueueSnackbar])
+
+    // Содержимое боковой панели
     const drawer = (
         <div>
-            <div className={classes.toolbar} />
-            <DividerMui />
-            <Menu />
+            <div className={classes.toolbar}/>
+            <DividerMui/>
+            <Menu/>
         </div>
-    );
-
-    const container = window !== undefined ? () => window().document.body : undefined;
+    )
 
     return (
         <div className={classes.root}>
-            <CssBaselineMui />
-            <AppBarMui position="fixed" className={classes.appBar}>
-                <ToolbarMui>
-                    <IconButtonMui
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        className={classes.menuButton}
-                    >
-                        <MenuIconMui />
-                    </IconButtonMui>
 
-                    <AppBarContent/>
+            {/*Затемнение и прелодер при инициализации*/}
+            <BackdropPreloader open={!props.isInitialized}/>
 
-                </ToolbarMui>
-            </AppBarMui>
-            <nav className={classes.drawer} aria-label="mailbox folders">
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-                <HiddenMui smUp implementation="css">
+            {/*Форма логина*/}
+            {props.loginFormShown && <LoginForm/>}
+
+            <CssBaselineMui/>
+
+            {/*Верхняя панель*/}
+            <AppTopBar handleDrawerToggle={handleDrawerToggle}/>
+
+            {/*Обертка над боковой панелью для управления режимом отображения*/}
+            <nav className={classes.drawer}>
+                <HiddenMui smUp implementation='css'>
                     <DrawerMui
-                        container={container}
-                        variant="temporary"
+                        variant='temporary'
                         anchor={theme.direction === 'rtl' ? 'right' : 'left'}
                         open={mobileOpen}
                         onClose={handleDrawerToggle}
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        ModalProps={{
-                            keepMounted: true, // Better open performance on mobile.
-                        }}
+                        classes={{paper: classes.drawerPaper,}}
+                        ModalProps={{keepMounted: true,}}
                     >
                         {drawer}
                     </DrawerMui>
                 </HiddenMui>
-                <HiddenMui xsDown implementation="css">
+                <HiddenMui xsDown implementation='css'>
                     <DrawerMui
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                        variant="permanent"
+                        classes={{paper: classes.drawerPaper,}}
+                        variant='permanent'
                         open
                     >
                         {drawer}
                     </DrawerMui>
                 </HiddenMui>
             </nav>
-            <main className={classes.content}>
-                <div className={classes.toolbar} />
 
-                <FilterWrapper/>
-                <TasksList/>
-
-            </main>
+            {/*Основное содержимое*/}
+            {props.isAuth && <Main/>}
         </div>
-    );
+    )
 }
+
+type MapStatePropsType = ReturnType<typeof mapStateToProps>
+const mapStateToProps = (state: AppStateType) => {
+    return {
+        isInitialized: state.app.isInitialized,
+        isAuth: state.auth.isAuth,
+        loginFormShown: state.auth.loginFormShown,
+        errors: state.app.errors
+    }
+}
+
+type MapDispatchPropsType = {
+    appInitializing: () => void,
+    setRoute: (route: string) => void
+}
+const mapDispatchToProps = {
+    appInitializing,
+    setRoute
+}
+
+export default compose<React.ComponentType>(
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps)
+)(App)
